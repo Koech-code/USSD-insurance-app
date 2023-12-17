@@ -1,0 +1,25 @@
+//   else if (newSession == false && userSessionData[sessionID].step === 3) {
+  //     userSessionData[sessionID].amount = userData;
+  //     if (userSessionData[sessionID].service == "1") {
+  //       service = "1";
+  //       message = "Please confirm payment\n";
+  //       message += "Yes\n";
+  //       message += "No";
+
+  //       userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
+  //       continueSession = true;
+  //     }
+  //   } else if (
+  //     newSession == false &&
+  //     userData === "1" &&
+  //     userSessionData[sessionID].step === "4"
+  //   ) {
+  //     if (userSessionData[sessionID].service == "1") {
+  //       service = "1";
+  //       message =
+  //         "The customer will receive a prompt to make payment. Thank you!";
+  //       continueSession = false;
+  //       delete userSessionData[sessionID];
+  //     }
+  //   }
+
