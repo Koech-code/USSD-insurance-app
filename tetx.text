@@ -23,3 +23,91 @@
   //     }
   //   }
 
+ghgjh
+
+    // else if (userSessionData[sessionID].service === "2") {
+    //   // Logic for Special Types
+    //   service = "2";
+    //   message =
+    //     "You selected Hiring cars (5 - 15 persons). Enter number of persons your car can hold (e.g 5):\n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // } else if (userSessionData[sessionID].service === "3") {
+    //   // Options for ambulance/hearse cars
+    //   service = "3";
+    //   message = "You selected Ambulance/Hearse. Choose an option:\n";
+    //   message += "1. 5 persons \n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // } else if (userSessionData[sessionID].service === "4") {
+    //   // Logic for Special Types (Z 802 ON SITE)
+    //   service = "4";
+    //   message =
+    //     "You selected Special Types(Z 802 ON SITE). Choose an option:\n";
+    //   message += "1. 1 - 5 persons\n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // } else if (userSessionData[sessionID].service === "5") {
+    //   // Logic for Special Types (Z 802 ON BOARD)
+    //   service = "5";
+    //   message =
+    //     "You selected Special Types(Z 802 ON BOARD). Choose an option:\n";
+    //   message += "1. 1 - 5 persons\n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // } else if (userSessionData[sessionID].service === "6") {
+    //   // Logic for Special Types
+    //   service = "6";
+    //   message = "You selected GW1 Class 1. Choose a class it falls into:\n";
+    //   message += "1. 1 - 5 persons\n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // } else if (userSessionData[sessionID].service === "7") {
+    //   // Logic for Special Types
+    //   service = "7";
+    //   message = "You selected GW1 Class 2. Choose a class it falls into:\n";
+    //   message += "1. 1 - 5 persons\n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // } else if (userSessionData[sessionID].service === "8") {
+    //   // Logic for Special Types
+    //   service = "8";
+    //   message = "You selected GW1 Class 3. Choose a class it falls into:\n";
+    //   message += "1. 1 - 5 persons\n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // } else if (userSessionData[sessionID].service === "9") {
+    //   // Options for art/tankers
+    //   service = "9";
+    //   message = "You selected art/tankers. Choose an option:\n";
+    //   message += "3 persons \n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // } else if (userSessionData[sessionID].service === "10") {
+    //   // Options for ambulance/hearse cars
+    //   service = "10";
+    //   message = "You selected taxi. Choose an option:\n";
+    //   message += "1. 5 persons \n";
+    //   // Save the user's input as the selected option
+    //   userSessionData[sessionID].selectedOption = userData;
+    //   console.log("user selected", userData);
+    //   continueSession = true; // Set to true to continue the session
+    // }
