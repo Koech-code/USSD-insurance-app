@@ -1,0 +1,660 @@
+{
+  error: ReferenceError: Cannot access 'amount' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:17)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1039:24
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'amount' before initialization\n" +
+    "ReferenceError: Cannot access 'amount' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:17)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:24\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'amount' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:17)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:24\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sat Dec 30 2023 17:05:34 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 18920,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 57323520,
+      heapTotal: 21499904,
+      heapUsed: 19713168,
+      external: 2517631,
+      arrayBuffers: 175579
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 664140.828 },
+  trace: [
+    {
+      column: 17,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 24,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1039,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-30 17:05:34',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:54)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1039:24
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:54)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:24\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:54)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:24\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sat Dec 30 2023 17:23:19 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 17736,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 56623104,
+      heapTotal: 20975616,
+      heapUsed: 19731200,
+      external: 2517630,
+      arrayBuffers: 175578
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 665205.5 },
+  trace: [
+    {
+      column: 54,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 24,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1039,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-30 17:23:19',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:35)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1025:36
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1025:36\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1025:36\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sat Dec 30 2023 23:44:58 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 3716,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 62750720,
+      heapTotal: 22024192,
+      heapUsed: 19724480,
+      external: 2516938,
+      arrayBuffers: 174886
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 688104.703 },
+  trace: [
+    {
+      column: 35,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 36,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1025,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-30 23:44:58',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:35)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1025:36
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1025:36\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1025:36\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sat Dec 30 2023 23:49:06 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 4264,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 62603264,
+      heapTotal: 21762048,
+      heapUsed: 19593192,
+      external: 2516938,
+      arrayBuffers: 174886
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 688353.328 },
+  trace: [
+    {
+      column: 35,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 36,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1025,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-30 23:49:06',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:35)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1033:40
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1033:40\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1033:40\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sat Dec 30 2023 23:54:35 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 25408,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 62263296,
+      heapTotal: 21499904,
+      heapUsed: 19549592,
+      external: 2517113,
+      arrayBuffers: 175061
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 688681.89 },
+  trace: [
+    {
+      column: 35,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 40,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1033,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-30 23:54:35',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:35)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1039:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:12\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:12\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 00:00:37 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 19308,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 62668800,
+      heapTotal: 21762048,
+      heapUsed: 19870640,
+      external: 2517458,
+      arrayBuffers: 175406
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 689044.125 },
+  trace: [
+    {
+      column: 35,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1039,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 00:00:37',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:35)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1046:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1046:12\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1046:12\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 00:02:53 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 27052,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 62513152,
+      heapTotal: 21237760,
+      heapUsed: 19732184,
+      external: 2517630,
+      arrayBuffers: 175578
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 689180.093 },
+  trace: [
+    {
+      column: 35,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1046,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 00:02:53',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:35)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1039:24
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:24\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:24\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 00:06:23 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 7036,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 62623744,
+      heapTotal: 21499904,
+      heapUsed: 19543080,
+      external: 2517112,
+      arrayBuffers: 175060
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 689390.25 },
+  trace: [
+    {
+      column: 35,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 24,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1039,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 00:06:23',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:35)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1039:24
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:24\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1039:24\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 00:11:23 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 2476,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 62844928,
+      heapTotal: 21762048,
+      heapUsed: 19531984,
+      external: 2516937,
+      arrayBuffers: 174885
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 689689.656 },
+  trace: [
+    {
+      column: 35,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 24,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1039,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 00:11:23',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: Cannot access 'provider' before initialization
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:68:35)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1038:44
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot access 'provider' before initialization\n" +
+    "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1038:44\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "ReferenceError: Cannot access 'provider' before initialization\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:68:35)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1038:44\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 00:21:26 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 26988,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 61980672,
+      heapTotal: 21237760,
+      heapUsed: 19853904,
+      external: 2517457,
+      arrayBuffers: 175405
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 690292.562 },
+  trace: [
+    {
+      column: 35,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 68,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 44,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1038,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 00:21:26',
+  label: 'Event Log 🏷'
+}
