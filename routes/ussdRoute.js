@@ -1,11 +1,16 @@
 const express = require("express");
 const router = express.Router();
-
+const juni = require("../controllers/paymentController.js");
+const PaymentResponse = require("../models/paymentResponseModel.js");
 const USSDCODE = "*928*311#";
 const userSessionData = {};
 
-router.post("/ussd", (req, res) => {
+router.post("/ussd", async (req, res) => {
   const { sessionID, newSession, msisdn, userData, userID, network } = req.body;
+           var carname = await juni.verify(msisdn);
+  // Replace "233" with "0" in the msisdn variable
+const formattedMsisdn = msisdn.replace(/^233/, '0');
+
   let message = "";
   let service = "";
   let continueSession = "";
@@ -15,10 +20,12 @@ router.post("/ussd", (req, res) => {
   let thirdPartyPrice = "";
   let GW1Options = "";
   let InsuranceType = "";
+
   if (newSession && userData === USSDCODE) {
     // Initial session setup
     userSessionData[sessionID] = {
       step: 1,
+      // phonenumber: undefined,
     };
     message = "Welcome to Fast Insurance\n";
     message += "1. Purchase insurance\n";
@@ -43,7 +50,7 @@ router.post("/ussd", (req, res) => {
       userSessionData[sessionID].InsuranceType = "purchase";
       userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
     } else if (userSessionData[sessionID].service === "2") {
-      // Car type selection for Third Party
+      // Renew insurance menu
       service = "2";
       message = "Select a package to renew\n";
       message += "1. 3rd party Comm.\n";
@@ -53,6 +60,7 @@ router.post("/ussd", (req, res) => {
       message += "5. Comp. Commercial\n";
       message += "6. Comp. Private";
       continueSession = true;
+      userSessionData[sessionID].InsuranceType = "renewal";
       userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
     } else if (userSessionData[sessionID].service === "3") {
       service = "3";
@@ -148,51 +156,100 @@ router.post("/ussd", (req, res) => {
     if (userSessionData[sessionID].service === "1") {
       // Additional logic for Third Party commercial - step 3
       if (userSessionData[sessionID].selectedOption === "1") {
-        // Logic for Special Types
-        service = "1";
-        message =
-          "You selected Max bus (23 - 70 persons). Enter number of persons your car can hold (e.g 23):\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        userSessionData[sessionID].type = "maxBus";
-        console.log("user selected", userData);
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Logic for Special Types
+          service = "1";
+          message =
+            "You're about to purchase max bus 3rd party insurance. Please enter the exact passenger capacity (between 23 - 70)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          userSessionData[sessionID].type = "maxBus";
+          console.log("user selected", userData);
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Logic for Special Types
+          service = "1";
+          message =
+            "You're about to renew Max bus 3rd party insurance package (23 - 70 persons). Enter the exact passenger capacity (e.g 23):\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          userSessionData[sessionID].type = "maxBus";
+          console.log("user selected", userData);
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "2") {
-        // Handle choice 2 for Third Party commercial - step 3
-        // Logic for Special Types
-        service = "1";
-        message =
-          "You selected Hiring cars (5 - 15 persons). Enter number of persons your car can hold (e.g 5):\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        userSessionData[sessionID].type = "hiringCars";
-        console.log("user selected", userData);
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Handle choice 2 for Third Party commercial - step 3
+          // Logic for Special Types
+          service = "1";
+          message =
+            "You're about to purchase hiring cars 3rd party insurance. Please enter the exact passenger capacity (between 5 - 15 persons)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          userSessionData[sessionID].type = "hiringCars";
+          console.log("user selected", userData);
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Handle choice 2 for Third Party commercial - step 3
+          // Logic for Special Types
+          service = "1";
+          message =
+            "You're about to renew your hiring cars 3rd party insurance package. Please enter the exact passenger capacity (between 5 - 15 persons)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          userSessionData[sessionID].type = "hiringCars";
+          console.log("user selected", userData);
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "3") {
-        // Options for ambulance/hearse cars
-        service = "1";
-        message = "You selected Ambulance/Hearse. Choose an option:\n";
-        message += "1. 5 persons \n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        userSessionData[sessionID].type = "ambulanceOrHearse";
-        console.log("user selected", userData);
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Options for ambulance/hearse cars
+          service = "1";
+          message =
+            "You're about to purchase Ambulance/Hearse 3rd party insurance package. Choose an option:\n";
+          message += "1. 5 persons \n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          userSessionData[sessionID].type = "ambulanceOrHearse";
+          console.log("user selected", userData);
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Options for ambulance/hearse cars
+          service = "1";
+          message =
+            "You selected Ambulance/Hearse renewal. Choose an option:\n";
+          message += "1. 5 persons \n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          userSessionData[sessionID].type = "ambulanceOrHearse";
+          console.log("user selected", userData);
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "4") {
-        // Logic for Special Types (Z 802 ON SITE)
-        // service = "1";
-        // message =
-        //   "You selected Special Types(Z 802 ON SITE). Choose an option:\n";
-        // message += "1. 1 - 5 persons\n";
-        // // Save the user's input as the selected option
-        // userSessionData[sessionID].selectedOption = userData;
-        // console.log("user selected", userData);
-        // userSessionData[sessionID].type = "specialOnSite";
-        // console.log("user selected car type", userSessionData[sessionID].type);
-        // continueSession = true; // Set to true to continue the session
         service = "1";
         message = "You selected Special Types. Choose an option:\n";
         message += "1. Special Type (ON SITE)\n";
@@ -211,145 +268,302 @@ router.post("/ussd", (req, res) => {
         userSessionData[sessionID].type = "GW1";
         console.log("user selected car type", userSessionData[sessionID].type);
         continueSession = true;
-      }
-      // else if (userSessionData[sessionID].selectedOption === "7") {
-      //   // Logic for Special Types
-      //   service = "1";
-      //   message = "You selected GW1 Class 2. Choose a class it falls into:\n";
-      //   message += "1. 1 - 5 persons\n";
-      //   // Save the user's input as the selected option
-      //   userSessionData[sessionID].selectedOption = userData;
-      //   console.log("user selected", userData);
-      //   userSessionData[sessionID].type = "GW1Class2";
-      //   console.log("user selected car type", userSessionData[sessionID].type);
-      //   continueSession = true; // Set to true to continue the session
-      // }
-      // else if (userSessionData[sessionID].selectedOption === "8") {
-      //   // Logic for Special Types
-      //   service = "1";
-      //   message = "You selected GW1 Class 3. Choose a class it falls into:\n";
-      //   message += "1. 1 - 5 persons\n";
-      //   // Save the user's input as the selected option
-      //   userSessionData[sessionID].selectedOption = userData;
-      //   console.log("user selected", userData);
-      //   userSessionData[sessionID].type = "GW1Class3";
-      //   console.log("user selected car type", userSessionData[sessionID].type);
-      //   continueSession = true; // Set to true to continue the session
-      // }
-      else if (userSessionData[sessionID].selectedOption === "6") {
-        // Logic for Special Types
-        service = "1";
-        message = "You selected art/tankers. Choose an option:\n";
-        message += "3 persons \n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
-        userSessionData[sessionID].type = "artOrTankers";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+      } else if (userSessionData[sessionID].selectedOption === "6") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Logic for Special Types
+          service = "1";
+          message = "You selected art/tankers purchase. Choose an option:\n";
+          message += "3 persons \n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "artOrTankers";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Logic for Special Types
+          service = "1";
+          message = "You selected art/tankers renewal. Choose an option:\n";
+          message += "3 persons \n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "artOrTankers";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "7") {
-        // Logic for Special Types
-        service = "1";
-        message = "You selected taxi. Choose an option:\n";
-        message += "1. 5 persons \n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
-        userSessionData[sessionID].type = "taxi";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Logic for Special Types
+          service = "1";
+          message = "You selected taxi purchase. Choose an option:\n";
+          message += "1. 5 persons \n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "taxi";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Logic for Special Types
+          service = "1";
+          message = "You selected taxi renewal. Choose an option:\n";
+          message += "1. 5 persons \n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "taxi";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "8") {
-        // Logic for Special Types
-        service = "1";
-        message = "You selected Mini Bus. Choose an option:\n";
-        message += "1. 5 - 22 persons \n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
-        userSessionData[sessionID].type = "miniBus";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Logic for Special Types
+          service = "1";
+          message = "You selected Mini Bus purchase. Choose an option:\n";
+          message += "1. 5 - 22 persons \n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "miniBus";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Logic for Special Types
+          service = "1";
+          message = "You selected Mini Bus renewal. Choose an option:\n";
+          message += "1. 5 - 22 persons \n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "miniBus";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       }
     } else if (userSessionData[sessionID].service === "2") {
       if (userSessionData[sessionID].selectedOption === "1") {
-        // Handle choice 2 for Third Party commercial - step 3
-        // Logic for Special Types
-        service = "2";
-        message = "You selected private individual (X1).\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
-        userSessionData[sessionID].type = "privateIndividualX1";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Handle choice 2 for Third Party commercial - step 3
+          // Logic for Special Types
+          service = "2";
+          message =
+            "You selected private individual (X1) purchase. Enter number of persons it can hold(between 5 - 12)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "privateIndividualX1";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Handle choice 2 for Third Party commercial - step 3
+          // Logic for Special Types
+          service = "2";
+          message =
+            "You selected private individual (X1) renewal. Enter number of persons it can hold(between 5 - 12)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "privateIndividualX1";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "2") {
-        // Handle choice 2 for Third Party commercial - step 3
-        // Logic for Special Types
-        service = "2";
-        message = "You selected private company (X4).\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
-        userSessionData[sessionID].type = "privateIndividualX4";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          service = "2";
+          message =
+            "You selected private company (X4) purchase. Enter number of persons it carries(between 5 -12)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "privateIndividualX4";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          service = "2";
+          message =
+            "You selected private company (X4) renewal. Enter number of persons it carries(between 5 -12)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "privateIndividualX4";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "3") {
-        // Handle choice 2 for Third Party commercial - step 3
-        // Logic for Special Types
-        service = "2";
-        message = "You selected own goods (BELOW 3000 cc).\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
-        userSessionData[sessionID].type = "ownGoodsBelow";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          service = "2";
+          message =
+            "You selected own goods (BELOW 3000 cc) purchase. Enter it's capacity(3)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "ownGoodsBelow";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          service = "2";
+          message =
+            "You selected own goods (BELOW 3000 cc) renewal. Enter it's capacity(3)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "ownGoodsBelow";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "4") {
-        // Handle choice 2 for Third Party commercial - step 3
-        // Logic for Special Types
-        service = "2";
-        message = "You selected own goods (ABOVE 3000 cc).\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
-        userSessionData[sessionID].type = "ownGoodsAbove";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          service = "2";
+          message =
+            "You selected own goods (ABOVE 3000 cc) purchase. Enter it's capacity(3)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "ownGoodsAbove";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          service = "2";
+          message =
+            "You selected own goods (ABOVE 3000 cc) renewal. Enter it's capacity(3)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "ownGoodsAbove";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "5") {
-        // Handle choice 2 for Third Party commercial - step 3
-        // Logic for Special Types
-        service = "2";
-        message = "You selected general cartage (UP TO 3000 cc).\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
-        userSessionData[sessionID].type = "generalCartageBelow";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          service = "2";
+          message =
+            "You selected general cartage (UP TO 3000 cc) purchase. Enter it's capacity(3)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "generalCartageBelow";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          service = "2";
+          message =
+            "You selected general cartage (UP TO 3000 cc) renewal. Enter it's capacity(3)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+          userSessionData[sessionID].type = "generalCartageBelow";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "6") {
-        // Handle choice 2 for Third Party commercial - step 3
-        // Logic for Special Types
-        service = "2";
-        message = "You selected general cartage (BELOW 3000 cc).\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          service = "2";
+          message =
+            "You selected general cartage (ABOVE 3000 cc) purchase. Enter it's capacity(3)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
 
-        userSessionData[sessionID].type = "generalCartageAbove";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+          userSessionData[sessionID].type = "generalCartageAbove";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          service = "2";
+          message =
+            "You selected general cartage (ABOVE 3000 cc) renewal. Enter it's capacity(3)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+
+          userSessionData[sessionID].type = "generalCartageAbove";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       } else if (userSessionData[sessionID].selectedOption === "7") {
-        // Handle choice 2 for Third Party commercial - step 3
-        // Logic for Special Types
-        service = "2";
-        message = "You selected Mini Bus.\n";
-        // Save the user's input as the selected option
-        userSessionData[sessionID].selectedOption = userData;
-        console.log("user selected", userData);
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          service = "2";
+          message =
+            "You selected Mini Bus purchase. Enter it's capacity(between 5 - 22)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
 
-        userSessionData[sessionID].type = "miniBus";
-        console.log("user selected car type", userSessionData[sessionID].type);
-        continueSession = true; // Set to true to continue the session
+          userSessionData[sessionID].type = "miniBus";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          service = "2";
+          message =
+            "You selected Mini Bus renewal. Enter it's capacity(between 5 - 22)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          console.log("user selected", userData);
+
+          userSessionData[sessionID].type = "miniBus";
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; // Set to true to continue the session
+        }
       }
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].selectedOption === "1") {
@@ -511,6 +725,7 @@ router.post("/ussd", (req, res) => {
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 4) {
     userSessionData[sessionID].selectedOption = userData;
+    // Insurance Purchase prices
     const miniBusServicePrices = {
       5: 633.0,
       6: 645.0,
@@ -571,7 +786,7 @@ router.post("/ussd", (req, res) => {
 
     // Third party commercial prices
     const maxBusServicePrices = {
-      23: 849.0,
+      23: 1.0,
       24: 861.0,
       25: 873.0,
       26: 885.0,
@@ -620,7 +835,6 @@ router.post("/ussd", (req, res) => {
       69: 1401.0,
       70: 1413.0,
     };
-
     const hiringCarsServicePrices = {
       5: 633.0,
       6: 645.0,
@@ -637,7 +851,6 @@ router.post("/ussd", (req, res) => {
     const ambulanceOrHearseServicePrices = {
       5: 503,
     };
-
     const onSiteSpecialTypesServicePrice = {
       1: 353.0,
       2: 353.0,
@@ -680,209 +893,482 @@ router.post("/ussd", (req, res) => {
       5: 618.0,
     };
 
+    // Insurance renewal prices
+    const maxBusRenewalServicePrices = {
+      23: 722.0,
+      24: 730.0,
+      25: 738.0,
+      26: 746.0,
+      27: 754.0,
+      28: 762.0,
+      29: 770.0,
+      30: 778.0,
+      31: 786.0,
+      32: 794.0,
+      33: 802.0,
+      34: 810.0,
+      35: 818.0,
+      36: 826.0,
+      37: 834.0,
+      38: 842.0,
+      39: 850.0,
+      40: 858.0,
+      41: 866.0,
+      42: 874.0,
+      43: 882.0,
+      44: 890.0,
+      45: 898.0,
+      46: 906.0,
+      47: 914.0,
+      48: 922.0,
+      49: 930.0,
+      50: 938.0,
+      51: 946.0,
+      52: 954.0,
+      53: 962.0,
+      54: 970.0,
+      55: 978.0,
+      56: 986.0,
+      57: 994.0,
+      58: 1002.0,
+      59: 1010.0,
+      60: 1018.0,
+      61: 1026.0,
+      62: 1034.0,
+      63: 1042.0,
+      64: 1050.0,
+      65: 1058.0,
+      66: 1066.0,
+      67: 1074.0,
+      68: 1082.0,
+      69: 1090.0,
+      70: 1098.0,
+    };
+    const hiringCarsRenewalServicePrices = {
+      5: 578.0,
+      6: 586.0,
+      7: 594.0,
+      8: 602.0,
+      9: 610.0,
+      10: 618.0,
+      11: 626.0,
+      12: 634.0,
+      13: 642.0,
+      14: 650.0,
+      15: 658.0,
+    };
+    const ambulanceOrHearseRenewalServicePrices = {
+      5: 458.0,
+    };
+    const artOrTankersRenewalServicePrices = {
+      3: 853.0,
+    };
+    const taxiRenewalServicePrices = {
+      5: 568.0,
+    };
+    const miniBusRenewalServicePrices = {
+      5: 578.0,
+      6: 586.0,
+      7: 594.0,
+      8: 602.0,
+      9: 610.0,
+      10: 618.0,
+      11: 626.0,
+      12: 634.0,
+      13: 642.0,
+      14: 650.0,
+      15: 658.0,
+      16: 666.0,
+      17: 674.0,
+      18: 682.0,
+      19: 690.0,
+      20: 698.0,
+      21: 706.0,
+      22: 714.0,
+    };
+    const privateIndividualX1RenewalPrices = {
+      5: 423.0,
+      6: 428.0,
+      7: 433.0,
+      8: 438.0,
+      9: 443.0,
+      10: 448.0,
+      11: 453.0,
+      12: 458.0,
+    };
+    const privateIndividualX4RenewalPrices = {
+      5: 423.0,
+      6: 431.0,
+      7: 439.0,
+      8: 447.0,
+      9: 455.0,
+      10: 463.0,
+      11: 471.0,
+      12: 479.0,
+    };
+    const ownGoodsBelowRenewalPrices = {
+      3: 583.0,
+    };
+    const ownGoodsAboveRenewalPrices = {
+      3: 598.0,
+    };
+
+    const generalCartageRenewalBelow = {
+      3: 713.0,
+    };
+    const generalCartageRenewalAbove = {
+      3: 723.0,
+    };
     if (userSessionData[sessionID].service === "1") {
       // Check if the service is Third Party Commercial
 
-      // Check if the selected option exists in the mapping
-      if (userSessionData[sessionID].type === "maxBus") {
-        if (
-          maxBusServicePrices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            "Pay " +
-            maxBusServicePrices[
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        // Check if the selected option exists in the mapping
+        if (userSessionData[sessionID].type === "maxBus") {
+          if (
+            maxBusServicePrices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only numbers between 23 - 70 are allowed.";
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              maxBusServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( maxBusServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for a Max Bus car."
+              );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 23 - 70 are allowed.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "hiringCars") {
+          if (
+            hiringCarsServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+             `${carname.name} will receive a prompt to authorize payment of ` +
+              hiringCarsServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) + ` now.`;
+                   let amount = parseInt(hiringCarsServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for a Hiring car."
+              );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 5 - 15 are allowed.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+          if (
+            ambulanceOrHearseServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              ambulanceOrHearseServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) + ` now.`;
+                  let amount = parseInt(ambulanceOrHearseServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for a Ambulance/Hearse car."
+              );
+            continueSession = false;
+          } else {
+            message = "Please input 5 to access this service.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "artOrTankers") {
+          if (
+            artOrTankersServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+             `${carname.name} will receive a prompt to authorize payment of ` +
+              artOrTankersServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) + ` now.`;
+                   let amount = parseInt(artOrTankersServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for a Art/Tankers car."
+              );
+            continueSession = false;
+          } else {
+            message = "Please input 3.";
+          }
+        } else if (userSessionData[sessionID].type === "taxi") {
+          if (
+            taxiServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              taxiServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) + ` now.`;
+              let amount = parseInt(taxiServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for a Taxi car."
+              );
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          if (
+            miniBusServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              miniBusServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) + ` now.`;
+             let amount = parseInt(miniBusServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for a Mini Bus car."
+              );
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
         }
-      } else if (userSessionData[sessionID].type === "hiringCars") {
-        if (
-          hiringCarsServicePrices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            hiringCarsServicePrices[
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (userSessionData[sessionID].type === "maxBus") {
+          if (
+            maxBusRenewalServicePrices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only numbers between 5 - 15 are allowed.";
-        }
-      } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-        if (
-          ambulanceOrHearseServicePrices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            ambulanceOrHearseServicePrices[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              maxBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2)  + ` now.`;
+              let amount = parseInt(miniBusServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for a Max Bus car."
+              );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 23 - 70 are allowed.";
+          }
+        } else if (userSessionData[sessionID].type === "hiringCars") {
+          if (
+            hiringCarsRenewalServicePrices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Please input 5 to access this service.";
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              hiringCarsRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) + ` now.`;
+             let amount = parseInt(hiringCarsRenewalServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for a Hiring car."
+              );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 5 - 15 are allowed.";
+          }
+        } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+          if (
+            ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+             `${carname.name} will receive a prompt to authorize payment of ` +
+              ambulanceOrHearseRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2)  + ` now.`;
+            let amount = parseInt(ambulanceOrHearseRenewalServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for an Ambulance/Hearse car."
+              );
+            continueSession = false;
+          } else {
+            message = "Please input 5 to access this service.";
+          }
+        } else if (userSessionData[sessionID].type === "artOrTankers") {
+          if (
+            artOrTankersRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+               `${carname.name} will receive a prompt to authorize payment of ` +
+              artOrTankersRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2)  + ` now.`;
+                let amount = parseInt(artOrTankersRenewalServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for an Art/Tanker car."
+              );
+            continueSession = false;
+          } else {
+            message = "Please input 3.";
+          }
+        } else if (userSessionData[sessionID].type === "taxi") {
+          if (
+            taxiRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+               `${carname.name} will receive a prompt to authorize payment of ` +
+              taxiRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2)  + ` now.`;
+               let amount = parseInt(taxiRenewalServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for a Taxi car."
+              );
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          if (
+            miniBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) + ` now.`;
+            let amount = parseInt(miniBusRenewalServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for a Mini Bus car."
+              );
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
         }
       }
-      // else if (userSessionData[sessionID].type === "specialOnSite") {
-      //   if (
-      //     onSiteSpecialTypesServicePrice.hasOwnProperty(
-      //       userSessionData[sessionID].selectedOption
-      //     )
-      //   ) {
-      //     service = userSessionData[sessionID].service;
-      //     message =
-      //       "Pay " +
-      //       onSiteSpecialTypesServicePrice[
-      //         userSessionData[sessionID].selectedOption
-      //       ].toFixed(2);
-      //     continueSession = true;
-      //   } else {
-      //     message = "Only numbers between 1 - 5 are allowed.";
-      //   }
-      // } else if (userSessionData[sessionID].type === "specialOnBoard") {
-      //   if (
-      //     onBoardSpecialTypesServicePrice.hasOwnProperty(
-      //       userSessionData[sessionID].selectedOption
-      //     )
-      //   ) {
-      //     service = userSessionData[sessionID].service;
-      //     message =
-      //       "Pay " +
-      //       onBoardSpecialTypesServicePrice[
-      //         userSessionData[sessionID].selectedOption
-      //       ].toFixed(2);
-      //     continueSession = true;
-      //   } else {
-      //     message = "Only numbers between 1 - 5 are allowed.";
-      //   }
-      // } else if (userSessionData[sessionID].type === "GW1Class1") {
-      //   if (
-      //     GW1Class1ServicePrice.hasOwnProperty(
-      //       userSessionData[sessionID].selectedOption
-      //     )
-      //   ) {
-      //     service = userSessionData[sessionID].service;
-      //     message =
-      //       "Pay " +
-      //       GW1Class1ServicePrice[
-      //         userSessionData[sessionID].selectedOption
-      //       ].toFixed(2);
-      //     continueSession = true;
-      //   } else {
-      //     message = "Only numbers between 1 - 5 are allowed.";
-      //   }
-      // } else if (userSessionData[sessionID].type === "GW1Class2") {
-      //   if (
-      //     GW1Class2ServicePrice.hasOwnProperty(
-      //       userSessionData[sessionID].selectedOption
-      //     )
-      //   ) {
-      //     service = userSessionData[sessionID].service;
-      //     message =
-      //       "Pay " +
-      //       GW1Class2ServicePrice[
-      //         userSessionData[sessionID].selectedOption
-      //       ].toFixed(2);
-      //     continueSession = true;
-      //   } else {
-      //     message = "Only numbers between 1 - 5 are allowed.";
-      //   }
-      // } else if (userSessionData[sessionID].type === "GW1Class3") {
-      //   if (
-      //     GW1Class3ServicePrice.hasOwnProperty(
-      //       userSessionData[sessionID].selectedOption
-      //     )
-      //   ) {
-      //     service = userSessionData[sessionID].service;
-      //     message =
-      //       "Pay " +
-      //       GW1Class3ServicePrice[
-      //         userSessionData[sessionID].selectedOption
-      //       ].toFixed(2);
-      //     continueSession = true;
-      //   } else {
-      //     message = "Only numbers between 1 - 5 are allowed.";
-      //   }
-      // }
-      else if (userSessionData[sessionID].type === "artOrTankers") {
-        if (
-          artOrTankersServicePrices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            artOrTankersServicePrices[
-              userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Please input 3.";
-        }
-      } else if (userSessionData[sessionID].type === "taxi") {
-        if (
-          taxiServicePrices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            taxiServicePrices[
-              userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Please input 5.";
-        }
-      } else if (userSessionData[sessionID].type === "miniBus") {
-        if (
-          miniBusServicePrices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            miniBusServicePrices[
-              userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Please input 5.";
-        }
-      }
-
+      // step 4 for special types and GW1
       if (userSessionData[sessionID].selectedOption === "1") {
         if (userSessionData[sessionID].type === "specialTypes") {
-          service = "1";
-          message =
-            "You selected Special Types(Z 802 ON SITE). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "specialOnSite";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
+          if (userSessionData[sessionID].InsuranceType === "purchase") {
+            service = "1";
+            message =
+              "You're about to purchase Special Types(Z 802 ON SITE) 3rd party insurance package. Enter the exact passenger number(e.g 2)\n";
+            message += "1. 1 - 5 persons\n";
+            // Save the user's input as the selected option
+            userSessionData[sessionID].selectedOption = userData;
+            console.log("user selected", userData);
+            userSessionData[sessionID].type = "specialOnSite";
+            console.log(
+              "user selected car type",
+              userSessionData[sessionID].type
+            );
+            continueSession = true; // Set to true to continue the session
+          } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+            service = "1";
+            message =
+              "You're about to renew Special Types(Z 802 ON SITE) 3rd party insurance package. Enter the exact passenger number(e.g 2)\n";
+            message += "1. 1 - 5 persons\n";
+            // Save the user's input as the selected option
+            userSessionData[sessionID].selectedOption = userData;
+            console.log("user selected", userData);
+            userSessionData[sessionID].type = "specialOnSite";
+            console.log(
+              "user selected car type",
+              userSessionData[sessionID].type
+            );
+            continueSession = true; // Set to true to continue the session
+          }
         } else if (userSessionData[sessionID].type === "GW1") {
           service = "1";
-          message = "You selected GW1(CLASS 1). Choose an option:\n";
+          message =
+            "You're about to purchase GW1(CLASS 1) 3rd party package. Enter the exact passenger capacity(e.g 2)\n";
           message += "1. 1 - 5 persons\n";
           // Save the user's input as the selected option
           userSessionData[sessionID].selectedOption = userData;
@@ -896,176 +1382,364 @@ router.post("/ussd", (req, res) => {
         }
       } else if (userSessionData[sessionID].selectedOption === "2") {
         if (userSessionData[sessionID].type === "specialTypes") {
-          service = "1";
-          message =
-            "You selected Special Types(Z 802 ON ROAD). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "specialOnRoad";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
+          if (userSessionData[sessionID].InsuranceType === "purchase") {
+            service = "1";
+            message =
+              "You're about to purchase Special Types(Z 802 ON ROAD) 3rd party package. Enter the exact passenger capacity(e.g 3)\n";
+            message += "1. 1 - 5 persons\n";
+            // Save the user's input as the selected option
+            userSessionData[sessionID].selectedOption = userData;
+            console.log("user selected", userData);
+            userSessionData[sessionID].type = "specialOnRoad";
+            console.log(
+              "user selected car type",
+              userSessionData[sessionID].type
+            );
+            continueSession = true; // Set to true to continue the session
+          } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+            service = "1";
+            message =
+              "You're about to renew Special Types(Z 802 ON ROAD) 3rd party package. Enter the exact passenger capacity(e.g 2)\n";
+            message += "1. 1 - 5 persons\n";
+            // Save the user's input as the selected option
+            userSessionData[sessionID].selectedOption = userData;
+            console.log("user selected", userData);
+            userSessionData[sessionID].type = "specialOnRoad";
+            console.log(
+              "user selected car type",
+              userSessionData[sessionID].type
+            );
+            continueSession = true; // Set to true to continue the session
+          }
         } else if (userSessionData[sessionID].type === "GW1") {
-          service = "1";
-          message = "You selected GW1(CLASS 2). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "GW1CLASS2";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
+          if (userSessionData[sessionID].InsuranceType === "purchase") {
+            service = "1";
+            message =
+              "You're about to purchase GW1(CLASS 2) 3rd party package. Enter the exact passenger capacity(e.g 2)\n";
+            message += "1. 1 - 5 persons\n";
+            // Save the user's input as the selected option
+            userSessionData[sessionID].selectedOption = userData;
+            console.log("user selected", userData);
+            userSessionData[sessionID].type = "GW1CLASS2";
+            console.log(
+              "user selected car type",
+              userSessionData[sessionID].type
+            );
+            continueSession = true; // Set to true to continue the session
+          } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+            service = "1";
+            message =
+              "You're about to renew GW1(CLASS 2) 3rd party package. Enter the exact passenger capacity(e.g 2)\n";
+            message += "1. 1 - 5 persons\n";
+            // Save the user's input as the selected option
+            userSessionData[sessionID].selectedOption = userData;
+            console.log("user selected", userData);
+            userSessionData[sessionID].type = "GW1CLASS2";
+            console.log(
+              "user selected car type",
+              userSessionData[sessionID].type
+            );
+            continueSession = true; // Set to true to continue the session
+          }
         }
       } else if (userSessionData[sessionID].selectedOption === "3") {
         if (userSessionData[sessionID].type === "GW1") {
-          service = "1";
-          message = "You selected GW1(CLASS 3). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "GW1CLASS3";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
+          if (userSessionData[sessionID].InsuranceType === "purchase") {
+            service = "1";
+            message =
+              "You're about to purchase GW1(CLASS 3) 3rd party package. Enter the exact passenger capacity(e.g 2)\n";
+            message += "1. 1 - 5 persons\n";
+            // Save the user's input as the selected option
+            userSessionData[sessionID].selectedOption = userData;
+            console.log("user selected", userData);
+            userSessionData[sessionID].type = "GW1CLASS3";
+            console.log(
+              "user selected car type",
+              userSessionData[sessionID].type
+            );
+            continueSession = true; // Set to true to continue the session
+          } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+            service = "1";
+            message =
+              "You're about to renew GW1(CLASS 3) 3rd party package. Enter the exact passenger capacity(e.g 2)\n";
+            message += "1. 1 - 5 persons\n";
+            // Save the user's input as the selected option
+            userSessionData[sessionID].selectedOption = userData;
+            console.log("user selected", userData);
+            userSessionData[sessionID].type = "GW1CLASS3";
+            console.log(
+              "user selected car type",
+              userSessionData[sessionID].type
+            );
+            continueSession = true; // Set to true to continue the session
+          }
         }
       }
     } else if (userSessionData[sessionID].service === "2") {
-      // Check if the service is Third Party Private
-      if (userSessionData[sessionID].type === "privateIndividualX1") {
-        // Check if the selected option exists in the mapping
-        if (
-          privateIndividualX1Prices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            "Pay " +
-            privateIndividualX1Prices[
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        // Check if the service is Third Party Private
+        if (userSessionData[sessionID].type === "privateIndividualX1") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1Prices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only inputs from 5 - 12 are allowed.";
-        }
-      } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-        // Check if the selected option exists in the mapping
-        if (
-          privateIndividualX4Prices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            "Pay " +
-            privateIndividualX4Prices[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              privateIndividualX1Prices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+          }
+        } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4Prices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only inputs from 5 - 12 are allowed.";
-        }
-      } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-        // Check if the selected option exists in the mapping
-        if (
-          ownGoodsBelow.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            "Pay " +
-            ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Input 3 to access this service";
-        }
-      } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-        // Check if the selected option exists in the mapping
-        if (
-          ownGoodsAbove.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            "Pay " +
-            ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Input 3 to access this service";
-        }
-      } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-        // Check if the selected option exists in the mapping
-        if (
-          generalGartageBelow.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            "Pay " +
-            generalGartageBelow[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              privateIndividualX4Prices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelow.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Input 3 to access this service";
-        }
-      } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-        // Check if the selected option exists in the mapping
-        if (
-          generalGartageAbove.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            "Pay " +
-            generalGartageAbove[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              );
+            continueSession = true;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAbove.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Input 3 to access this service";
-        }
-      } else if (userSessionData[sessionID].type === "miniBus") {
-        // Check if the selected option exists in the mapping
-        if (
-          miniBusServicePrices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            "Pay " +
-            miniBusServicePrices[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              );
+            continueSession = true;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageBelow.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              generalGartageBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              generalGartageAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          // Check if the selected option exists in the mapping
+          if (
+            miniBusServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              miniBusServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Please input a value between 5 - 22.";
+          }
         } else {
-          message = "Please input a value between 5 - 22.";
+          message = "Invalid option selected for Third Party Private.";
+          continueSession = false;
         }
-      } else {
-        message = "Invalid option selected for Third Party Private.";
-        continueSession = false;
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        // Check if the service is Third Party Private
+        if (userSessionData[sessionID].type === "privateIndividualX1") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              privateIndividualX1RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+          }
+        } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              privateIndividualX4RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelowRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              ownGoodsBelowRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAboveRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              ownGoodsAboveRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              generalCartageRenewalBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              generalCartageRenewalAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          // Check if the selected option exists in the mapping
+          if (
+            miniBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              "Pay " +
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Please input a value between 5 - 22.";
+          }
+        } else {
+          message = "Invalid option selected for Third Party Private.";
+          continueSession = false;
+        }
       }
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
@@ -1273,131 +1947,269 @@ router.post("/ussd", (req, res) => {
         }
       }
     } else if (userSessionData[sessionID].service === "6") {
-      if (userSessionData[sessionID].type === "privateX1") {
-        // Check if the selected option exists in the mapping
-        if (
-          privateIndividualX1Prices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // privateIndividualX1Prices[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            privateIndividualX1Prices[
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "privateX1") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1Prices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].type === "privateX4") {
-        // Check if the selected option exists in the mapping
-        if (
-          privateIndividualX4Prices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // privateIndividualX4Prices[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            privateIndividualX4Prices[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // privateIndividualX1Prices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              privateIndividualX1Prices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "privateX4") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4Prices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-        // Check if the selected option exists in the mapping
-        if (
-          ownGoodsBelow.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // ownGoodsBelow[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(2);
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-        // Check if the selected option exists in the mapping
-        if (
-          ownGoodsAbove.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // ownGoodsAbove[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(2);
-          continueSession = true;
-        }
-      } else if (
-        userSessionData[sessionID].type === "generalCartageBelow3000"
-      ) {
-        // Check if the selected option exists in the mapping
-        if (
-          generalGartageBelow.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // generalGartageBelow[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            generalGartageBelow[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // privateIndividualX4Prices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              privateIndividualX4Prices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelow.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        }
-      } else if (
-        userSessionData[sessionID].type === "generalCartageAbove3000"
-      ) {
-        // Check if the selected option exists in the mapping
-        if (
-          generalGartageAbove.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // generalGartageAbove[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            generalGartageAbove[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ownGoodsBelow[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              );
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAbove.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ownGoodsAbove[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              );
+            continueSession = true;
+          }
+        } else if (
+          userSessionData[sessionID].type === "generalCartageBelow3000"
+        ) {
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // generalGartageBelow[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              generalGartageBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (
+          userSessionData[sessionID].type === "generalCartageAbove3000"
+        ) {
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // generalGartageAbove[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              generalGartageAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (userSessionData[sessionID].type === "privateX1") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // privateIndividualX1RenewalPrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              privateIndividualX1RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "privateX4") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // privateIndividualX4RenewalPrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              privateIndividualX4RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelowRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ownGoodsBelowRenewalPrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ownGoodsBelowRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAboveRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ownGoodsAboveRenewalPrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ownGoodsAboveRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (
+          userSessionData[sessionID].type === "generalCartageBelow3000"
+        ) {
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // generalCartageRenewalBelow[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              generalCartageRenewalBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (
+          userSessionData[sessionID].type === "generalCartageAbove3000"
+        ) {
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // generalCartageRenewalAbove[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              generalCartageRenewalAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
         }
       }
     }
@@ -1406,7 +2218,7 @@ router.post("/ussd", (req, res) => {
   } else if (newSession === false && userSessionData[sessionID].step === 5) {
     userSessionData[sessionID].thirdPartyPrice;
     userSessionData[sessionID].carPrice = userData;
-
+    // Purchase prices for third party
     const onSiteSpecialTypesServicePrice = {
       1: 353.0,
       2: 353.0,
@@ -1442,86 +2254,214 @@ router.post("/ussd", (req, res) => {
       4: 788.0,
       5: 788.0,
     };
+
+    // Renewal prices for third party
+    const onSiteSpecialTypesRenewalServicePrice = {
+      1: 323.0,
+      2: 323.0,
+      3: 323.0,
+      4: 323.0,
+      5: 323.0,
+    };
+    const onBoardSpecialTypesRenewalServicePrice = {
+      1: 583.0,
+      2: 583.0,
+      3: 583.0,
+      4: 583.0,
+      5: 583.0,
+    };
+
+    const GW1Class1RenewalServicePrice = {
+      1: 458.0,
+      2: 458.0,
+      3: 458.0,
+      4: 458.0,
+      5: 458.0,
+    };
+    const GW1Class2RenewalServicePrice = {
+      1: 593.0,
+      2: 593.0,
+      3: 593.0,
+      4: 593.0,
+      5: 593.0,
+    };
+    const GW1Class3RenewalServicePrice = {
+      1: 723.0,
+      2: 723.0,
+      3: 723.0,
+      4: 723.0,
+      5: 723.0,
+    };
     if (userSessionData[sessionID].service === "1") {
       if (userSessionData[sessionID].type === "specialOnSite") {
-        if (
-          onSiteSpecialTypesServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            onSiteSpecialTypesServicePrice[
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            onSiteSpecialTypesServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              onSiteSpecialTypesServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              onSiteSpecialTypesRenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
         }
       } else if (userSessionData[sessionID].type === "specialOnRoad") {
-        if (
-          onBoardSpecialTypesServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            onBoardSpecialTypesServicePrice[
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            onBoardSpecialTypesServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              onBoardSpecialTypesServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              onBoardSpecialTypesRenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-        if (
-          GW1Class1ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            GW1Class1ServicePrice[
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            GW1Class1ServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              GW1Class1ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            GW1Class1RenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              GW1Class1RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-        if (
-          GW1Class2ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            GW1Class2ServicePrice[
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            GW1Class2ServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              GW1Class2ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            GW1Class2RenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              GW1Class2RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-        if (
-          GW1Class3ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          message =
-            "Pay " +
-            GW1Class3ServicePrice[
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            GW1Class3ServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              GW1Class3ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            GW1Class3RenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              "Pay " +
+              GW1Class3RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
         }
       }
     } else if (userSessionData[sessionID].service === "4") {
@@ -1765,123 +2705,215 @@ router.post("/ussd", (req, res) => {
         );
         continueSession = true;
       }
-      if (userSessionData[sessionID].type === "specialOnSite") {
-        // if (
-        //   onSiteSpecialTypesServicePrice.hasOwnProperty(
-        //     userSessionData[sessionID].selectedOption
-        //   )
-        // ) {
-        //   service = userSessionData[sessionID].service;
-        //   message =
-        //     "Pay " +
-        //     onSiteSpecialTypesServicePrice[
-        //       userSessionData[sessionID].selectedOption
-        //     ].toFixed(2);
-        //   continueSession = true;
-        // } else {
-        //   message = "Only numbers between 1 - 5 are allowed.";
-        // }
-        // Check if the selected option exists in the mapping
-        if (
-          onSiteSpecialTypesServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // onSiteSpecialTypesServicePrice[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            onSiteSpecialTypesServicePrice[
-              userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        }
 
-        // continue here
-      } else if (userSessionData[sessionID].type === "specialOnRoad") {
-        if (
-          onBoardSpecialTypesServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // onBoardSpecialTypesServicePrice[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            onBoardSpecialTypesServicePrice[
+      // comprehensive renewal
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "specialOnSite") {
+          if (
+            onSiteSpecialTypesServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // onSiteSpecialTypesServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              onSiteSpecialTypesServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+
+          // continue here
+        } else if (userSessionData[sessionID].type === "specialOnRoad") {
+          if (
+            onBoardSpecialTypesServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // onBoardSpecialTypesServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              onBoardSpecialTypesServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+          if (
+            GW1Class1ServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // GW1Class1ServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              GW1Class1ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+          if (
+            GW1Class2ServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // GW1Class2ServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              GW1Class2ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+          if (
+            GW1Class3ServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // GW1Class3ServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              GW1Class3ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
         }
-      } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-        if (
-          GW1Class1ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // GW1Class1ServicePrice[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            GW1Class1ServicePrice[
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (userSessionData[sessionID].type === "specialOnSite") {
+          if (
+            onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-        if (
-          GW1Class2ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // GW1Class2ServicePrice[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            GW1Class2ServicePrice[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // onSiteSpecialTypesRenewalServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              onSiteSpecialTypesRenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+
+          // continue here
+        } else if (userSessionData[sessionID].type === "specialOnRoad") {
+          if (
+            onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-        if (
-          GW1Class3ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // GW1Class3ServicePrice[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            GW1Class3ServicePrice[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // onBoardSpecialTypesRenewalServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              onBoardSpecialTypesRenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+          if (
+            GW1Class1RenewalServicePrice.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          continueSession = true;
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // GW1Class1RenewalServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              GW1Class1RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+          if (
+            GW1Class2RenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // GW1Class2RenewalServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              GW1Class2RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+          if (
+            GW1Class3RenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // GW1Class3RenewalServicePrice[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              GW1Class3RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            continueSession = true;
+          }
         }
       }
     } else if (userSessionData[sessionID].service === "6") {
