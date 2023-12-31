@@ -8,10 +8,9 @@ const { v4: uuidv4 } = require('uuid');
  */
 function getJuniCredentials() {
     return {
-        // token: process.env.JUNIPAY_TOKEN,
-        // clientId: process.env.CLIENT_ID
-        token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoicGF5bG9hZF9leGFtcGxlIiwiaWF0IjoxNzAzOTI4ODg1fQ.alciR7iGDeGMg-gVbp_NYFewQjJV9BrRilVG3sroYf67Gb56_-duIlnllOUn9n1QNGp2NC2BQQuWSiwxECpvb0u87wN3h7hZpGhnv2KDjIFMsI9FQ3Ab2C81aOMajgree3dk6s_nhrjaJ3aIIg9n6Z6LoPhoICrwEZFucrMkyQ_RYsBUDSZP5vrYuR2lhQ-E1Ha6AejhqOadqNxU3dFIJCZ9YFG8N0WwtCzeVsuHGPPcpEYaWLK7MjMGMmxA_J3ZF1lw2ble8v6ELeBIwKJ2YR46z810wVvabN-OlhJlA5A7Bg6_LY8WYjAeCzp_z3hyNhlTWm9O4ss6HGfagA6W4GRc4s8E6oTtPOKxN5jSmO3EbhpPy6JT2iSYbWcIJ0wyQyanEWPMK95mhMbfn6Trt1NobIv9ZLVW7vhnMIzuqvRiH_uKqO8zQvTCL9ombLO91_419rw7JXFH3m6fUBqalZsF5Tvtm6nhBgsERikLLasLDddhJ91vSj8uGLRMGTN9B5q7zc_baRp9Gcvj2yBRg9jRKUjUlBxh56mSAJbLDLHGsqZzIFJbzbr0VKwHqTnlS3QBCD2luOiE94ErKTfM5mmd50NrWRUyWtgkm1dRlPYLs-59LANH4ATNcgsy7yhEpVaPrnwpWcFtBZRkd-6R0hX1F17clR6WAYQ1p0q9PFc",
-        clientId: "Mqf10893"
+        token: process.env.JUNIPAY_TOKEN,
+        clientId: process.env.CLIENT_ID
+       
     };
 }
 
