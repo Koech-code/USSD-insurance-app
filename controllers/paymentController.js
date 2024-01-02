@@ -10,7 +10,6 @@ function getJuniCredentials() {
     return {
         token: process.env.JUNIPAY_TOKEN,
         clientId: process.env.CLIENT_ID
-       
     };
 }
 
