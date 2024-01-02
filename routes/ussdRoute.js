@@ -114,10 +114,34 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
       message += "7. Mini Bus";
       continueSession = true;
     } else if (userSessionData[sessionID].service === "3") {
-      // Car type selection for motor cycle
-      service = "3";
-      message = "1. Mini bus\n";
-      continueSession = true;
+         userSessionData[sessionID].selectedOption = userData;
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        // Car type selection for motor cycle
+          service = "3";
+          message = "You're about to purchase Motor Cycle (Private/Individual) insurance package. Choose option(only 2 persons).\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          userSessionData[sessionID].type = "motorCycle";
+          console.log("user selected", userData);
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true;
+      } else if(userSessionData[sessionID].InsuranceType === "renewal"){
+        // Car type selection for motor cycle
+          service = "3";
+          message = "You're about to renew Motor Cycle (Private/Individual) insurance package. Choose option(Only 2 persons)\n";
+          // Save the user's input as the selected option
+          userSessionData[sessionID].selectedOption = userData;
+          userSessionData[sessionID].type = "motorCycle";
+          console.log("user selected", userData);
+          console.log(
+            "user selected car type",
+            userSessionData[sessionID].type
+          );
+          continueSession = true; 
+      }
     } else if (userSessionData[sessionID].service === "4") {
       // Car type selection for motor cycle
       service = "4";
@@ -565,7 +589,69 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           continueSession = true; // Set to true to continue the session
         }
       }
-    } else if (userSessionData[sessionID].service === "4") {
+    } else if(userSessionData[sessionID].service === "3"){
+      const motorCyclePurchasePrices = {
+        2: 243,
+      }
+      const motorCycleRenewalPrices = {
+        2: 193,
+      }
+      if(userSessionData[sessionID].type === "motorCycle"){
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+            if (
+              motorCyclePurchasePrices.hasOwnProperty(
+                                userSessionData[sessionID].selectedOption
+              )
+                            ) {
+                              service = userSessionData[sessionID].service;
+                              message =
+                                `${carname.name} will receive a prompt to authorize payment of ` +
+                                motorCyclePurchasePrices[
+                                  userSessionData[sessionID].selectedOption
+                                ].toFixed(2) + ` now.`;
+                              let amount = parseInt(motorCyclePurchasePrices[
+                                    userSessionData[sessionID].selectedOption
+                                  ]);
+                                await juni.pay(
+                                  amount,
+                                  amount,
+                                  formattedMsisdn,
+                                  "Purchasing a motor cycle insurance package for 2 persons."
+                                );
+                              continueSession = false;
+                            } else {
+                              message = "Please input 2.";
+                              continueSession = false;
+                            }
+        } else if(userSessionData[sessionID].InsuranceType === "renewal"){
+           if (
+              motorCycleRenewalPrices.hasOwnProperty(
+                                userSessionData[sessionID].selectedOption
+              )
+                            ) {
+                              service = userSessionData[sessionID].service;
+                              message =
+                                `${carname.name} will receive a prompt to authorize payment of ` +
+                                motorCycleRenewalPrices[
+                                  userSessionData[sessionID].selectedOption
+                                ].toFixed(2) + ` now.`;
+                              let amount = parseInt(motorCycleRenewalPrices[
+                                    userSessionData[sessionID].selectedOption
+                                  ]);
+                                await juni.pay(
+                                  amount,
+                                  amount,
+                                  formattedMsisdn,
+                                  "Renewing a motor cycle insurance package for 2 persons."
+                                );
+                              continueSession = false;
+                            } else {
+                              message = "Please input 2.";
+                              continueSession = false;
+                            }
+        }
+      } 
+    }else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].selectedOption === "1") {
         // Handle choice 1 for comprehensive co-oporate - step 3
         service = "4";
@@ -1019,38 +1105,43 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
     const generalCartageRenewalAbove = {
       3: 723.0,
     };
+     const motorCycleRenewalPrices = {
+        2: 193,
+      }
     if (userSessionData[sessionID].service === "1") {
       // Check if the service is Third Party Commercial
 
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
-          if (
-            maxBusServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              maxBusServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-              let amount = parseInt( maxBusServicePrices[
-                  userSessionData[sessionID].selectedOption
-                ]);
-              await juni.pay(
-                amount,
-                amount,
-                formattedMsisdn,
-                "Purchasing a 3rd party commercial insurance package for a Max Bus car."
-              );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 23 - 70 are allowed.";
-            continueSession = false;
-          }
+          service = "1"
+          message = "Please enter the phone number you wish to pay with."
+          // if (
+          //   maxBusServicePrices.hasOwnProperty(
+          //     userSessionData[sessionID].selectedOption
+          //   )
+          // ) {
+          //   service = userSessionData[sessionID].service;
+          //   // Get the price dynamically from the mapping
+          //   message =
+          //     `${carname.name} will receive a prompt to authorize payment of ` +
+          //     maxBusServicePrices[
+          //       userSessionData[sessionID].selectedOption
+          //     ].toFixed(2) + ` now `;
+          //     let amount = parseInt( maxBusServicePrices[
+          //         userSessionData[sessionID].selectedOption
+          //       ]);
+          //     await juni.pay(
+          //       amount,
+          //       amount,
+          //       formattedMsisdn,
+          //       "Purchasing a 3rd party commercial insurance package for a Max Bus car."
+          //     );
+          //   continueSession = false;
+          // } else {
+          //   message = "Only numbers between 23 - 70 are allowed.";
+          //   continueSession = false;
+          // }
         } else if (userSessionData[sessionID].type === "hiringCars") {
           if (
             hiringCarsServicePrices.hasOwnProperty(
@@ -1193,7 +1284,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
               maxBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2)  + ` now.`;
-              let amount = parseInt(miniBusServicePrices[
+              let amount = parseInt(maxBusRenewalServicePrices[
                   userSessionData[sessionID].selectedOption
                 ]);
               await juni.pay(
@@ -1488,13 +1579,23 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
+              `${carname.name} will receive a prompt to authorize payment of ` +
               privateIndividualX1Prices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now.`;
+       let amount = parseInt(privateIndividualX1Prices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party private insurance package for a Private Individual X1 car."
+              );
+            continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false
           }
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
           // Check if the selected option exists in the mapping
@@ -1506,13 +1607,23 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
+              `${carname.name} will receive a prompt to authorize payment of ` +
               privateIndividualX4Prices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+            let amount = parseInt(privateIndividualX4Prices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party private insurance package for a Private Individual X4 car."
+              );
+              continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false
           }
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
           // Check if the selected option exists in the mapping
@@ -1524,11 +1635,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
-              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
-                2
+                  `${carname.name} will receive a prompt to authorize payment of ` +
+              ownGoodsBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2)+ ` now.`;
+              let amount = parseInt(ownGoodsBelow[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party private insurance package for Own Goods (BELOW 3,000 cc) car."
               );
-            continueSession = true;
+            continueSession = false;
           } else {
             message = "Input 3 to access this service";
           }
@@ -1542,11 +1662,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
-              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
-                2
+                  `${carname.name} will receive a prompt to authorize payment of ` +
+              ownGoodsAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2)+ ` now.`;
+               let amount = parseInt(ownGoodsAbove[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party private insurance package for Own Goods (ABOVE 3,000 cc) car."
               );
-            continueSession = true;
+            continueSession = false;
           } else {
             message = "Input 3 to access this service";
           }
@@ -1560,11 +1689,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
+                  `${carname.name} will receive a prompt to authorize payment of ` +
               generalGartageBelow[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+             let amount = parseInt(generalGartageBelow[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party private insurance package for General Gartage (BELOW 3,000 cc) car."
+              );
+            continueSession = false;
           } else {
             message = "Input 3 to access this service";
           }
@@ -1578,11 +1716,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
+                   `${carname.name} will receive a prompt to authorize payment of ` +
               generalGartageAbove[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+             let amount = parseInt(generalGartageAbove[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party private insurance package for General Gartage (ABOVE 3,000 cc) car."
+              );
+            continueSession = false;
           } else {
             message = "Input 3 to access this service";
           }
@@ -1596,16 +1743,25 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
+             `${carname.name} will receive a prompt to authorize payment of ` +
               miniBusServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+                let amount = parseInt(miniBusServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party private insurance package for Mini Bus car."
+              );
+            continueSession = false;
           } else {
             message = "Please input a value between 5 - 22.";
           }
         } else {
-          message = "Invalid option selected for Third Party Private.";
+          message = "Invalid option selected for purchase of Third Party Private.";
           continueSession = false;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
@@ -1619,14 +1775,24 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
-            message =
-              "Pay " +
+             message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
               privateIndividualX1RenewalPrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now.`;
+       let amount = parseInt(privateIndividualX1RenewalPrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party private insurance package for a Private Individual X1 car."
+              );
+            continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false
           }
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
           // Check if the selected option exists in the mapping
@@ -1637,14 +1803,24 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
-            message =
-              "Pay " +
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
               privateIndividualX4RenewalPrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+            let amount = parseInt(privateIndividualX4RenewalPrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party private insurance package for a Private Individual X4 car."
+              );
+              continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false
           }
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
           // Check if the selected option exists in the mapping
@@ -1655,12 +1831,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
-            message =
-              "Pay " +
+             message =
+                  `${carname.name} will receive a prompt to authorize payment of ` +
               ownGoodsBelowRenewalPrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+              let amount = parseInt(ownGoodsBelowRenewalPrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party private insurance package for Own Goods (BELOW 3,000 cc) car."
+              );
+            continueSession = false;
           } else {
             message = "Input 3 to access this service";
           }
@@ -1673,12 +1858,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
-            message =
-              "Pay " +
+              message =
+                  `${carname.name} will receive a prompt to authorize payment of ` +
               ownGoodsAboveRenewalPrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+               let amount = parseInt(ownGoodsAboveRenewalPrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party private insurance package for Own Goods (ABOVE 3,000 cc) car."
+              );
+            continueSession = false;
           } else {
             message = "Input 3 to access this service";
           }
@@ -1691,12 +1885,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
-            message =
-              "Pay " +
+              message =
+                  `${carname.name} will receive a prompt to authorize payment of ` +
               generalCartageRenewalBelow[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+             let amount = parseInt(generalCartageRenewalBelow[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party private insurance package for General Gartage (BELOW 3,000 cc) car."
+              );
+            continueSession = false;
           } else {
             message = "Input 3 to access this service";
           }
@@ -1710,11 +1913,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
+                   `${carname.name} will receive a prompt to authorize payment of ` +
               generalCartageRenewalAbove[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+             let amount = parseInt(generalCartageRenewalAbove[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party private insurance package for General Gartage (ABOVE 3,000 cc) car."
+              );
+            continueSession = false;
           } else {
             message = "Input 3 to access this service";
           }
@@ -1728,22 +1940,35 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              "Pay " +
+             `${carname.name} will receive a prompt to authorize payment of ` +
               miniBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2)+ ` now.`;
+                let amount = parseInt(miniBusRenewalServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party private insurance package for Mini Bus car."
+              );
+            continueSession = false;
           } else {
             message = "Please input a value between 5 - 22.";
           }
         } else {
+          message = "Invalid option selected for renewal of Third Party Private.";
+          continueSession = false;
+        }
+      } else {
           message = "Invalid option selected for Third Party Private.";
           continueSession = false;
         }
-      }
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
-        // Check if the selected option exists in the mapping
+        if(userSessionData[sessionID].InsuranceType === "purchase"){
+          // Check if the selected option exists in the mapping
         if (
           motorCycleServicePrices.hasOwnProperty(
             userSessionData[sessionID].selectedOption
@@ -1752,16 +1977,30 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           service = userSessionData[sessionID].service;
           // Get the price dynamically from the mapping
           message =
-            // "Pay " +
-            // motorCycleServicePrices[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
+            "Please enter the value of your motor cycle."; 
           userSessionData[sessionID].thirdPartyPrice =
             motorCycleServicePrices[
               userSessionData[sessionID].selectedOption
             ].toFixed(2);
           continueSession = true;
+        }
+        } else if(userSessionData[sessionID].InsuranceType === "renewal"){
+             // Check if the selected option exists in the mapping
+        if (
+          motorCycleRenewalPrices.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          // Get the price dynamically from the mapping
+          message =
+            "Please enter the value of your motor cycle."; 
+          userSessionData[sessionID].thirdPartyPrice =
+            motorCycleRenewalPrices[
+              userSessionData[sessionID].selectedOption
+            ].toFixed(2);
+          continueSession = true;
+        }
         }
       }
     } else if (userSessionData[sessionID].service === "5") {
@@ -2301,12 +2540,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              "Pay " +
+        message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
               onSiteSpecialTypesServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( onSiteSpecialTypesServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for Special Types(ON SITE) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2317,12 +2565,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              "Pay " +
+         message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
               onSiteSpecialTypesRenewalServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( onSiteSpecialTypesRenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2335,12 +2592,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              "Pay " +
+             message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
               onBoardSpecialTypesServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( onBoardSpecialTypesServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2351,12 +2617,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              "Pay " +
+             message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
               onBoardSpecialTypesRenewalServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( onBoardSpecialTypesRenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2369,12 +2644,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              "Pay " +
+             message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
               GW1Class1ServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( GW1Class1ServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for GW1(CLASS 1) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2386,11 +2670,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             message =
-              "Pay " +
-              GW1Class1RenewalServicePrice[
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              GW1Class1ServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( GW1Class1ServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for GW1(CLASS 1) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2404,11 +2697,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             message =
-              "Pay " +
+              `${carname.name} will receive a prompt to authorize payment of ` +
               GW1Class2ServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( GW1Class2ServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for GW1(CLASS 2) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2419,12 +2721,21 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              "Pay " +
+ message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
               GW1Class2RenewalServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( GW1Class2RenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for GW1(CLASS 2) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2438,11 +2749,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             message =
-              "Pay " +
+              `${carname.name} will receive a prompt to authorize payment of ` +
               GW1Class3ServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( GW1Class3ServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a 3rd party commercial insurance package for GW1(CLASS 3) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2454,11 +2774,20 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           ) {
             service = userSessionData[sessionID].service;
             message =
-              "Pay " +
+              `${carname.name} will receive a prompt to authorize payment of ` +
               GW1Class3RenewalServicePrice[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
+              ].toFixed(2) + ` now `;
+              let amount = parseInt( GW1Class3RenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ]);
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a 3rd party commercial insurance package for GW1(CLASS 3) car."
+              );
+            continueSession = false;
           } else {
             message = "Only numbers between 1 - 5 are allowed.";
           }
@@ -2466,26 +2795,65 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
       }
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
-        const totalPrice =
+        if(userSessionData[sessionID].InsuranceType === "purchase"){
+const totalPrice =
           parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
           parseInt(userSessionData[sessionID].thirdPartyPrice);
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+           message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a Motor Cycle car."
+              );
         }
-
         console.log(
-          "3rd party price is ",
+          "Motor cycle is ",
           userSessionData[sessionID].thirdPartyPrice
         );
         console.log("And car value is", userSessionData[sessionID].carPrice);
-
         console.log(
           "Total amount to be paid for comprehensive co-oporate motor cycle is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
+        } else if(userSessionData[sessionID].InsuranceType === "renewal"){
+const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          // message = `Pay ${totalPrice}`;
+           message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Renewing a Motor Cycle car."
+              );
+        }
+        console.log(
+          "Motor cycle is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+        console.log(
+          "Total amount to be paid for comprehensive co-oporate motor cycle is",
+          totalPrice
+        );
+        continueSession = false;
+        }
       }
     } else if (userSessionData[sessionID].service === "5") {
       if (userSessionData[sessionID].type === "maxiBus") {
@@ -2495,7 +2863,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial insurance package for Max Bus car."
+              );
         }
 
         console.log(
@@ -2508,7 +2886,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           "Total amount to be paid for comprehensive commercial maxi bus is",
           totalPrice
         );
-        continueSession = true;
+            continueSession = false;
       } else if (userSessionData[sessionID].type === "hiring") {
         const totalPrice =
           parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
@@ -2516,7 +2894,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial insurance package for Hiring car."
+              );
         }
 
         console.log(
@@ -2529,7 +2917,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           "Total amount to be paid for comprehensive commercial hiring cars is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       } else if (userSessionData[sessionID].type === "ambulance") {
         const totalPrice =
           parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
@@ -2537,7 +2925,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial insurance package for Ambulance/Hearse car."
+              );
         }
 
         console.log(
@@ -2550,118 +2948,8 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           "Total amount to be paid for comprehensive commercial ambulance/hearse is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       }
-      // else if (userSessionData[sessionID].type === "onSiteSpecial") {
-      //   const totalPrice =
-      //     parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
-      //     parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //   if (userSessionData[sessionID].carPrice < 50000) {
-      //     message = "The car value cannot be less than 50000 GHS";
-      //   } else {
-      //     message = `Pay ${totalPrice}`;
-      //   }
-
-      //   console.log(
-      //     "3rd party price is ",
-      //     userSessionData[sessionID].thirdPartyPrice
-      //   );
-      //   console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //   console.log(
-      //     "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
-      //     totalPrice
-      //   );
-      //   continueSession = true;
-      // }
-      // else if (userSessionData[sessionID].type === "onBoardSpecial") {
-      //   const totalPrice =
-      //     parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-      //     parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //   if (userSessionData[sessionID].carPrice < 50000) {
-      //     message = "The car value cannot be less than 50000 GHS";
-      //   } else {
-      //     message = `Pay ${totalPrice}`;
-      //   }
-
-      //   console.log(
-      //     "3rd party price is ",
-      //     userSessionData[sessionID].thirdPartyPrice
-      //   );
-      //   console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //   console.log(
-      //     "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
-      //     totalPrice
-      //   );
-      //   continueSession = true;
-      // }
-      // else if (userSessionData[sessionID].type === "gw1Class1") {
-      //   const totalPrice =
-      //     parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
-      //     parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //   if (userSessionData[sessionID].carPrice < 50000) {
-      //     message = "The car value cannot be less than 50000 GHS";
-      //   } else {
-      //     message = `Pay ${totalPrice}`;
-      //   }
-
-      //   console.log(
-      //     "3rd party price is ",
-      //     userSessionData[sessionID].thirdPartyPrice
-      //   );
-      //   console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //   console.log(
-      //     "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
-      //     totalPrice
-      //   );
-      //   continueSession = true;
-      // }
-      // else if (userSessionData[sessionID].type === "gw1Class2") {
-      //   const totalPrice =
-      //     parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-      //     parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //   if (userSessionData[sessionID].carPrice < 50000) {
-      //     message = "The car value cannot be less than 50000 GHS";
-      //   } else {
-      //     message = `Pay ${totalPrice}`;
-      //   }
-
-      //   console.log(
-      //     "3rd party price is ",
-      //     userSessionData[sessionID].thirdPartyPrice
-      //   );
-      //   console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //   console.log(
-      //     "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
-      //     totalPrice
-      //   );
-      //   continueSession = true;
-      // }
-      // else if (userSessionData[sessionID].type === "gw1Class3") {
-      //   const totalPrice =
-      //     parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //     parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //   if (userSessionData[sessionID].carPrice < 50000) {
-      //     message = "The car value cannot be less than 50000 GHS";
-      //   } else {
-      //     message = `Pay ${totalPrice}`;
-      //   }
-
-      //   console.log(
-      //     "3rd party price is ",
-      //     userSessionData[sessionID].thirdPartyPrice
-      //   );
-      //   console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //   console.log(
-      //     "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
-      //     totalPrice
-      //   );
-      //   continueSession = true;
-      // }
       else if (userSessionData[sessionID].type === "artOrTanker") {
         const totalPrice =
           parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
@@ -2669,7 +2957,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial insurance package for Art or Tanker car."
+              );
         }
 
         console.log(
@@ -2682,7 +2980,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           "Total amount to be paid for comprehensive commercial art/tankers is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       } else if (userSessionData[sessionID].type === "Taxi") {
         const totalPrice =
           parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
@@ -2690,7 +2988,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial insurance package for Taxi car."
+              );
         }
 
         console.log(
@@ -2703,7 +3011,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           "Total amount to be paid for comprehensive commercial taxi is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       }
 
       // comprehensive renewal
@@ -2924,7 +3232,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive Private individual X1 car."
+              );
         }
 
         console.log(
@@ -2937,7 +3255,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
           "Total amount to be paid for comprehensive private individual X1 is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       } else if (userSessionData[sessionID].type === "privateX4") {
         const totalPrice =
           parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
@@ -2945,7 +3263,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+           message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive Private Individual X4 car."
+              );
         }
 
         console.log(
@@ -2955,7 +3283,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         console.log("And car value is", userSessionData[sessionID].carPrice);
 
         console.log(
-          "Total amount to be paid for comprehensive private individual X1 is",
+          "Total amount to be paid for comprehensive private individual X4 is",
           totalPrice
         );
         continueSession = true;
@@ -2966,7 +3294,16 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive Private Own Goods (Below 3,000 cc) car."
+              );
         }
 
         console.log(
@@ -2976,10 +3313,10 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         console.log("And car value is", userSessionData[sessionID].carPrice);
 
         console.log(
-          "Total amount to be paid for comprehensive private individual X1 is",
+          "Total amount to be paid for comprehensive private own goods below 3000 cc is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
         const totalPrice =
           parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
@@ -2987,7 +3324,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive private Own Goods (ABOVE 3000 cc) car."
+              );
         }
 
         console.log(
@@ -2997,10 +3344,10 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         console.log("And car value is", userSessionData[sessionID].carPrice);
 
         console.log(
-          "Total amount to be paid for comprehensive private individual X1 is",
+          "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       } else if (
         userSessionData[sessionID].type === "generalCartageBelow3000"
       ) {
@@ -3010,7 +3357,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive private General Cartage (BELOW 3000 cc)."
+              );
         }
 
         console.log(
@@ -3020,10 +3377,10 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         console.log("And car value is", userSessionData[sessionID].carPrice);
 
         console.log(
-          "Total amount to be paid for comprehensive private individual X1 is",
+          "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       } else if (
         userSessionData[sessionID].type === "generalCartageAbove3000"
       ) {
@@ -3033,7 +3390,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `Pay ${totalPrice}`;
+          // message = `Pay ${totalPrice}`;
+          message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive private General Cartage (ABOVE 3,000 cc) car."
+              );
         }
 
         console.log(
@@ -3043,10 +3410,10 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         console.log("And car value is", userSessionData[sessionID].carPrice);
 
         console.log(
-          "Total amount to be paid for comprehensive private individual X1 is",
+          "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
           totalPrice
         );
-        continueSession = true;
+        continueSession = false;
       }
     }
 
@@ -3063,7 +3430,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
       if (userSessionData[sessionID].carPrice < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
-        message = `Pay ${totalPrice}`;
+        // message = `Pay ${totalPrice}`;
+        message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial Special Types (ON SITE) car."
+              );
       }
 
       console.log(
@@ -3076,7 +3453,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
         totalPrice
       );
-      continueSession = true;
+      continueSession = false;
     } else if (userSessionData[sessionID].type === "specialOnRoad") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
@@ -3084,9 +3461,18 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
       if (userSessionData[sessionID].carPrice < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
-        message = `Pay ${totalPrice}`;
+        // message = `Pay ${totalPrice}`;
+        message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial Special Types (ON ROAD) car."
+              );
       }
-
       console.log(
         "3rd party price is ",
         userSessionData[sessionID].thirdPartyPrice
@@ -3094,10 +3480,10 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
       console.log("And car value is", userSessionData[sessionID].carPrice);
 
       console.log(
-        "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
+        "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
         totalPrice
       );
-      continueSession = true;
+      continueSession = false;
     } else if (userSessionData[sessionID].type === "GW1CLASS1") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
@@ -3105,7 +3491,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
       if (userSessionData[sessionID].carPrice < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
-        message = `Pay ${totalPrice}`;
+        // message = `Pay ${totalPrice}`;
+        message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial GW1 (CLASS 1) car."
+              );
       }
 
       console.log(
@@ -3118,7 +3514,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
         totalPrice
       );
-      continueSession = true;
+      continueSession = false;
     } else if (userSessionData[sessionID].type === "GW1CLASS2") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
@@ -3126,7 +3522,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
       if (userSessionData[sessionID].carPrice < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
-        message = `Pay ${totalPrice}`;
+        // message = `Pay ${totalPrice}`;
+        message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial GW1 (CLASS 2) car."
+              );
       }
 
       console.log(
@@ -3139,7 +3545,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
         totalPrice
       );
-      continueSession = true;
+      continueSession = false;
     } else if (userSessionData[sessionID].type === "GW1CLASS3") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
@@ -3147,7 +3553,17 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
       if (userSessionData[sessionID].carPrice < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
-        message = `Pay ${totalPrice}`;
+        // message = `Pay ${totalPrice}`;
+        message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${totalPrice}` + ` now `;
+              let amount = totalPrice
+              await juni.pay(
+                amount,
+                amount,
+                formattedMsisdn,
+                "Purchasing a comprehensive commercial GW1 (CLASS 3) car."
+              );
       }
 
       console.log(
@@ -3160,7 +3576,7 @@ const formattedMsisdn = msisdn.replace(/^233/, '0');
         "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
         totalPrice
       );
-      continueSession = true;
+      continueSession = false;
     }
   }
 
