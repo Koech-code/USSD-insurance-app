@@ -1,0 +1,968 @@
+{
+  error: ReferenceError: fs is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:13:28
+      at new Promise (<anonymous>)
+      at generateToken (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:11:12)
+      at getJuniCredentials (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:31:29)
+      at Object.verify (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:58:42)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:10:37
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5),
+  level: 'error',
+  message: 'uncaughtException: fs is not defined\n' +
+    'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  stack: 'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 14:14:02 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 4820,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 79069184,
+      heapTotal: 54538240,
+      heapUsed: 23108456,
+      external: 2817872,
+      arrayBuffers: 472397
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 740249.437 },
+  trace: [
+    {
+      column: 28,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: null,
+      line: 13,
+      method: null,
+      native: false
+    },
+    {
+      column: null,
+      file: null,
+      function: 'new Promise',
+      line: null,
+      method: null,
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'generateToken',
+      line: 11,
+      method: null,
+      native: false
+    },
+    {
+      column: 29,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'getJuniCredentials',
+      line: 31,
+      method: null,
+      native: false
+    },
+    {
+      column: 42,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.verify',
+      line: 58,
+      method: 'verify',
+      native: false
+    },
+    {
+      column: 37,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 10,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'next',
+      line: 144,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'Route.dispatch',
+      line: 114,
+      method: 'dispatch',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 14:14:02',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: fs is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:13:28
+      at new Promise (<anonymous>)
+      at generateToken (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:11:12)
+      at getJuniCredentials (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:31:29)
+      at Object.verify (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:58:42)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:10:37
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5),
+  level: 'error',
+  message: 'uncaughtException: fs is not defined\n' +
+    'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  stack: 'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 14:14:38 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 21388,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 63729664,
+      heapTotal: 22818816,
+      heapUsed: 20470448,
+      external: 2785902,
+      arrayBuffers: 443850
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 740284.89 },
+  trace: [
+    {
+      column: 28,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: null,
+      line: 13,
+      method: null,
+      native: false
+    },
+    {
+      column: null,
+      file: null,
+      function: 'new Promise',
+      line: null,
+      method: null,
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'generateToken',
+      line: 11,
+      method: null,
+      native: false
+    },
+    {
+      column: 29,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'getJuniCredentials',
+      line: 31,
+      method: null,
+      native: false
+    },
+    {
+      column: 42,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.verify',
+      line: 58,
+      method: 'verify',
+      native: false
+    },
+    {
+      column: 37,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 10,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'next',
+      line: 144,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'Route.dispatch',
+      line: 114,
+      method: 'dispatch',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 14:14:38',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: fs is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:13:28
+      at new Promise (<anonymous>)
+      at generateToken (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:11:12)
+      at getJuniCredentials (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:31:29)
+      at Object.verify (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:58:42)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:10:37
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5),
+  level: 'error',
+  message: 'uncaughtException: fs is not defined\n' +
+    'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  stack: 'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 14:17:06 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 25792,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 79802368,
+      heapTotal: 54800384,
+      heapUsed: 22940296,
+      external: 2820076,
+      arrayBuffers: 474601
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 740432.765 },
+  trace: [
+    {
+      column: 28,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: null,
+      line: 13,
+      method: null,
+      native: false
+    },
+    {
+      column: null,
+      file: null,
+      function: 'new Promise',
+      line: null,
+      method: null,
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'generateToken',
+      line: 11,
+      method: null,
+      native: false
+    },
+    {
+      column: 29,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'getJuniCredentials',
+      line: 31,
+      method: null,
+      native: false
+    },
+    {
+      column: 42,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.verify',
+      line: 58,
+      method: 'verify',
+      native: false
+    },
+    {
+      column: 37,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 10,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'next',
+      line: 144,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'Route.dispatch',
+      line: 114,
+      method: 'dispatch',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 14:17:06',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: fs is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:13:28
+      at new Promise (<anonymous>)
+      at generateToken (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:11:12)
+      at getJuniCredentials (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:31:29)
+      at Object.verify (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:58:42)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:10:37
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5),
+  level: 'error',
+  message: 'uncaughtException: fs is not defined\n' +
+    'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  stack: 'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 14:17:20 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 9404,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 79675392,
+      heapTotal: 54800384,
+      heapUsed: 22932976,
+      external: 2820076,
+      arrayBuffers: 474601
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 740446.812 },
+  trace: [
+    {
+      column: 28,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: null,
+      line: 13,
+      method: null,
+      native: false
+    },
+    {
+      column: null,
+      file: null,
+      function: 'new Promise',
+      line: null,
+      method: null,
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'generateToken',
+      line: 11,
+      method: null,
+      native: false
+    },
+    {
+      column: 29,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'getJuniCredentials',
+      line: 31,
+      method: null,
+      native: false
+    },
+    {
+      column: 42,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.verify',
+      line: 58,
+      method: 'verify',
+      native: false
+    },
+    {
+      column: 37,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 10,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'next',
+      line: 144,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'Route.dispatch',
+      line: 114,
+      method: 'dispatch',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 14:17:20',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: fs is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:13:28
+      at new Promise (<anonymous>)
+      at generateToken (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:11:12)
+      at getJuniCredentials (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:31:29)
+      at Object.verify (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:58:42)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:10:37
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5),
+  level: 'error',
+  message: 'uncaughtException: fs is not defined\n' +
+    'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  stack: 'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 14:17:34 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 6712,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 79642624,
+      heapTotal: 54800384,
+      heapUsed: 23959088,
+      external: 2906289,
+      arrayBuffers: 560814
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 740460.89 },
+  trace: [
+    {
+      column: 28,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: null,
+      line: 13,
+      method: null,
+      native: false
+    },
+    {
+      column: null,
+      file: null,
+      function: 'new Promise',
+      line: null,
+      method: null,
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'generateToken',
+      line: 11,
+      method: null,
+      native: false
+    },
+    {
+      column: 29,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'getJuniCredentials',
+      line: 31,
+      method: null,
+      native: false
+    },
+    {
+      column: 42,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.verify',
+      line: 58,
+      method: 'verify',
+      native: false
+    },
+    {
+      column: 37,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 10,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'next',
+      line: 144,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'Route.dispatch',
+      line: 114,
+      method: 'dispatch',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 14:17:34',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: fs is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:13:28
+      at new Promise (<anonymous>)
+      at generateToken (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:11:12)
+      at getJuniCredentials (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:31:29)
+      at Object.verify (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:58:42)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:10:37
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\router\layer.js:95:5),
+  level: 'error',
+  message: 'uncaughtException: fs is not defined\n' +
+    'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  stack: 'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.verify (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:58:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:10:37\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:144:13)\n' +
+    '    at Route.dispatch (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 14:20:25 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 27788,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 62132224,
+      heapTotal: 21770240,
+      heapUsed: 19894440,
+      external: 2593650,
+      arrayBuffers: 251598
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 740631.953 },
+  trace: [
+    {
+      column: 28,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: null,
+      line: 13,
+      method: null,
+      native: false
+    },
+    {
+      column: null,
+      file: null,
+      function: 'new Promise',
+      line: null,
+      method: null,
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'generateToken',
+      line: 11,
+      method: null,
+      native: false
+    },
+    {
+      column: 29,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'getJuniCredentials',
+      line: 31,
+      method: null,
+      native: false
+    },
+    {
+      column: 42,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.verify',
+      line: 58,
+      method: 'verify',
+      native: false
+    },
+    {
+      column: 37,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 10,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'next',
+      line: 144,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\route.js',
+      function: 'Route.dispatch',
+      line: 114,
+      method: 'dispatch',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\router\\layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 14:20:25',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: fs is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:13:28
+      at new Promise (<anonymous>)
+      at generateToken (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:11:12)
+      at getJuniCredentials (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:31:29)
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:106:42)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1043:26
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: 'uncaughtException: fs is not defined\n' +
+    'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:106:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1043:26\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: 'ReferenceError: fs is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:13:28\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at generateToken (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:11:12)\n' +
+    '    at getJuniCredentials (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:31:29)\n' +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:106:42)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1043:26\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sun Dec 31 2023 14:34:35 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 7660,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 64737280,
+      heapTotal: 23343104,
+      heapUsed: 20913496,
+      external: 3986026,
+      arrayBuffers: 412890
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 741481.64 },
+  trace: [
+    {
+      column: 28,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: null,
+      line: 13,
+      method: null,
+      native: false
+    },
+    {
+      column: null,
+      file: null,
+      function: 'new Promise',
+      line: null,
+      method: null,
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'generateToken',
+      line: 11,
+      method: null,
+      native: false
+    },
+    {
+      column: 29,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'getJuniCredentials',
+      line: 31,
+      method: null,
+      native: false
+    },
+    {
+      column: 42,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 106,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 26,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1043,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2023-12-31 14:34:35',
+  label: 'Event Log 🏷'
+}

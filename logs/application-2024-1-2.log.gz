@@ -1,0 +1,396 @@
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:102:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1132:15,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1132:15',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1132:15',
+  exception: true,
+  date: 'Tue Jan 02 2024 09:35:27 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 17412,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 59621376,
+      heapTotal: 22597632,
+      heapUsed: 21391696,
+      external: 4117102,
+      arrayBuffers: 412894
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 896331.328 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 102,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 15,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1132,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-02 09:35:27',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:102:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1158:15,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1158:15',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1158:15',
+  exception: true,
+  date: 'Tue Jan 02 2024 09:38:14 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 15884,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 60923904,
+      heapTotal: 24432640,
+      heapUsed: 20713976,
+      external: 3794474,
+      arrayBuffers: 164653
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 896498.218 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 102,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 15,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1158,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-02 09:38:14',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:102:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:2494:15,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:2494:15',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:2494:15',
+  exception: true,
+  date: 'Tue Jan 02 2024 10:13:44 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 12124,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 61075456,
+      heapTotal: 23908352,
+      heapUsed: 20789616,
+      external: 3793774,
+      arrayBuffers: 220638
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 898628.343 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 102,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 15,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 2494,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-02 10:13:44',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:102:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:2495:15,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:2495:15',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:2495:15',
+  exception: true,
+  date: 'Tue Jan 02 2024 10:16:52 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 25076,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 60538880,
+      heapTotal: 23384064,
+      heapUsed: 21203672,
+      external: 3801973,
+      arrayBuffers: 228837
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 898816.39 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 102,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 15,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 2495,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-02 10:16:52',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:102:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:951:13,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:951:13',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:951:13',
+  exception: true,
+  date: 'Tue Jan 02 2024 22:49:55 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 10352,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 59748352,
+      heapTotal: 23506944,
+      heapUsed: 20824968,
+      external: 3868865,
+      arrayBuffers: 164657
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 943998.859 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 102,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 951,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-02 22:49:55',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:102:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:952:13,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:952:13',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:952:13',
+  exception: true,
+  date: 'Tue Jan 02 2024 23:39:18 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 15956,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 58707968,
+      heapTotal: 22327296,
+      heapUsed: 21105248,
+      external: 3794124,
+      arrayBuffers: 220988
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 946962.265 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 102,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 952,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-02 23:39:18',
+  label: 'Event Log 🏷'
+}

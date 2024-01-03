@@ -1,0 +1,176 @@
+{
+  error: ReferenceError: motorCycleRenewalPrices is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1988:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: 'uncaughtException: motorCycleRenewalPrices is not defined\n' +
+    'ReferenceError: motorCycleRenewalPrices is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1988:9\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: 'ReferenceError: motorCycleRenewalPrices is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1988:9\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Mon Jan 01 2024 13:28:57 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 12616,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 75337728,
+      heapTotal: 55103488,
+      heapUsed: 24331176,
+      external: 2847676,
+      arrayBuffers: 502201
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 823941.937 },
+  trace: [
+    {
+      column: 9,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1988,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-01 13:28:57',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: motorCycleRenewalPrices is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1988:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: 'uncaughtException: motorCycleRenewalPrices is not defined\n' +
+    'ReferenceError: motorCycleRenewalPrices is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1988:9\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: 'ReferenceError: motorCycleRenewalPrices is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1988:9\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Mon Jan 01 2024 13:38:06 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 7628,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 60506112,
+      heapTotal: 22859776,
+      heapUsed: 21505192,
+      external: 3891017,
+      arrayBuffers: 186809
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 824491.609 },
+  trace: [
+    {
+      column: 9,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1988,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-01 13:38:06',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:102:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1132:15,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1132:15',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:102:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1132:15',
+  exception: true,
+  date: 'Tue Jan 02 2024 09:33:12 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 28008,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 50532352,
+      heapTotal: 23908352,
+      heapUsed: 21839208,
+      external: 3885248,
+      arrayBuffers: 181040
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 896196.281 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 102,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 15,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1132,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-02 09:33:12',
+  label: 'Event Log 🏷'
+}
