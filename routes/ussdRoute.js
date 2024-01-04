@@ -1500,7 +1500,7 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].type === "specialTypes") {
           service = "1";
           message =
-            "You selected Special Types(Z 802 ON SITE). Choose an option:\n";
+            "You selected Special Types(Z 802 ON SITE) for comp. comm.. Choose an option:\n";
           message += "1. 1 - 5 persons\n";
           // Save the user's input as the selected option
           userSessionData[sessionID].selectedOption = userData;
@@ -1648,9 +1648,11 @@ router.post("/ussd", async (req, res) => {
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 5) {
+
     // userSessionData[sessionID].thirdPartyPrice;
     userSessionData[sessionID].carPrice = userData;
     userSessionData[sessionID].phoneNumber = userData
+
     // Purchase prices for third party
 
     // copied from step 4 
@@ -2809,77 +2811,232 @@ router.post("/ussd", async (req, res) => {
 
 
       if (userSessionData[sessionID].selectedOption === "1") {
-        if (userSessionData[sessionID].type === "specialTypes") {
-          service = "1";
-          message =
-            "You selected Special Types(Z 802 ON SITE). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "specialOnSite";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
-        } else if (userSessionData[sessionID].type === "GW1") {
-          service = "1";
-          message = "You selected GW1(CLASS 1). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "GW1CLASS1";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (userSessionData[sessionID].type === "specialOnSite") {
+            // Check if the selected option exists in the mapping
+            if (
+              onSiteSpecialTypesServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // onSiteSpecialTypesServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                onSiteSpecialTypesServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+            // Check if the selected option exists in the mapping
+            if (
+              GW1Class1ServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // GW1Class1ServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                GW1Class1ServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (userSessionData[sessionID].type === "specialOnSite") {
+            // Check if the selected option exists in the mapping
+            if (
+              onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // onSiteSpecialTypesRenewalServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                onSiteSpecialTypesRenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+            // Check if the selected option exists in the mapping
+            if (
+              GW1Class1RenewalServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // GW1Class1RenewalServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                GW1Class1RenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          }
         }
       } else if (userSessionData[sessionID].selectedOption === "2") {
-        if (userSessionData[sessionID].type === "specialTypes") {
-          service = "1";
-          message =
-            "You selected Special Types(Z 802 ON ROAD). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "specialOnRoad";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
-        } else if (userSessionData[sessionID].type === "GW1") {
-          service = "1";
-          message = "You selected GW1(CLASS 2). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "GW1CLASS2";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (userSessionData[sessionID].type === "specialOnRoad") {
+            // Check if the selected option exists in the mapping
+            if (
+              onBoardSpecialTypesServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // onBoardSpecialTypesServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                onBoardSpecialTypesServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+            // Check if the selected option exists in the mapping
+            if (
+              GW1Class2ServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // GW1Class2ServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                GW1Class2ServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (userSessionData[sessionID].type === "specialOnRoad") {
+            // Check if the selected option exists in the mapping
+            if (
+              onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // onBoardSpecialTypesRenewalServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                onBoardSpecialTypesRenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+            // Check if the selected option exists in the mapping
+            if (
+              GW1Class2RenewalServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // GW1Class2RenewalServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                GW1Class2RenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          }
         }
       } else if (userSessionData[sessionID].selectedOption === "3") {
-        if (userSessionData[sessionID].type === "GW1") {
-          service = "1";
-          message = "You selected GW1(CLASS 3). Choose an option:\n";
-          message += "1. 1 - 5 persons\n";
-          // Save the user's input as the selected option
-          userSessionData[sessionID].selectedOption = userData;
-          console.log("user selected", userData);
-          userSessionData[sessionID].type = "GW1CLASS3";
-          console.log(
-            "user selected car type",
-            userSessionData[sessionID].type
-          );
-          continueSession = true; // Set to true to continue the session
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (userSessionData[sessionID].type === "GW1CLASS3") {
+            // Check if the selected option exists in the mapping
+            if (
+              GW1Class3ServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // GW1Class3ServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                GW1Class3ServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (userSessionData[sessionID].type === "GW1CLASS3") {
+            // Check if the selected option exists in the mapping
+            if (
+              GW1Class3RenewalServicePrice.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                // "Pay " +
+                // GW1Class3RenewalServicePrice[
+                //   userSessionData[sessionID].selectedOption
+                // ].toFixed(2) +
+                "Please enter the value of your car";
+              userSessionData[sessionID].thirdPartyPrice =
+                GW1Class3RenewalServicePrice[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2);
+              continueSession = true;
+            }
+          }
         }
       }
     } else if (userSessionData[sessionID].service === "6") {
@@ -4302,6 +4459,7 @@ router.post("/ussd", async (req, res) => {
 
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
+
   } else if (newSession === false && userSessionData[sessionID].step === 6) {
     userSessionData[sessionID].thirdPartyPrice;
     userSessionData[sessionID].carPrice = userData;
@@ -5154,6 +5312,39 @@ router.post("/ussd", async (req, res) => {
       }
     }
     // End of copy 
+
+    // collect phone number from user
+    if (userSessionData[sessionID].type === "specialOnSite") {
+      service = "1"
+      message = "Please enter the phone number you wish to pay with."
+      userSessionData[sessionID].phoneNumber = userData
+      continueSession = true
+    } else if (userSessionData[sessionID].type === "specialOnRoad") {
+      service = "1"
+      message = "Please enter the phone number you wish to pay with."
+      userSessionData[sessionID].phoneNumber = userData
+      continueSession = true
+    } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+      service = "1"
+      message = "Please enter the phone number you wish to pay with."
+      userSessionData[sessionID].phoneNumber = userData
+      continueSession = true
+    } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+      service = "1"
+      message = "Please enter the phone number you wish to pay with."
+      userSessionData[sessionID].phoneNumber = userData
+      continueSession = true
+    } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+      service = "1"
+      message = "Please enter the phone number you wish to pay with."
+      userSessionData[sessionID].phoneNumber = userData
+      continueSession = true
+    }
+    // Increment the step for the next interaction
+    userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
+
+  } else if (newSession === false && userSessionData[sessionID].step === 7) {
+    userSessionData[sessionID].phoneNumber = userData
     if (userSessionData[sessionID].type === "specialOnSite") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
