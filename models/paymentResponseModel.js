@@ -17,17 +17,16 @@
 
 // module.exports = mongoose.model("PaymentResponse", PaymentResponse);
 
-
 const { Model, DataTypes } = require("sequelize");
-const { sequelize } = require("../scripts/config");
+const { sequelize } = require("../scripts/config.js");
 
 class PaymentResponse extends Model {}
 PaymentResponse.init(
   {
-    name: DataTypes.STRING,
-    amount: DataTypes.STRING,
-    description: DataTypes.STRING,
-   
+    status: DataTypes.STRING,
+    message: DataTypes.STRING,
+    transactionID: DataTypes.STRING,
+
     createdBy: DataTypes.STRING,
     createdAt: DataTypes.DATE,
     updatedBy: DataTypes.STRING,
