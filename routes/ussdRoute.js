@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const juni = require("../controllers/paymentController.js");
-const PaymentResponse = require("../models/paymentResponseModel.js");
 const USSDCODE = "*928*311#";
 const userSessionData = {};
+
 // Insurance Purchase prices
 const miniBusServicePrices = {
   5: 633.0,
@@ -65,7 +65,7 @@ const generalGartageAbove = {
 
 // Third party commercial prices
 const maxBusServicePrices = {
-  23: 1.0,
+  23: 849.0,
   24: 861.0,
   25: 873.0,
   26: 885.0,
@@ -266,7 +266,7 @@ const generalCartageRenewalAbove = {
 };
 const motorCycleRenewalPrices = {
   2: 193,
-}
+};
 // prices for step 5
 const onSiteSpecialTypesServicePrice = {
   1: 353.0,
@@ -346,7 +346,7 @@ router.post("/ussd", async (req, res) => {
   const { sessionID, newSession, msisdn, userData, userID, network } = req.body;
   var carname = await juni.verify(msisdn);
   // Replace "233" with "0" in the msisdn variable
-  const formattedMsisdn = msisdn.replace(/^233/, '0');
+  // const formattedMsisdn = msisdn.replace(/^233/, '0');
 
   let message = "";
   let service = "";
@@ -357,12 +357,14 @@ router.post("/ussd", async (req, res) => {
   let thirdPartyPrice = "";
   let GW1Options = "";
   let InsuranceType = "";
+  let isThirdPartyComm = "";
 
   if (newSession && userData === USSDCODE) {
     // Initial session setup
     userSessionData[sessionID] = {
       step: 1,
       phoneNumber: undefined,
+      phoneNumberComp: undefined,
     };
     message = "Welcome to Fast Insurance\n";
     message += "1. Purchase insurance\n";
@@ -382,7 +384,8 @@ router.post("/ussd", async (req, res) => {
       message += "3. Motor Cycle\n";
       message += "4. Comp. Co-oporate\n";
       message += "5. Comp. Commercial\n";
-      message += "6. Comp. Private";
+      message += "6. Comp. Private\n";
+      message += "00. HOME";
       continueSession = true;
       userSessionData[sessionID].InsuranceType = "purchase";
       userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
@@ -396,6 +399,7 @@ router.post("/ussd", async (req, res) => {
       message += "4. Comp. Co-oprate\n";
       message += "5. Comp. Commercial\n";
       message += "6. Comp. Private";
+      message += "00. HOME";
       continueSession = true;
       userSessionData[sessionID].InsuranceType = "renewal";
       userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
@@ -437,7 +441,8 @@ router.post("/ussd", async (req, res) => {
       message += "5. GW1\n";
       message += "6. Art/Tankers\n";
       message += "7. Taxi\n";
-      message += "8. Mini Bus";
+      message += "8. Mini Bus\n";
+      message += "0. BACK";
       continueSession = true;
     } else if (userSessionData[sessionID].service === "2") {
       // Car type selection for Third Party private
@@ -448,35 +453,32 @@ router.post("/ussd", async (req, res) => {
       message += "4. Own goods(Above 3000 cc)\n";
       message += "5. General Cartage(Up to 3000 cc)\n";
       message += "6. General cartage(Above 3000 cc)\n";
-      message += "7. Mini Bus";
+      message += "7. Mini Bus\n";
+      message += "0. BACK";
       continueSession = true;
     } else if (userSessionData[sessionID].service === "3") {
       userSessionData[sessionID].selectedOption = userData;
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Car type selection for motor cycle
         service = "3";
-        message = "You're about to purchase Motor Cycle (Private/Individual) insurance package. Please enter 2.\n";
+        message =
+          "You're about to purchase Motor Cycle (Private/Individual) insurance package. Please enter 2.\n";
         // Save the user's input as the selected option
         userSessionData[sessionID].selectedOption = userData;
         userSessionData[sessionID].type = "motorCycle";
         console.log("user selected", userData);
-        console.log(
-          "user selected car type",
-          userSessionData[sessionID].type
-        );
+        console.log("user selected car type", userSessionData[sessionID].type);
         continueSession = true;
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         // Car type selection for motor cycle
         service = "3";
-        message = "You're about to renew Motor Cycle (Private/Individual) insurance package. Choose option(Only 2 persons)\n";
+        message =
+          "You're about to renew Motor Cycle (Private/Individual) insurance package. Choose option(Only 2 persons)\n";
         // Save the user's input as the selected option
         userSessionData[sessionID].selectedOption = userData;
         userSessionData[sessionID].type = "motorCycle";
         console.log("user selected", userData);
-        console.log(
-          "user selected car type",
-          userSessionData[sessionID].type
-        );
+        console.log("user selected car type", userSessionData[sessionID].type);
         continueSession = true;
       }
     } else if (userSessionData[sessionID].service === "4") {
@@ -495,7 +497,8 @@ router.post("/ussd", async (req, res) => {
       message += "5. GW1\n";
       message += "6. Art/Tankers\n";
       message += "7. Taxi\n";
-      message += "8. Mini Bus";
+      message += "8. Mini Bus\n";
+      message += "0. BACK";
       continueSession = true;
     } else if (userSessionData[sessionID].service === "6") {
       // Car type selection for comprehensive private
@@ -507,9 +510,19 @@ router.post("/ussd", async (req, res) => {
       message += "4. Own goods(Above 3000 cc)";
       message += "5. General Cartage(Up to 3000 cc)\n";
       message += "6. General cartage(Above 3000 cc)\n";
+      message += "0. BACK\n";
       // userSessionData[sessionID].carPrice = userData;
       // console.log("Price entered is", userSessionData[sessionID].carPrice);
       continueSession = true;
+    } else if (userSessionData[sessionID].service === "00") {
+      message = "Welcome to Fast Insurance\n";
+      message += "1. Purchase insurance\n";
+      message += "2. Renew insurance\n";
+      message += "3. Report accident\n";
+      message += "4. Upload documents\n";
+      message += "5. Promotions\n";
+      continueSession = true;
+      userSessionData[sessionID].step = 0;
     }
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 3) {
@@ -719,6 +732,34 @@ router.post("/ussd", async (req, res) => {
           );
           continueSession = true; // Set to true to continue the session
         }
+      } else if (userSessionData[sessionID].selectedOption === "0") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Back to purchase insurance menu
+          service = "1";
+          message = "Select a package to purchase\n";
+          message += "1. 3rd party Comm.\n";
+          message += "2. 3rd party Private\n";
+          message += "3. Motor Cycle\n";
+          message += "4. Comp. Co-oporate\n";
+          message += "5. Comp. Commercial\n";
+          message += "6. Comp. Private\n";
+          message += "00. HOME";
+          continueSession = true;
+          userSessionData[sessionID].step = 1;
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Back to renew insurance menu
+          service = "2";
+          message = "Select a package to renew\n";
+          message += "1. 3rd party Comm.\n";
+          message += "2. 3rd party Private\n";
+          message += "3. Motor Cycle\n";
+          message += "4. Comp. Co-oprate\n";
+          message += "5. Comp. Commercial\n";
+          message += "6. Comp. Private";
+          message += "00. HOME";
+          continueSession = true;
+          userSessionData[sessionID].step = 1;
+        }
       }
     } else if (userSessionData[sessionID].service === "2") {
       if (userSessionData[sessionID].selectedOption === "1") {
@@ -925,25 +966,45 @@ router.post("/ussd", async (req, res) => {
           );
           continueSession = true; // Set to true to continue the session
         }
+      } else if (userSessionData[sessionID].selectedOption === "0") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Back to purchase insurance menu
+          service = "1";
+          message = "Select a package to purchase\n";
+          message += "1. 3rd party Comm.\n";
+          message += "2. 3rd party Private\n";
+          message += "3. Motor Cycle\n";
+          message += "4. Comp. Co-oporate\n";
+          message += "5. Comp. Commercial\n";
+          message += "6. Comp. Private";
+          continueSession = true;
+          userSessionData[sessionID].step = 1;
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Back to renew insurance menu
+          service = "2";
+          message = "Select a package to renew\n";
+          message += "1. 3rd party Comm.\n";
+          message += "2. 3rd party Private\n";
+          message += "3. Motor Cycle\n";
+          message += "4. Comp. Co-oprate\n";
+          message += "5. Comp. Commercial\n";
+          message += "6. Comp. Private";
+          continueSession = true;
+          userSessionData[sessionID].step = 1;
+        }
       }
     } else if (userSessionData[sessionID].service === "3") {
-      const motorCyclePurchasePrices = {
-        2: 243,
-      }
-      const motorCycleRenewalPrices = {
-        2: 193,
-      }
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter a MOMO phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         }
       }
     } else if (userSessionData[sessionID].service === "4") {
@@ -1043,6 +1104,32 @@ router.post("/ussd", async (req, res) => {
         userSessionData[sessionID].type = "miniBus";
         console.log("user selected car type", userSessionData[sessionID].type);
         continueSession = true; // Set to true to continue the session
+      } else if (userSessionData[sessionID].selectedOption === "0") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Back to purchase insurance menu
+          service = "1";
+          message = "Select a package to purchase\n";
+          message += "1. 3rd party Comm.\n";
+          message += "2. 3rd party Private\n";
+          message += "3. Motor Cycle\n";
+          message += "4. Comp. Co-oporate\n";
+          message += "5. Comp. Commercial\n";
+          message += "6. Comp. Private";
+          continueSession = true;
+          userSessionData[sessionID].step = 1;
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Back to renew insurance menu
+          service = "2";
+          message = "Select a package to renew\n";
+          message += "1. 3rd party Comm.\n";
+          message += "2. 3rd party Private\n";
+          message += "3. Motor Cycle\n";
+          message += "4. Comp. Co-oprate\n";
+          message += "5. Comp. Commercial\n";
+          message += "6. Comp. Private";
+          continueSession = true;
+          userSessionData[sessionID].step = 1;
+        }
       }
     } else if (userSessionData[sessionID].service === "6") {
       if (userSessionData[sessionID].selectedOption === "1") {
@@ -1110,82 +1197,106 @@ router.post("/ussd", async (req, res) => {
         userSessionData[sessionID].type = "generalCartageAbove3000";
         console.log("user selected car type", userSessionData[sessionID].type);
         continueSession = true; // Set to true to continue the session
+      } else if (userSessionData[sessionID].selectedOption === "0") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          // Back to purchase insurance menu
+          service = "1";
+          message = "Select a package to purchase\n";
+          message += "1. 3rd party Comm.\n";
+          message += "2. 3rd party Private\n";
+          message += "3. Motor Cycle\n";
+          message += "4. Comp. Co-oporate\n";
+          message += "5. Comp. Commercial\n";
+          message += "6. Comp. Private";
+          continueSession = true;
+          userSessionData[sessionID].step = 1;
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          // Back to renew insurance menu
+          service = "2";
+          message = "Select a package to renew\n";
+          message += "1. 3rd party Comm.\n";
+          message += "2. 3rd party Private\n";
+          message += "3. Motor Cycle\n";
+          message += "4. Comp. Co-oprate\n";
+          message += "5. Comp. Commercial\n";
+          message += "6. Comp. Private";
+          continueSession = true;
+          userSessionData[sessionID].step = 1;
+        }
       }
     }
-
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 4) {
     userSessionData[sessionID].selectedOption = userData;
     userSessionData[sessionID].phoneNumber = userData;
-
     if (userSessionData[sessionID].service === "1") {
       // Check if the service is Third Party Commercial
 
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "artOrTankers") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "taxi") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         if (userSessionData[sessionID].type === "maxBus") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "artOrTankers") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "taxi") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         }
       }
       // step 4 for special types and GW1
@@ -1334,83 +1445,85 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else {
-          message = "Invalid option selected for purchase of Third Party Private.";
+          message =
+            "Invalid option selected for purchase of Third Party Private.";
           continueSession = false;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else {
-          message = "Invalid option selected for renewal of Third Party Private.";
+          message =
+            "Invalid option selected for renewal of Third Party Private.";
           continueSession = false;
         }
       } else {
@@ -1425,11 +1538,12 @@ router.post("/ussd", async (req, res) => {
           let amount = 243;
           message =
             `${carname.name} will receive a prompt to authorize payment of ` +
-            `${amount}` + ` now.`;
+            `${amount}` +
+            ` now.`;
           await juni.pay(
             amount,
             amount,
-            formattedMsisdn,
+            userSessionData[sessionID].phoneNumber,
             "Purchasing a motor cycle insurance package for 2 persons."
           );
           continueSession = false;
@@ -1439,11 +1553,12 @@ router.post("/ussd", async (req, res) => {
           let amount = 193;
           message =
             `${carname.name} will receive a prompt to authorize payment of ` +
-            `${amount}` + ` now.`;
+            `${amount}` +
+            ` now.`;
           await juni.pay(
             amount,
             amount,
-            formattedMsisdn,
+            userSessionData[sessionID].phoneNumber,
             "Renewing a motor cycle insurance package for 2 persons."
           );
           continueSession = false;
@@ -1452,48 +1567,48 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          service = "1"
-          message = "Please enter the phone number you wish to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         }
       }
     } else if (userSessionData[sessionID].service === "5") {
       if (userSessionData[sessionID].type === "maxiBus") {
-        service = "1"
-        message = "Please enter the phone number you wish to pay with."
-        userSessionData[sessionID].phoneNumber = userData
-        continueSession = true
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumberComp = userData;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "hiring") {
-        service = "1"
-        message = "Please enter the phone number you wish to pay with."
-        userSessionData[sessionID].phoneNumber = userData
-        continueSession = true
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumberComp = userData;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "ambulance") {
-        service = "1"
-        message = "Please enter the phone number you wish to pay with."
-        userSessionData[sessionID].phoneNumber = userData
-        continueSession = true
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumberComp = userData;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "artOrTanker") {
-        service = "1"
-        message = "Please enter the phone number you wish to pay with."
-        userSessionData[sessionID].phoneNumber = userData
-        continueSession = true
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumberComp = userData;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "Taxi") {
-        service = "1"
-        message = "Please enter the phone number you wish to pay with."
-        userSessionData[sessionID].phoneNumber = userData
-        continueSession = true
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumberComp = userData;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "miniBus") {
-        service = "1"
-        message = "Please enter the phone number you would like to pay with."
-        userSessionData[sessionID].phoneNumber = userData
-        continueSession = true
+        service = "1";
+        message = "Please enter the phone number you would like to pay with.";
+        userSessionData[sessionID].phoneNumberComp = userData;
+        continueSession = true;
       }
 
       if (userSessionData[sessionID].selectedOption === "1") {
@@ -1573,89 +1688,89 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "6") {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         if (userSessionData[sessionID].type === "privateX1") {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "privateX4") {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (
           userSessionData[sessionID].type === "generalCartageBelow3000"
         ) {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (
           userSessionData[sessionID].type === "generalCartageAbove3000"
         ) {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         if (userSessionData[sessionID].type === "privateX1") {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "privateX4") {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (
           userSessionData[sessionID].type === "generalCartageBelow3000"
         ) {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         } else if (
           userSessionData[sessionID].type === "generalCartageAbove3000"
         ) {
-          service = "1"
-          message = "Please enter the phone number you would like to pay with."
-          userSessionData[sessionID].phoneNumber = userData
-          continueSession = true
+          service = "1";
+          message = "Please enter the phone number you would like to pay with.";
+          userSessionData[sessionID].phoneNumberComp = userData;
+          continueSession = true;
         }
       }
     }
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 5) {
-
     // userSessionData[sessionID].thirdPartyPrice;
     userSessionData[sessionID].carPrice = userData;
-    userSessionData[sessionID].phoneNumber = userData
+    userSessionData[sessionID].phoneNumber = userData;
 
+    userSessionData[sessionID].phoneNumberComp = userData;
     // Purchase prices for third party
 
-    // copied from step 4 
+    // copied from step 4
     if (userSessionData[sessionID].service === "1") {
       // Check if the service is Third Party Commercial
 
@@ -1673,14 +1788,15 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               maxBusServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(maxBusServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              maxBusServicePrices[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Max Bus car."
             );
             continueSession = false;
@@ -1699,14 +1815,15 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               hiringCarsServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(hiringCarsServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Hiring car."
             );
             continueSession = false;
@@ -1725,14 +1842,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               ambulanceOrHearseServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(ambulanceOrHearseServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              ambulanceOrHearseServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Ambulance/Hearse car."
             );
             continueSession = false;
@@ -1751,14 +1871,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               artOrTankersServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(artOrTankersServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              artOrTankersServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Art/Tankers car."
             );
             continueSession = false;
@@ -1776,14 +1899,15 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               taxiServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(taxiServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              taxiServicePrices[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Taxi car."
             );
             continueSession = false;
@@ -1801,14 +1925,15 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               miniBusServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(miniBusServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              miniBusServicePrices[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Mini Bus car."
             );
             continueSession = false;
@@ -1829,14 +1954,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               maxBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(maxBusRenewalServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              maxBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for a Max Bus car."
             );
             continueSession = false;
@@ -1854,14 +1982,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               hiringCarsRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(hiringCarsRenewalServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              hiringCarsRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for a Hiring car."
             );
             continueSession = false;
@@ -1879,14 +2010,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               ambulanceOrHearseRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(ambulanceOrHearseRenewalServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              ambulanceOrHearseRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for an Ambulance/Hearse car."
             );
             continueSession = false;
@@ -1904,14 +2038,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               artOrTankersRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(artOrTankersRenewalServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              artOrTankersRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for an Art/Tanker car."
             );
             continueSession = false;
@@ -1929,14 +2066,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               taxiRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(taxiRenewalServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              taxiRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for a Taxi car."
             );
             continueSession = false;
@@ -1954,14 +2094,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               miniBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(miniBusRenewalServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for a Mini Bus car."
             );
             continueSession = false;
@@ -2128,20 +2271,23 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               privateIndividualX1Prices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(privateIndividualX1Prices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              privateIndividualX1Prices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for a Private Individual X1 car."
             );
             continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false
+            continueSession = false;
           }
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
           // Check if the selected option exists in the mapping
@@ -2156,20 +2302,23 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               privateIndividualX4Prices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(privateIndividualX4Prices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              privateIndividualX4Prices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for a Private Individual X4 car."
             );
             continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false
+            continueSession = false;
           }
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
           // Check if the selected option exists in the mapping
@@ -2182,16 +2331,17 @@ router.post("/ussd", async (req, res) => {
             // Get the price dynamically from the mapping
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              ownGoodsBelow[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(ownGoodsBelow[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              ) +
+              ` now.`;
+            let amount = parseInt(
+              ownGoodsBelow[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for Own Goods (BELOW 3,000 cc) car."
             );
             continueSession = false;
@@ -2209,16 +2359,17 @@ router.post("/ussd", async (req, res) => {
             // Get the price dynamically from the mapping
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              ownGoodsAbove[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(ownGoodsAbove[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              ) +
+              ` now.`;
+            let amount = parseInt(
+              ownGoodsAbove[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for Own Goods (ABOVE 3,000 cc) car."
             );
             continueSession = false;
@@ -2238,14 +2389,15 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               generalGartageBelow[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(generalGartageBelow[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              generalGartageBelow[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for General Gartage (BELOW 3,000 cc) car."
             );
             continueSession = false;
@@ -2265,14 +2417,15 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               generalGartageAbove[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(generalGartageAbove[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              generalGartageAbove[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for General Gartage (ABOVE 3,000 cc) car."
             );
             continueSession = false;
@@ -2292,14 +2445,15 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               miniBusServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(miniBusServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              miniBusServicePrices[userSessionData[sessionID].selectedOption]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for Mini Bus car."
             );
             continueSession = false;
@@ -2307,7 +2461,8 @@ router.post("/ussd", async (req, res) => {
             message = "Please input a value between 5 - 22.";
           }
         } else {
-          message = "Invalid option selected for purchase of Third Party Private.";
+          message =
+            "Invalid option selected for purchase of Third Party Private.";
           continueSession = false;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
@@ -2325,20 +2480,23 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               privateIndividualX1RenewalPrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(privateIndividualX1RenewalPrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              privateIndividualX1RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for a Private Individual X1 car."
             );
             continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false
+            continueSession = false;
           }
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
           // Check if the selected option exists in the mapping
@@ -2353,20 +2511,23 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               privateIndividualX4RenewalPrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(privateIndividualX4RenewalPrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              privateIndividualX4RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for a Private Individual X4 car."
             );
             continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false
+            continueSession = false;
           }
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
           // Check if the selected option exists in the mapping
@@ -2381,14 +2542,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               ownGoodsBelowRenewalPrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(ownGoodsBelowRenewalPrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              ownGoodsBelowRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for Own Goods (BELOW 3,000 cc) car."
             );
             continueSession = false;
@@ -2408,14 +2572,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               ownGoodsAboveRenewalPrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(ownGoodsAboveRenewalPrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              ownGoodsAboveRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for Own Goods (ABOVE 3,000 cc) car."
             );
             continueSession = false;
@@ -2435,14 +2602,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               generalCartageRenewalBelow[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(generalCartageRenewalBelow[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              generalCartageRenewalBelow[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for General Gartage (BELOW 3,000 cc) car."
             );
             continueSession = false;
@@ -2462,14 +2632,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               generalCartageRenewalAbove[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(generalCartageRenewalAbove[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              generalCartageRenewalAbove[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for General Gartage (ABOVE 3,000 cc) car."
             );
             continueSession = false;
@@ -2489,14 +2662,17 @@ router.post("/ussd", async (req, res) => {
               `${carname.name} will receive a prompt to authorize payment of ` +
               miniBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now.`;
-            let amount = parseInt(miniBusRenewalServicePrices[
-              userSessionData[sessionID].selectedOption
-            ]);
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for Mini Bus car."
             );
             continueSession = false;
@@ -2504,7 +2680,8 @@ router.post("/ussd", async (req, res) => {
             message = "Please input a value between 5 - 22.";
           }
         } else {
-          message = "Invalid option selected for renewal of Third Party Private.";
+          message =
+            "Invalid option selected for renewal of Third Party Private.";
           continueSession = false;
         }
       } else {
@@ -2522,13 +2699,15 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
-            message =
-              "Please enter the value of your motor cycle.";
+            message = "Please enter the value of your motor cycle.";
             userSessionData[sessionID].thirdPartyPrice =
               motorCycleServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2);
-            console.log("Car price is: ", userSessionData[sessionID].thirdPartyPrice)
+            console.log(
+              "Car price is: ",
+              userSessionData[sessionID].thirdPartyPrice
+            );
             continueSession = true;
           }
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
@@ -2540,8 +2719,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
-            message =
-              "Please enter the value of your motor cycle.";
+            message = "Please enter the value of your motor cycle.";
             userSessionData[sessionID].thirdPartyPrice =
               motorCycleRenewalPrices[
                 userSessionData[sessionID].selectedOption
@@ -2808,7 +2986,6 @@ router.post("/ussd", async (req, res) => {
           }
         }
       }
-
 
       if (userSessionData[sessionID].selectedOption === "1") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
@@ -3308,1162 +3485,80 @@ router.post("/ussd", async (req, res) => {
     }
     // end of copy
 
+    // for 3rd party commercial
     if (userSessionData[sessionID].service === "1") {
       if (userSessionData[sessionID].type === "specialOnSite") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            onSiteSpecialTypesServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              onSiteSpecialTypesServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(onSiteSpecialTypesServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Purchasing a 3rd party commercial insurance package for Special Types(ON SITE) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              onSiteSpecialTypesRenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(onSiteSpecialTypesRenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "specialOnRoad") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            onBoardSpecialTypesServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              onBoardSpecialTypesServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(onBoardSpecialTypesServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              onBoardSpecialTypesRenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(onBoardSpecialTypesRenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          userSessionData[sessionID].isThirdPartyComm = "thirdPartyComm";
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS1") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            GW1Class1ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              GW1Class1ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(GW1Class1ServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 1) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            GW1Class1RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              GW1Class1ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(GW1Class1ServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Renewing a 3rd party commercial insurance package for GW1(CLASS 1) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS2") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            GW1Class2ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              GW1Class2ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(GW1Class2ServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 2) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            GW1Class2RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              GW1Class2RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(GW1Class2RenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Renewing a 3rd party commercial insurance package for GW1(CLASS 2) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS3") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            GW1Class3ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              GW1Class3ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(GW1Class3ServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 3) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            GW1Class3RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              GW1Class3RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) + ` now `;
-            let amount = parseInt(GW1Class3RenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]);
-            await juni.pay(
-              amount,
-              amount,
-              formattedMsisdn,
-              "Renewing a 3rd party commercial insurance package for GW1(CLASS 3) car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          service = "1";
+          message = "Please enter the phone number you wish to pay with.";
+          userSessionData[sessionID].phoneNumber = userData;
+          continueSession = true;
         }
       }
     }
-    // if (userSessionData[sessionID].service === "1") {
-    //   if (userSessionData[sessionID].type === "specialOnSite") {
-    //     if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //       if (
-    //         onSiteSpecialTypesServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           onSiteSpecialTypesServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(onSiteSpecialTypesServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Purchasing a 3rd party commercial insurance package for Special Types(ON SITE) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //       if (
-    //         onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           onSiteSpecialTypesRenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(onSiteSpecialTypesRenewalServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     }
-    //   } else if (userSessionData[sessionID].type === "specialOnRoad") {
-    //     if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //       if (
-    //         onBoardSpecialTypesServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           onBoardSpecialTypesServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(onBoardSpecialTypesServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //       if (
-    //         onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           onBoardSpecialTypesRenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(onBoardSpecialTypesRenewalServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     }
-    //   } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-    //     if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //       if (
-    //         GW1Class1ServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           GW1Class1ServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(GW1Class1ServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Purchasing a 3rd party commercial insurance package for GW1(CLASS 1) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //       if (
-    //         GW1Class1RenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           GW1Class1ServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(GW1Class1ServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Renewing a 3rd party commercial insurance package for GW1(CLASS 1) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     }
-    //   } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-    //     if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //       if (
-    //         GW1Class2ServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           GW1Class2ServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(GW1Class2ServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Purchasing a 3rd party commercial insurance package for GW1(CLASS 2) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //       if (
-    //         GW1Class2RenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           GW1Class2RenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(GW1Class2RenewalServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Renewing a 3rd party commercial insurance package for GW1(CLASS 2) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     }
-    //   } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-    //     if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //       if (
-    //         GW1Class3ServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           GW1Class3ServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(GW1Class3ServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Purchasing a 3rd party commercial insurance package for GW1(CLASS 3) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //       if (
-    //         GW1Class3RenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           GW1Class3RenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2) + ` now `;
-    //         let amount = parseInt(GW1Class3RenewalServicePrice[
-    //           userSessionData[sessionID].selectedOption
-    //         ]);
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Renewing a 3rd party commercial insurance package for GW1(CLASS 3) car."
-    //         );
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 1 - 5 are allowed.";
-    //       }
-    //     }
-    //   }
-    // } else if (userSessionData[sessionID].service === "4") {
-    //   if (userSessionData[sessionID].type === "motorCycle") {
-    //     if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //       const totalPrice =
-    //         parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-    //         parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //       if (userSessionData[sessionID].carPrice < 50000) {
-    //         message = "The car value cannot be less than 50000 GHS";
-    //       } else {
-    //         // message = `Pay ${totalPrice}`;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           `${totalPrice}` + ` now `;
-    //         let amount = totalPrice
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Purchasing a Motor Cycle car."
-    //         );
-    //       }
-    //       console.log(
-    //         "Motor cycle is ",
-    //         userSessionData[sessionID].thirdPartyPrice
-    //       );
-    //       console.log("And car value is", userSessionData[sessionID].carPrice);
-    //       console.log(
-    //         "Total amount to be paid for comprehensive co-oporate motor cycle is",
-    //         totalPrice
-    //       );
-    //       continueSession = false;
-    //     } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //       const totalPrice =
-    //         parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-    //         parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //       if (userSessionData[sessionID].carPrice < 50000) {
-    //         message = "The car value cannot be less than 50000 GHS";
-    //       } else {
-    //         // message = `Pay ${totalPrice}`;
-    //         message =
-    //           `${carname.name} will receive a prompt to authorize payment of ` +
-    //           `${totalPrice}` + ` now `;
-    //         let amount = totalPrice
-    //         await juni.pay(
-    //           amount,
-    //           amount,
-    //           formattedMsisdn,
-    //           "Renewing a Motor Cycle car."
-    //         );
-    //       }
-    //       console.log(
-    //         "Motor cycle is ",
-    //         userSessionData[sessionID].thirdPartyPrice
-    //       );
-    //       console.log("And car value is", userSessionData[sessionID].carPrice);
-    //       console.log(
-    //         "Total amount to be paid for comprehensive co-oporate motor cycle is",
-    //         totalPrice
-    //       );
-    //       continueSession = false;
-    //     }
-    //   }
-    // } else if (userSessionData[sessionID].service === "5") {
-    //   if (userSessionData[sessionID].type === "maxiBus") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive commercial insurance package for Max Bus car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive commercial maxi bus is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   } else if (userSessionData[sessionID].type === "hiring") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive commercial insurance package for Hiring car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive commercial hiring cars is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   } else if (userSessionData[sessionID].type === "ambulance") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive commercial insurance package for Ambulance/Hearse car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive commercial ambulance/hearse is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   }
-    //   else if (userSessionData[sessionID].type === "artOrTanker") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive commercial insurance package for Art or Tanker car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive commercial art/tankers is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   } else if (userSessionData[sessionID].type === "Taxi") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive commercial insurance package for Taxi car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive commercial taxi is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   }
-
-    //   // comprehensive renewal
-    //   if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //     if (userSessionData[sessionID].type === "specialOnSite") {
-    //       if (
-    //         onSiteSpecialTypesServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // onSiteSpecialTypesServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           onSiteSpecialTypesServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-
-    //       // continue here
-    //     } else if (userSessionData[sessionID].type === "specialOnRoad") {
-    //       if (
-    //         onBoardSpecialTypesServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // onBoardSpecialTypesServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           onBoardSpecialTypesServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-    //       if (
-    //         GW1Class1ServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // GW1Class1ServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           GW1Class1ServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-    //       if (
-    //         GW1Class2ServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // GW1Class2ServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           GW1Class2ServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-    //       if (
-    //         GW1Class3ServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // GW1Class3ServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           GW1Class3ServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-    //     }
-    //   } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //     if (userSessionData[sessionID].type === "specialOnSite") {
-    //       if (
-    //         onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // onSiteSpecialTypesRenewalServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           onSiteSpecialTypesRenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-
-    //       // continue here
-    //     } else if (userSessionData[sessionID].type === "specialOnRoad") {
-    //       if (
-    //         onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // onBoardSpecialTypesRenewalServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           onBoardSpecialTypesRenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-    //       if (
-    //         GW1Class1RenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // GW1Class1RenewalServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           GW1Class1RenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-    //       if (
-    //         GW1Class2RenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // GW1Class2RenewalServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           GW1Class2RenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-    //       if (
-    //         GW1Class3RenewalServicePrice.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         message =
-    //           // "Pay " +
-    //           // GW1Class3RenewalServicePrice[
-    //           //   userSessionData[sessionID].selectedOption
-    //           // ].toFixed(2) +
-    //           "Please enter the value of your car";
-    //         userSessionData[sessionID].thirdPartyPrice =
-    //           GW1Class3RenewalServicePrice[
-    //             userSessionData[sessionID].selectedOption
-    //           ].toFixed(2);
-    //         continueSession = true;
-    //       }
-    //     }
-    //   }
-    // } else if (userSessionData[sessionID].service === "6") {
-    //   if (userSessionData[sessionID].type === "privateX1") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive Private individual X1 car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive private individual X1 is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   } else if (userSessionData[sessionID].type === "privateX4") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive Private Individual X4 car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive private individual X4 is",
-    //       totalPrice
-    //     );
-    //     continueSession = true;
-    //   } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive Private Own Goods (Below 3,000 cc) car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive private own goods below 3000 cc is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive private Own Goods (ABOVE 3000 cc) car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   } else if (
-    //     userSessionData[sessionID].type === "generalCartageBelow3000"
-    //   ) {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive private General Cartage (BELOW 3000 cc)."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   } else if (
-    //     userSessionData[sessionID].type === "generalCartageAbove3000"
-    //   ) {
-    //     const totalPrice =
-    //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-    //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-    //     if (userSessionData[sessionID].carPrice < 50000) {
-    //       message = "The car value cannot be less than 50000 GHS";
-    //     } else {
-    //       // message = `Pay ${totalPrice}`;
-    //       message =
-    //         `${carname.name} will receive a prompt to authorize payment of ` +
-    //         `${totalPrice}` + ` now `;
-    //       let amount = totalPrice
-    //       await juni.pay(
-    //         amount,
-    //         amount,
-    //         formattedMsisdn,
-    //         "Purchasing a comprehensive private General Cartage (ABOVE 3,000 cc) car."
-    //       );
-    //     }
-
-    //     console.log(
-    //       "3rd party price is ",
-    //       userSessionData[sessionID].thirdPartyPrice
-    //     );
-    //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-    //     console.log(
-    //       "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
-    //       totalPrice
-    //     );
-    //     continueSession = false;
-    //   }
-    // }
 
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
-
   } else if (newSession === false && userSessionData[sessionID].step === 6) {
     userSessionData[sessionID].thirdPartyPrice;
     userSessionData[sessionID].carPrice = userData;
 
+    userSessionData[sessionID].phoneNumber = userData;
+    userSessionData[sessionID].phoneNumberComp;
     // Copied from step 5
 
     if (userSessionData[sessionID].service === "4") {
@@ -4478,12 +3573,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Purchasing a Motor Cycle car."
             );
           }
@@ -4497,7 +3593,6 @@ router.post("/ussd", async (req, res) => {
             totalPrice
           );
           continueSession = false;
-
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           const totalPrice =
             parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
@@ -4508,12 +3603,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumber,
               "Renewing a Motor Cycle car."
             );
           }
@@ -4541,12 +3637,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Max Bus car."
             );
           }
@@ -4572,12 +3669,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Hiring car."
             );
           }
@@ -4603,12 +3701,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Ambulance/Hearse car."
             );
           }
@@ -4624,8 +3723,7 @@ router.post("/ussd", async (req, res) => {
             totalPrice
           );
           continueSession = false;
-        }
-        else if (userSessionData[sessionID].type === "artOrTanker") {
+        } else if (userSessionData[sessionID].type === "artOrTanker") {
           const totalPrice =
             parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
             parseInt(userSessionData[sessionID].thirdPartyPrice);
@@ -4635,12 +3733,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Art or Tanker car."
             );
           }
@@ -4666,12 +3765,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Taxi car."
             );
           }
@@ -4697,20 +3797,18 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Mini Bus car."
             );
           }
 
-          console.log(
-            "Price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
+          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
           console.log("And car value is", userSessionData[sessionID].carPrice);
 
           console.log(
@@ -4730,12 +3828,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Max Bus car."
             );
           }
@@ -4761,12 +3860,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Hiring car."
             );
           }
@@ -4792,12 +3892,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Ambulance/Hearse car."
             );
           }
@@ -4813,8 +3914,7 @@ router.post("/ussd", async (req, res) => {
             totalPrice
           );
           continueSession = false;
-        }
-        else if (userSessionData[sessionID].type === "artOrTanker") {
+        } else if (userSessionData[sessionID].type === "artOrTanker") {
           const totalPrice =
             parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
             parseInt(userSessionData[sessionID].thirdPartyPrice);
@@ -4824,12 +3924,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Art or Tanker car."
             );
           }
@@ -4855,12 +3956,13 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Taxi car."
             );
           }
@@ -4886,20 +3988,18 @@ router.post("/ussd", async (req, res) => {
             // message = `Pay ${totalPrice}`;
             message =
               `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` + ` now `;
-            let amount = totalPrice
+              `${totalPrice}` +
+              ` now `;
+            let amount = totalPrice;
             await juni.pay(
               amount,
               amount,
-              formattedMsisdn,
+              userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Mini Bus car."
             );
           }
 
-          console.log(
-            "Price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
+          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
           console.log("And car value is", userSessionData[sessionID].carPrice);
 
           console.log(
@@ -4910,214 +4010,241 @@ router.post("/ussd", async (req, res) => {
         }
       }
       // comprehensive renewal
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (userSessionData[sessionID].type === "specialOnSite") {
-          if (
-            onSiteSpecialTypesServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // onSiteSpecialTypesServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              onSiteSpecialTypesServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      //   if (userSessionData[sessionID].type === "specialOnSite") {
+      //     if (
+      //       onSiteSpecialTypesServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // onSiteSpecialTypesServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your cari";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         onSiteSpecialTypesServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
 
-          // continue here
-        } else if (userSessionData[sessionID].type === "specialOnRoad") {
-          if (
-            onBoardSpecialTypesServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // onBoardSpecialTypesServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              onBoardSpecialTypesServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-          if (
-            GW1Class1ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // GW1Class1ServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              GW1Class1ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-          if (
-            GW1Class2ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // GW1Class2ServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              GW1Class2ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-          if (
-            GW1Class3ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // GW1Class3ServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              GW1Class3ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (userSessionData[sessionID].type === "specialOnSite") {
-          if (
-            onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // onSiteSpecialTypesRenewalServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              onSiteSpecialTypesRenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
+      //     // continue here
+      //   } else if (userSessionData[sessionID].type === "specialOnRoad") {
+      //     if (
+      //       onBoardSpecialTypesServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // onBoardSpecialTypesServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         onBoardSpecialTypesServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+      //     if (
+      //       GW1Class1ServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // GW1Class1ServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         GW1Class1ServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+      //     if (
+      //       GW1Class2ServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // GW1Class2ServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         GW1Class2ServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+      //     if (
+      //       GW1Class3ServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // GW1Class3ServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         GW1Class3ServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   }
+      // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   if (userSessionData[sessionID].type === "specialOnSite") {
+      //     if (
+      //       onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // onSiteSpecialTypesRenewalServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         onSiteSpecialTypesRenewalServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
 
-          // continue here
-        } else if (userSessionData[sessionID].type === "specialOnRoad") {
-          if (
-            onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // onBoardSpecialTypesRenewalServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              onBoardSpecialTypesRenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-          if (
-            GW1Class1RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // GW1Class1RenewalServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              GW1Class1RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-          if (
-            GW1Class2RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // GW1Class2RenewalServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              GW1Class2RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-          if (
-            GW1Class3RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // GW1Class3RenewalServicePrice[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              GW1Class3RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        }
+      //     // continue here
+      //   } else if (userSessionData[sessionID].type === "specialOnRoad") {
+      //     if (
+      //       onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // onBoardSpecialTypesRenewalServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         onBoardSpecialTypesRenewalServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+      //     if (
+      //       GW1Class1RenewalServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // GW1Class1RenewalServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         GW1Class1RenewalServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+      //     if (
+      //       GW1Class2RenewalServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // GW1Class2RenewalServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         GW1Class2RenewalServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+      //     if (
+      //       GW1Class3RenewalServicePrice.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // GW1Class3RenewalServicePrice[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         GW1Class3RenewalServicePrice[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   }
+      // }
+      // collect phone number from user
+      if (userSessionData[sessionID].type === "specialOnSite") {
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumber = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "specialOnRoad") {
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumber = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumber = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumber = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        userSessionData[sessionID].phoneNumber = userData;
+        continueSession = true;
       }
     } else if (userSessionData[sessionID].service === "6") {
       if (userSessionData[sessionID].type === "privateX1") {
@@ -5130,12 +4257,13 @@ router.post("/ussd", async (req, res) => {
           // message = `Pay ${totalPrice}`;
           message =
             `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` + ` now `;
-          let amount = totalPrice
+            `${totalPrice}` +
+            ` now `;
+          let amount = totalPrice;
           await juni.pay(
             amount,
             amount,
-            formattedMsisdn,
+            userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive Private individual X1 car."
           );
         }
@@ -5161,12 +4289,13 @@ router.post("/ussd", async (req, res) => {
           // message = `Pay ${totalPrice}`;
           message =
             `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` + ` now `;
-          let amount = totalPrice
+            `${totalPrice}` +
+            ` now `;
+          let amount = totalPrice;
           await juni.pay(
             amount,
             amount,
-            formattedMsisdn,
+            userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive Private Individual X4 car."
           );
         }
@@ -5191,12 +4320,13 @@ router.post("/ussd", async (req, res) => {
         } else {
           message =
             `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` + ` now `;
-          let amount = totalPrice
+            `${totalPrice}` +
+            ` now `;
+          let amount = totalPrice;
           await juni.pay(
             amount,
             amount,
-            formattedMsisdn,
+            userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive Private Own Goods (Below 3,000 cc) car."
           );
         }
@@ -5222,12 +4352,13 @@ router.post("/ussd", async (req, res) => {
           // message = `Pay ${totalPrice}`;
           message =
             `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` + ` now `;
-          let amount = totalPrice
+            `${totalPrice}` +
+            ` now `;
+          let amount = totalPrice;
           await juni.pay(
             amount,
             amount,
-            formattedMsisdn,
+            userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive private Own Goods (ABOVE 3000 cc) car."
           );
         }
@@ -5255,12 +4386,13 @@ router.post("/ussd", async (req, res) => {
           // message = `Pay ${totalPrice}`;
           message =
             `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` + ` now `;
-          let amount = totalPrice
+            `${totalPrice}` +
+            ` now `;
+          let amount = totalPrice;
           await juni.pay(
             amount,
             amount,
-            formattedMsisdn,
+            userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive private General Cartage (BELOW 3000 cc)."
           );
         }
@@ -5288,12 +4420,13 @@ router.post("/ussd", async (req, res) => {
           // message = `Pay ${totalPrice}`;
           message =
             `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` + ` now `;
-          let amount = totalPrice
+            `${totalPrice}` +
+            ` now `;
+          let amount = totalPrice;
           await juni.pay(
             amount,
             amount,
-            formattedMsisdn,
+            userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive private General Cartage (ABOVE 3,000 cc) car."
           );
         }
@@ -5311,40 +4444,298 @@ router.post("/ussd", async (req, res) => {
         continueSession = false;
       }
     }
-    // End of copy 
+    // End of copy
 
-    // collect phone number from user
-    if (userSessionData[sessionID].type === "specialOnSite") {
-      service = "1"
-      message = "Please enter the phone number you wish to pay with."
-      userSessionData[sessionID].phoneNumber = userData
-      continueSession = true
-    } else if (userSessionData[sessionID].type === "specialOnRoad") {
-      service = "1"
-      message = "Please enter the phone number you wish to pay with."
-      userSessionData[sessionID].phoneNumber = userData
-      continueSession = true
-    } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-      service = "1"
-      message = "Please enter the phone number you wish to pay with."
-      userSessionData[sessionID].phoneNumber = userData
-      continueSession = true
-    } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-      service = "1"
-      message = "Please enter the phone number you wish to pay with."
-      userSessionData[sessionID].phoneNumber = userData
-      continueSession = true
-    } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-      service = "1"
-      message = "Please enter the phone number you wish to pay with."
-      userSessionData[sessionID].phoneNumber = userData
-      continueSession = true
+    if (userSessionData[sessionID].service === "1") {
+      if (userSessionData[sessionID].type === "specialOnSite") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            onSiteSpecialTypesServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              onSiteSpecialTypesServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              onSiteSpecialTypesServicePrice[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              onSiteSpecialTypesRenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              onSiteSpecialTypesRenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        }
+      } else if (userSessionData[sessionID].type === "specialOnRoad") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            onBoardSpecialTypesServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              onBoardSpecialTypesServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              onBoardSpecialTypesServicePrice[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              onBoardSpecialTypesRenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              onBoardSpecialTypesRenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        }
+      } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            GW1Class1ServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              GW1Class1ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 1) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            GW1Class1RenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              GW1Class1ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renewing a 3rd party commercial insurance package for GW1(CLASS 1) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        }
+      } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            GW1Class2ServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              GW1Class2ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              GW1Class2ServicePrice[userSessionData[sessionID].selectedOption]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 2) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            GW1Class2RenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              GW1Class2RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              GW1Class2RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renewing a 3rd party commercial insurance package for GW1(CLASS 2) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        }
+      } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          if (
+            GW1Class3ServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              GW1Class3ServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              GW1Class3ServicePrice[userSessionData[sessionID].selectedOption]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 3) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          if (
+            GW1Class3RenewalServicePrice.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${carname.name} will receive a prompt to authorize payment of ` +
+              GW1Class3RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now `;
+            let amount = parseInt(
+              GW1Class3RenewalServicePrice[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await juni.pay(
+              amount,
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renewing a 3rd party commercial insurance package for GW1(CLASS 3) car."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 1 - 5 are allowed.";
+          }
+        }
+      }
     }
+
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
-
   } else if (newSession === false && userSessionData[sessionID].step === 7) {
-    userSessionData[sessionID].phoneNumber = userData
+    userSessionData[sessionID].phoneNumber = userData;
     if (userSessionData[sessionID].type === "specialOnSite") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
@@ -5355,12 +4746,13 @@ router.post("/ussd", async (req, res) => {
         // message = `Pay ${totalPrice}`;
         message =
           `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` + ` now `;
-        let amount = totalPrice
+          `${totalPrice}` +
+          ` now `;
+        let amount = totalPrice;
         await juni.pay(
           amount,
           amount,
-          formattedMsisdn,
+          userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial Special Types (ON SITE) car."
         );
       }
@@ -5386,12 +4778,13 @@ router.post("/ussd", async (req, res) => {
         // message = `Pay ${totalPrice}`;
         message =
           `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` + ` now `;
-        let amount = totalPrice
+          `${totalPrice}` +
+          ` now `;
+        let amount = totalPrice;
         await juni.pay(
           amount,
           amount,
-          formattedMsisdn,
+          userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial Special Types (ON ROAD) car."
         );
       }
@@ -5416,12 +4809,13 @@ router.post("/ussd", async (req, res) => {
         // message = `Pay ${totalPrice}`;
         message =
           `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` + ` now `;
-        let amount = totalPrice
+          `${totalPrice}` +
+          ` now `;
+        let amount = totalPrice;
         await juni.pay(
           amount,
           amount,
-          formattedMsisdn,
+          userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial GW1 (CLASS 1) car."
         );
       }
@@ -5447,12 +4841,13 @@ router.post("/ussd", async (req, res) => {
         // message = `Pay ${totalPrice}`;
         message =
           `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` + ` now `;
-        let amount = totalPrice
+          `${totalPrice}` +
+          ` now `;
+        let amount = totalPrice;
         await juni.pay(
           amount,
           amount,
-          formattedMsisdn,
+          userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial GW1 (CLASS 2) car."
         );
       }
@@ -5478,12 +4873,13 @@ router.post("/ussd", async (req, res) => {
         // message = `Pay ${totalPrice}`;
         message =
           `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` + ` now `;
-        let amount = totalPrice
+          `${totalPrice}` +
+          ` now `;
+        let amount = totalPrice;
         await juni.pay(
           amount,
           amount,
-          formattedMsisdn,
+          userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial GW1 (CLASS 3) car."
         );
       }
@@ -5500,6 +4896,9 @@ router.post("/ussd", async (req, res) => {
       );
       continueSession = false;
     }
+  } else {
+    message = "Bad choice!";
+    continueSession = false;
   }
 
   let response = {
@@ -5514,13 +4913,13 @@ router.post("/ussd", async (req, res) => {
   res.send(response);
 });
 
-// Seerbit call back URL
+// junipay call back URL
 router.get("/callback", (req, res) => {
-  console.log("callback success");
+  console.log("callback success", req.body);
   res.status(200).json({ message: "callback success" });
 });
 
-// Seerbit redirect  URL
+// junipay redirect  URL
 router.get("/redirect", (req, res) => {
   console.log("redirect success");
 
