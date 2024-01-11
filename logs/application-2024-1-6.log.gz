@@ -1,0 +1,110 @@
+{
+  error: TypeError: Cannot read properties of undefined (reading 'step')
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:374:65
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'step')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'step')\n" +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:374:65\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "TypeError: Cannot read properties of undefined (reading 'step')\n" +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:374:65\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sat Jan 06 2024 22:02:34 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 17808,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 58286080,
+      heapTotal: 23490560,
+      heapUsed: 20664864,
+      external: 2796132,
+      arrayBuffers: 454080
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1286754.359 },
+  trace: [
+    {
+      column: 65,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 374,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-06 22:02:34',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'step')
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:375:65
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'step')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'step')\n" +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:375:65\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "TypeError: Cannot read properties of undefined (reading 'step')\n" +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:375:65\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sun Jan 07 2024 00:30:11 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 23632,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 55816192,
+      heapTotal: 21655552,
+      heapUsed: 20254832,
+      external: 2603888,
+      arrayBuffers: 261836
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1295611.531 },
+  trace: [
+    {
+      column: 65,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 375,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-07 00:30:11',
+  label: 'Event Log 🏷'
+}

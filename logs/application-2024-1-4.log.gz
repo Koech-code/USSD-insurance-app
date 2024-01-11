@@ -1,0 +1,407 @@
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:117:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1429:11,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:117:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1429:11',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:117:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1429:11',
+  exception: true,
+  date: 'Thu Jan 04 2024 13:18:06 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 14348,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 60964864,
+      heapTotal: 23482368,
+      heapUsed: 21621464,
+      external: 4136243,
+      arrayBuffers: 432035
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1082488.484 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 117,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 11,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1429,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-04 13:18:06',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'data')
+      at Object.pay (C:\Users\User\Documents\Arkesel-ussd-seerbit\controllers\paymentController.js:117:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1706:13,
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'data')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:117:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1706:13',
+  stack: "TypeError: Cannot read properties of undefined (reading 'data')\n" +
+    '    at Object.pay (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js:117:34)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1706:13',
+  exception: true,
+  date: 'Thu Jan 04 2024 13:22:37 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 24124,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 60276736,
+      heapTotal: 22695936,
+      heapUsed: 21331288,
+      external: 3937886,
+      arrayBuffers: 233678
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1082759.312 },
+  trace: [
+    {
+      column: 34,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\controllers\\paymentController.js',
+      function: 'Object.pay',
+      line: 117,
+      method: 'pay',
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    },
+    {
+      column: 13,
+      file: 'async C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1706,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-01-04 13:22:37',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: phoneNumber is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:348:27
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: 'uncaughtException: phoneNumber is not defined\n' +
+    'ReferenceError: phoneNumber is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:348:27\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: 'ReferenceError: phoneNumber is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:348:27\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Thu Jan 04 2024 21:27:59 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 24356,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 73420800,
+      heapTotal: 54939648,
+      heapUsed: 23535120,
+      external: 2828114,
+      arrayBuffers: 482639
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1111881.484 },
+  trace: [
+    {
+      column: 27,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 348,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-04 21:27:59',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: phoneNumber is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:360:27
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: 'uncaughtException: phoneNumber is not defined\n' +
+    'ReferenceError: phoneNumber is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:360:27\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: 'ReferenceError: phoneNumber is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:360:27\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Thu Jan 04 2024 21:29:27 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 19236,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 73351168,
+      heapTotal: 54677504,
+      heapUsed: 24159160,
+      external: 2916629,
+      arrayBuffers: 571154
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1111969.484 },
+  trace: [
+    {
+      column: 27,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 360,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-04 21:29:27',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: phoneNumber is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1432:13
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: 'uncaughtException: phoneNumber is not defined\n' +
+    'ReferenceError: phoneNumber is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1432:13\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: 'ReferenceError: phoneNumber is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1432:13\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Thu Jan 04 2024 21:32:34 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 14792,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 56987648,
+      heapTotal: 22433792,
+      heapUsed: 20493384,
+      external: 2519593,
+      arrayBuffers: 177541
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1112156.546 },
+  trace: [
+    {
+      column: 13,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1432,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-04 21:32:34',
+  label: 'Event Log 🏷'
+}
+{
+  error: TypeError: Cannot read properties of undefined (reading 'step')
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:374:65
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'step')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'step')\n" +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:374:65\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: "TypeError: Cannot read properties of undefined (reading 'step')\n" +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:374:65\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Thu Jan 04 2024 21:39:27 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 28008,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 55693312,
+      heapTotal: 21123072,
+      heapUsed: 20059096,
+      external: 2603880,
+      arrayBuffers: 261828
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1112569.421 },
+  trace: [
+    {
+      column: 65,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 374,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-04 21:39:27',
+  label: 'Event Log 🏷'
+}
+{
+  error: ReferenceError: formattedMsisdn is not defined
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:1683:15
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5),
+  level: 'error',
+  message: 'uncaughtException: formattedMsisdn is not defined\n' +
+    'ReferenceError: formattedMsisdn is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1683:15\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: 'ReferenceError: formattedMsisdn is not defined\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:1683:15\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Thu Jan 04 2024 21:40:57 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 21788,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 56655872,
+      heapTotal: 22433792,
+      heapUsed: 20425544,
+      external: 2517545,
+      arrayBuffers: 175493
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 1112659.718 },
+  trace: [
+    {
+      column: 15,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 1683,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-04 21:40:57',
+  label: 'Event Log 🏷'
+}
