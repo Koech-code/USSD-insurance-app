@@ -1,16 +1,18 @@
 require("dotenv").config();
-const axios = require("axios")
-const { v4: uuidv4 } = require('uuid');
+const axios = require("axios");
+const { v4: uuidv4 } = require("uuid");
+
+const { PaymentResponse } = require("../models/paymentResponseModel");
 
 /**
  * The function "getJuniCredentials" returns an object containing a token and a client ID.
  * @returns An object containing the token and clientId from Juni.
  */
 function getJuniCredentials() {
-    return {
-        token: process.env.JUNIPAY_TOKEN,
-        clientId: process.env.CLIENT_ID
-    };
+  return {
+    token: process.env.JUNIPAY_TOKEN,
+    clientId: process.env.CLIENT_ID,
+  };
 }
 
 /**
@@ -23,25 +25,25 @@ function getJuniCredentials() {
  * property set to "failed".
  */
 async function verify(telephoneNumber) {
-    let response
+  let response;
 
-    var config = {
-        method: "GET",
-        url: `https://api.junipayments.com/resolve?channel=mobile_money&phoneNumber=${telephoneNumber}`,
-        headers: {
-            'cache-control': 'no-cache',
-            'authorization': "Bearer " + getJuniCredentials().token,
-            'clientid': getJuniCredentials().clientId
-        }
+  var config = {
+    method: "GET",
+    url: `https://api.junipayments.com/resolve?channel=mobile_money&phoneNumber=${telephoneNumber}`,
+    headers: {
+      "cache-control": "no-cache",
+      authorization: "Bearer " + getJuniCredentials().token,
+      clientid: getJuniCredentials().clientId,
+    },
+  };
+  try {
+    response = await axios(config);
+    return response.data;
+  } catch (err) {
+    return {
+      status: "failed",
     };
-    try {
-        response = await axios(config);
-        return response.data;
-    } catch (err) {
-        return {
-            status: "failed"
-        }
-    }
+  }
 }
 
 /**
@@ -63,53 +65,91 @@ async function verify(telephoneNumber) {
  * returns an object with a status of "failed".
  */
 async function pay(amount, tot_amnt, phoneNumber, description) {
-    console.log(amount, tot_amnt, phoneNumber, description, )
-    let response
-    let callbackUrl = "https://sampleurl.com/callback"
-    let senderEmail = "test@mail.com"
-    let provider = "mtn"
-    let channel = "mobile_money"
-    
-       // Generate a UUID and remove non-numeric characters
-    let foreignID = uuidv4().replace(/\D/g, '');
+  console.log(amount, tot_amnt, phoneNumber, description);
+  let response;
+  let callbackUrl = "https://sampleurl.com/callback";
+  let senderEmail = "test@mail.com";
+  let provider = "mtn";
+  let channel = "mobile_money";
 
-    var config = {
-        method: "POST",
-        url: `https://api.junipayments.com/payment`,
-        headers: {
-            'cache-control': 'no-cache',
-            'authorization': "Bearer " + getJuniCredentials().token,
-            'clientid': getJuniCredentials().clientId
-        },
-        data: {
-            amount: amount,
-            tot_amnt: tot_amnt,
-            provider: provider,
-            phoneNumber: phoneNumber,
-            channel: channel,
-            senderEmail: senderEmail,
-            description: description,
-            foreignID: foreignID,
-            callbackUrl: callbackUrl
-        }
+  // Generate a UUID and remove non-numeric characters
+  let foreignID = uuidv4().replace(/\D/g, "");
+
+  var config = {
+    method: "POST",
+    url: `https://api.junipayments.com/payment`,
+    headers: {
+      "cache-control": "no-cache",
+      authorization: "Bearer " + getJuniCredentials().token,
+      clientid: getJuniCredentials().clientId,
+    },
+    data: {
+      amount: amount,
+      tot_amnt: tot_amnt,
+      provider: provider,
+      phoneNumber: phoneNumber,
+      channel: channel,
+      senderEmail: senderEmail,
+      description: description,
+      foreignID: foreignID,
+      callbackUrl: callbackUrl,
+    },
+  };
+
+  try {
+    response = await axios(config);
+    console.log(response.data);
+
+    // Save the response in the database using Sequelize
+    const savedResponse = await PaymentResponse.create({
+      status: response.data.status,
+      message: response.data.message,
+      transactionID: response.data.transID,
+      // Add other fields as needed
+    });
+
+    console.log(savedResponse.toJSON()); // Log the saved response details
+
+    // Wait for 5 seconds before checking the status
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    // Make a new POST request to check the status
+    const checkStatusConfig = {
+      method: "POST",
+      url: "https://api.junipayments.com/checktranstatus",
+      headers: {
+        "cache-control": "no-cache",
+        authorization: "Bearer " + getJuniCredentials().token,
+        clientid: getJuniCredentials().clientId,
+        "content-type": "application/json",
+      },
+      data: {
+        transID: response.data.transID,
+      },
     };
 
-    try {
-        response = await axios(config);
-        console.log(response.data)
-        return response.data;
-    } catch (err) {
-        console.log(err.response.data)
-        return {
-            status: "failed"
-        }
-    }
-}
+    const statusCheckResponse = await axios(checkStatusConfig);
+    const updatedStatus = statusCheckResponse.data.status;
 
+    // Update the existing record in the database with the new status
+    await PaymentResponse.update(
+      { status: updatedStatus },
+      { where: { transactionID: response.data.transID } }
+    );
+
+    console.log("Updated status:", updatedStatus);
+
+    return response.data;
+  } catch (err) {
+    console.error("Error during payment request:", err);
+    return {
+      status: "failed",
+      error: err.message, // Add more details if needed
+    };
+  }
+}
 
 module.exports = {
-    verify,
-    pay
-}
-
-
+  verify,
+  pay,
+};
