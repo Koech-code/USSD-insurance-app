@@ -1777,31 +1777,78 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
-          if (
-            maxBusServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              maxBusServicePrices[
+          // if (
+          //   maxBusServicePrices.hasOwnProperty(
+          //     userSessionData[sessionID].selectedOption
+          //   )
+          // ) {
+          //   service = userSessionData[sessionID].service;
+          //   // Get the price dynamically from the mapping
+          //   message =
+          //     `${carname.name} will receive a prompt to authorize payment of ` +
+          //     maxBusServicePrices[
+          //       userSessionData[sessionID].selectedOption
+          //     ].toFixed(2) +
+          //     ` now `;
+          //   let amount = parseInt(
+          //     maxBusServicePrices[userSessionData[sessionID].selectedOption]
+          //   );
+          //   await juni.pay(
+          //     amount,
+          //     amount,
+          //     userSessionData[sessionID].phoneNumber,
+          //     "Purchasing a 3rd party commercial insurance package for a Max Bus car."
+          //   );
+          //   continueSession = false;
+          // } else {
+          //   message = "Only numbers between 23 - 70 are allowed.";
+          //   continueSession = false;
+          // }
+          const timeoutDuration = 20000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
+
+          try {
+            if (
+              maxBusServicePrices.hasOwnProperty(
                 userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              maxBusServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            await juni.pay(
-              amount,
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for a Max Bus car."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 23 - 70 are allowed.";
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              message =
+                `${carname.name} will receive a prompt to authorize payment of ` +
+                maxBusServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2) +
+                ` now `;
+              let amount = parseInt(
+                maxBusServicePrices[userSessionData[sessionID].selectedOption]
+              );
+
+              const paymentPromise = juni.pay(
+                amount,
+                amount,
+                userSessionData[sessionID].phoneNumber,
+                "Purchasing a 3rd party commercial insurance package for a Max Bus car."
+              );
+
+              // Set a timeout for the payment operation
+              await Promise.race([
+                paymentPromise,
+                new Promise((_, reject) =>
+                  setTimeout(
+                    () => reject(new Error("Payment operation timed out")),
+                    timeoutDuration
+                  )
+                ),
+              ]);
+
+              continueSession = false;
+            } else {
+              message = "Only numbers between 23 - 70 are allowed.";
+              continueSession = false;
+            }
+          } catch (error) {
+            message = "Error processing payment: " + error.message;
             continueSession = false;
           }
         } else if (userSessionData[sessionID].type === "hiringCars") {
@@ -4009,216 +4056,7 @@ router.post("/ussd", async (req, res) => {
           continueSession = false;
         }
       }
-      // comprehensive renewal
-      // if (userSessionData[sessionID].InsuranceType === "purchase") {
-      //   if (userSessionData[sessionID].type === "specialOnSite") {
-      //     if (
-      //       onSiteSpecialTypesServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // onSiteSpecialTypesServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your cari";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         onSiteSpecialTypesServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
 
-      //     // continue here
-      //   } else if (userSessionData[sessionID].type === "specialOnRoad") {
-      //     if (
-      //       onBoardSpecialTypesServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // onBoardSpecialTypesServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         onBoardSpecialTypesServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-      //     if (
-      //       GW1Class1ServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // GW1Class1ServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         GW1Class1ServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-      //     if (
-      //       GW1Class2ServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // GW1Class2ServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         GW1Class2ServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-      //     if (
-      //       GW1Class3ServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // GW1Class3ServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         GW1Class3ServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   }
-      // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-      //   if (userSessionData[sessionID].type === "specialOnSite") {
-      //     if (
-      //       onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // onSiteSpecialTypesRenewalServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         onSiteSpecialTypesRenewalServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-
-      //     // continue here
-      //   } else if (userSessionData[sessionID].type === "specialOnRoad") {
-      //     if (
-      //       onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // onBoardSpecialTypesRenewalServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         onBoardSpecialTypesRenewalServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-      //     if (
-      //       GW1Class1RenewalServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // GW1Class1RenewalServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         GW1Class1RenewalServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-      //     if (
-      //       GW1Class2RenewalServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // GW1Class2RenewalServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         GW1Class2RenewalServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-      //     if (
-      //       GW1Class3RenewalServicePrice.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // GW1Class3RenewalServicePrice[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         GW1Class3RenewalServicePrice[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   }
-      // }
       // collect phone number from user
       if (userSessionData[sessionID].type === "specialOnSite") {
         service = "1";
