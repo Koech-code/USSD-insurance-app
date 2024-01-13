@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require("path");
+
 require("dotenv").config();
 // const mongoose = require("mongoose");
 
@@ -24,6 +26,11 @@ app.use(bodyParser.json());
 
 // Mount the Arkesel USSD routes
 app.use("/", arkeselUssdRoutes);
+
+// Root route to serve the HTML file
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
 // Start the Express server
 app.listen(port, () => {
