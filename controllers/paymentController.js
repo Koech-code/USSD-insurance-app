@@ -138,7 +138,25 @@ async function pay(amount, tot_amnt, phoneNumber, description) {
     );
 
     console.log("Updated status:", updatedStatus);
+    if (updatedStatus === "success") {
+      try {
+        // Assuming you have a function named verify that returns a Promise with user information
+        let userName = await verify(phoneNumber);
+        console.log("Name", userName.name);
 
+        let message = `Dear ${userName.name},\n\n`;
+        message += `Thank you for choosing Fast Insurance.`;
+
+        const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${phoneNumber}&from=Flexible&sms=${message}`;
+
+        // Make the GET request using Axios
+        const response = await axios.get(SEND_SMS_URL);
+
+        console.log("SMS Sent:", response.data.message);
+      } catch (error) {
+        console.error("Error sending SMS:", error.message);
+      }
+    }
     return response.data;
   } catch (err) {
     console.error("Error during payment request:", err);
