@@ -405,3 +405,91 @@
   timestamp: '2024-01-04 21:40:57',
   label: 'Event Log 🏷'
 }
+{
+  error: TypeError: Cannot read properties of undefined (reading 'status')
+      at Server.<anonymous> (C:\Users\User\Documents\Arkesel-ussd-seerbit\server.js:30:7)
+      at Object.onceWrapper (node:events:626:28)
+      at Server.emit (node:events:512:28)
+      at emitListeningNT (node:net:1902:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:81:21),
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'status')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'status')\n" +
+    '    at Server.<anonymous> (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js:30:7)\n' +
+    '    at Object.onceWrapper (node:events:626:28)\n' +
+    '    at Server.emit (node:events:512:28)\n' +
+    '    at emitListeningNT (node:net:1902:10)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)',
+  stack: "TypeError: Cannot read properties of undefined (reading 'status')\n" +
+    '    at Server.<anonymous> (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js:30:7)\n' +
+    '    at Object.onceWrapper (node:events:626:28)\n' +
+    '    at Server.emit (node:events:512:28)\n' +
+    '    at emitListeningNT (node:net:1902:10)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)',
+  exception: true,
+  date: 'Thu Jan 11 2024 21:09:10 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 21360,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 72499200,
+      heapTotal: 36085760,
+      heapUsed: 23158744,
+      external: 2743922,
+      arrayBuffers: 410583
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 218487.515 },
+  trace: [
+    {
+      column: 7,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js',
+      function: null,
+      line: 30,
+      method: null,
+      native: false
+    },
+    {
+      column: 28,
+      file: 'node:events',
+      function: 'Object.onceWrapper',
+      line: 626,
+      method: 'onceWrapper',
+      native: false
+    },
+    {
+      column: 28,
+      file: 'node:events',
+      function: 'Server.emit',
+      line: 512,
+      method: 'emit',
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:net',
+      function: 'emitListeningNT',
+      line: 1902,
+      method: null,
+      native: false
+    },
+    {
+      column: 21,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 81,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-11 21:09:10',
+  label: 'Event Log 🏷'
+}

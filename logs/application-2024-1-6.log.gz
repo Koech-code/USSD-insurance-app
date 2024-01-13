@@ -108,3 +108,126 @@
   timestamp: '2024-01-07 00:30:11',
   label: 'Event Log 🏷'
 }
+{
+  error: Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+      at new NodeError (node:internal/errors:405:5)
+      at ServerResponse.setHeader (node:_http_outgoing:652:11)
+      at ServerResponse.header (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\response.js:794:10)
+      at ServerResponse.send (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\response.js:174:12)
+      at ServerResponse.json (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\response.js:278:15)
+      at ServerResponse.send (C:\Users\User\Documents\Arkesel-ussd-seerbit\node_modules\express\lib\response.js:162:21)
+      at C:\Users\User\Documents\Arkesel-ussd-seerbit\routes\ussdRoute.js:5107:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+    code: 'ERR_HTTP_HEADERS_SENT'
+  },
+  level: 'error',
+  message: 'uncaughtException: Cannot set headers after they are sent to the client\n' +
+    'Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client\n' +
+    '    at new NodeError (node:internal/errors:405:5)\n' +
+    '    at ServerResponse.setHeader (node:_http_outgoing:652:11)\n' +
+    '    at ServerResponse.header (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js:794:10)\n' +
+    '    at ServerResponse.send (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js:174:12)\n' +
+    '    at ServerResponse.json (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js:278:15)\n' +
+    '    at ServerResponse.send (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js:162:21)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:5107:9\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  stack: 'Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client\n' +
+    '    at new NodeError (node:internal/errors:405:5)\n' +
+    '    at ServerResponse.setHeader (node:_http_outgoing:652:11)\n' +
+    '    at ServerResponse.header (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js:794:10)\n' +
+    '    at ServerResponse.send (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js:174:12)\n' +
+    '    at ServerResponse.json (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js:278:15)\n' +
+    '    at ServerResponse.send (C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js:162:21)\n' +
+    '    at C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js:5107:9\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)',
+  exception: true,
+  date: 'Sat Jan 13 2024 08:52:13 GMT+0300 (East Africa Time)',
+  process: {
+    pid: 6048,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v20.4.0',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\server.js'
+    ],
+    memoryUsage: {
+      rss: 56602624,
+      heapTotal: 22216704,
+      heapUsed: 20360624,
+      external: 2603888,
+      arrayBuffers: 261836
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 347068.359 },
+  trace: [
+    {
+      column: 5,
+      file: 'node:internal/errors',
+      function: 'new NodeError',
+      line: 405,
+      method: null,
+      native: false
+    },
+    {
+      column: 11,
+      file: 'node:_http_outgoing',
+      function: 'ServerResponse.setHeader',
+      line: 652,
+      method: 'setHeader',
+      native: false
+    },
+    {
+      column: 10,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js',
+      function: 'ServerResponse.header',
+      line: 794,
+      method: 'header',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js',
+      function: 'ServerResponse.send',
+      line: 174,
+      method: 'send',
+      native: false
+    },
+    {
+      column: 15,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js',
+      function: 'ServerResponse.json',
+      line: 278,
+      method: 'json',
+      native: false
+    },
+    {
+      column: 21,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\node_modules\\express\\lib\\response.js',
+      function: 'ServerResponse.send',
+      line: 162,
+      method: 'send',
+      native: false
+    },
+    {
+      column: 9,
+      file: 'C:\\Users\\User\\Documents\\Arkesel-ussd-seerbit\\routes\\ussdRoute.js',
+      function: null,
+      line: 5107,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/process/task_queues',
+      function: 'process.processTicksAndRejections',
+      line: 95,
+      method: 'processTicksAndRejections',
+      native: false
+    }
+  ],
+  timestamp: '2024-01-13 08:52:13',
+  label: 'Event Log 🏷'
+}
