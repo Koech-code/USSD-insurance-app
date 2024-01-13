@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      .animation-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .animation-text {
+        font-family: "Arial", sans-serif;
+        font-size: 24px;
+        color: #4caf50; /* Green color for the dice icon */
+        margin-left: 10px;
+        opacity: 0;
+        animation: fadeIn 2s linear infinite;
+      }
+
+      .dice-icon {
+        font-size: 30px;
+        color: #eb7e19; /* Green color for the dice icon */
+        display: inline-block;
+        animation: rollDice 2s ease-in-out infinite;
+      }
+
+      @keyframes runningText {
+        0% {
+          left: 0;
+        }
+        50% {
+          left: 50px;
+        }
+        100% {
+          left: 0;
+        }
+      }
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes rollDice {
+        0% {
+          transform: rotate(0deg);
+        }
+        25% {
+          transform: rotate(90deg);
+        }
+        50% {
+          transform: rotate(180deg);
+        }
+        75% {
+          transform: rotate(270deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="animation-container">
+      <i class="fas fa-dice dice-icon"></i>
+      <div class="animation-text">Your API is running!</div>
+    </div>
+  </body>
+</html>
