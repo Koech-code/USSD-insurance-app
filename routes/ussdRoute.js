@@ -1804,7 +1804,7 @@ router.post("/ussd", async (req, res) => {
           //   message = "Only numbers between 23 - 70 are allowed.";
           //   continueSession = false;
           // }
-          const timeoutDuration = 20000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
+          const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
 
           try {
             if (
@@ -1814,23 +1814,19 @@ router.post("/ussd", async (req, res) => {
             ) {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
-              message =
-                `${carname.name} will receive a prompt to authorize payment of ` +
-                maxBusServicePrices[
-                  userSessionData[sessionID].selectedOption
-                ].toFixed(2) +
-                ` now `;
               let amount = parseInt(
+                maxBusServicePrices[userSessionData[sessionID].selectedOption]
+              );
+              let tot_amnt = parseInt(
                 maxBusServicePrices[userSessionData[sessionID].selectedOption]
               );
 
               const paymentPromise = juni.pay(
                 amount,
-                amount,
+                tot_amnt,
                 userSessionData[sessionID].phoneNumber,
                 "Purchasing a 3rd party commercial insurance package for a Max Bus car."
               );
-
               // Set a timeout for the payment operation
               await Promise.race([
                 paymentPromise,
@@ -1842,6 +1838,10 @@ router.post("/ussd", async (req, res) => {
                 ),
               ]);
 
+              // Inform the user about the payment prompt
+              message = `You will receive a prompt to authorize payment of ${amount.toFixed(
+                2
+              )} now!`;
               continueSession = false;
             } else {
               message = "Only numbers between 23 - 70 are allowed.";
