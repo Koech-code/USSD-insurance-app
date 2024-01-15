@@ -1,4 +1,7 @@
 const express = require("express");
+require("dotenv").config();
+const axios = require("axios");
+const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
 const juni = require("../controllers/paymentController.js");
 const USSDCODE = "*928*311#";
@@ -1777,34 +1780,12 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
-          // if (
-          //   maxBusServicePrices.hasOwnProperty(
-          //     userSessionData[sessionID].selectedOption
-          //   )
-          // ) {
-          //   service = userSessionData[sessionID].service;
-          //   // Get the price dynamically from the mapping
-          //   message =
-          //     `${carname.name} will receive a prompt to authorize payment of ` +
-          //     maxBusServicePrices[
-          //       userSessionData[sessionID].selectedOption
-          //     ].toFixed(2) +
-          //     ` now `;
-          //   let amount = parseInt(
-          //     maxBusServicePrices[userSessionData[sessionID].selectedOption]
-          //   );
-          //   await juni.pay(
-          //     amount,
-          //     amount,
-          //     userSessionData[sessionID].phoneNumber,
-          //     "Purchasing a 3rd party commercial insurance package for a Max Bus car."
-          //   );
-          //   continueSession = false;
-          // } else {
-          //   message = "Only numbers between 23 - 70 are allowed.";
-          //   continueSession = false;
-          // }
-          const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
+          const url = "https://api.junipayments.com/payment";
+          const headers = {
+            "cache-control": "no-cache",
+            authorization: `Bearer ${process.env.JUNIPAY_TOKEN}`,
+            clientid: process.env.CLIENT_ID,
+          };
 
           try {
             if (
@@ -1812,37 +1793,43 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               )
             ) {
-              service = userSessionData[sessionID].service;
+              const service = userSessionData[sessionID].service;
+
               // Get the price dynamically from the mapping
-              let amount = parseInt(
-                maxBusServicePrices[userSessionData[sessionID].selectedOption]
-              );
-              let tot_amnt = parseInt(
-                maxBusServicePrices[userSessionData[sessionID].selectedOption]
+              const amount = parseInt(
+                maxBusServicePrices[
+                  userSessionData[sessionID].selectedOption
+                ].toFixed(2)
               );
 
-              const paymentPromise = juni.pay(
-                amount,
-                tot_amnt,
-                userSessionData[sessionID].phoneNumber,
-                "Purchasing a 3rd party commercial insurance package for a Max Bus car."
-              );
-              // Set a timeout for the payment operation
-              await Promise.race([
-                paymentPromise,
-                new Promise((_, reject) =>
-                  setTimeout(
-                    () => reject(new Error("Payment operation timed out")),
-                    timeoutDuration
-                  )
-                ),
-              ]);
-
-              // Inform the user about the payment prompt
-              message = `You will receive a prompt to authorize payment of ${amount.toFixed(
-                2
-              )} now!`;
-              continueSession = false;
+              // Proceed with payment prompt
+              const response = await axios
+                .post(
+                  url,
+                  {
+                    amount: amount,
+                    tot_amnt: amount,
+                    provider: "mtn",
+                    phoneNumber: userSessionData[sessionID].phoneNumber, // Replace with the actual phone number
+                    channel: "mobile_money",
+                    senderEmail: "payer@email.com", // Replace with the actual email
+                    description: "Purchase for MaxBus Car Insurance",
+                    foreignID: uuidv4().replace(/\D/g, ""),
+                    callbackUrl: "https://yoururl/callbackUrl", // Replace with the actual callback URL
+                  },
+                  { headers }
+                )
+                .then((paymentResponse) => {
+                  // Check the payment status before sending the message
+                  if (paymentResponse.data.status === "pending") {
+                    // Send message to the user
+                    message = `You will receive a prompt to authorize payment of ${amount.toFixed(
+                      2
+                    )} now!`;
+                    continueSession = false;
+                  }
+                });
+              console.log("RESPONSE", response);
             } else {
               message = "Only numbers between 23 - 70 are allowed.";
               continueSession = false;
@@ -1851,6 +1838,8 @@ router.post("/ussd", async (req, res) => {
             message = "Error processing payment: " + error.message;
             continueSession = false;
           }
+
+          // Continue with the rest of your code...
         } else if (userSessionData[sessionID].type === "hiringCars") {
           if (
             hiringCarsServicePrices.hasOwnProperty(
