@@ -344,6 +344,7 @@ const GW1Class3RenewalServicePrice = {
 
 router.post("/ussd", async (req, res) => {
   const { sessionID, newSession, msisdn, userData, userID, network } = req.body;
+  console.log("Arkesel Response", req.body);
   var carname = await juni.verify(msisdn);
   // Replace "233" with "0" in the msisdn variable
   // const formattedMsisdn = msisdn.replace(/^233/, '0');
