@@ -4753,7 +4753,7 @@ router.post("/ussd", async (req, res) => {
 });
 
 // junipay call back URL
-router.get("/callback", (req, res) => {
+router.post("/callback", (req, res) => {
   console.log("callback success", req.body);
   res.status(200).json({ message: "callback success" });
 });
