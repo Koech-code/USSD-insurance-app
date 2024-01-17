@@ -1778,35 +1778,6 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
-          // if (
-          //   maxBusServicePrices.hasOwnProperty(
-          //     userSessionData[sessionID].selectedOption
-          //   )
-          // ) {
-          //   service = userSessionData[sessionID].service;
-          //   // Get the price dynamically from the mapping
-          //   message =
-          //     `${carname.name} will receive a prompt to authorize payment of ` +
-          //     maxBusServicePrices[
-          //       userSessionData[sessionID].selectedOption
-          //     ].toFixed(2) +
-          //     ` now `;
-          //   let amount = parseInt(
-          //     maxBusServicePrices[userSessionData[sessionID].selectedOption]
-          //   );
-          //   await juni.pay(
-          //     amount,
-          //     amount,
-          //     userSessionData[sessionID].phoneNumber,
-          //     "Purchasing a 3rd party commercial insurance package for a Max Bus car."
-          //   );
-          //   continueSession = false;
-          // } else {
-          //   message = "Only numbers between 23 - 70 are allowed.";
-          //   continueSession = false;
-          // }
-          const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
-
           try {
             if (
               maxBusServicePrices.hasOwnProperty(
@@ -1818,27 +1789,12 @@ router.post("/ussd", async (req, res) => {
               let amount = parseInt(
                 maxBusServicePrices[userSessionData[sessionID].selectedOption]
               );
-              let tot_amnt = parseInt(
-                maxBusServicePrices[userSessionData[sessionID].selectedOption]
-              );
-
-              const paymentPromise = juni.pay(
+              await juni.pay(
                 amount,
-                tot_amnt,
+                amount,
                 userSessionData[sessionID].phoneNumber,
                 "Purchasing a 3rd party commercial insurance package for a Max Bus car."
               );
-              // Set a timeout for the payment operation
-              await Promise.race([
-                paymentPromise,
-                new Promise((_, reject) =>
-                  setTimeout(
-                    () => reject(new Error("Payment operation timed out")),
-                    timeoutDuration
-                  )
-                ),
-              ]);
-
               // Inform the user about the payment prompt
               message = `You will receive a prompt to authorize payment of ${amount.toFixed(
                 2
@@ -1849,7 +1805,7 @@ router.post("/ussd", async (req, res) => {
               continueSession = false;
             }
           } catch (error) {
-            message = "Error processing payment: " + error.message;
+            message = "Error processing payment";
             continueSession = false;
           }
         } else if (userSessionData[sessionID].type === "hiringCars") {
