@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const { v4: uuidv4 } = require("uuid");
+require("dotenv").config();
+const axios = require("axios");
 const juni = require("../controllers/paymentController.js");
 const USSDCODE = "*928*311#";
 const userSessionData = {};
@@ -364,6 +367,7 @@ router.post("/ussd", async (req, res) => {
     // Initial session setup
     userSessionData[sessionID] = {
       step: 1,
+      amount: undefined,
       phoneNumber: undefined,
       phoneNumberComp: undefined,
     };
@@ -1778,34 +1782,69 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
+          const url = "https://api.junipayments.com/payment";
+          const headers = {
+            "cache-control": "no-cache",
+            authorization: `Bearer ${process.env.JUNIPAY_TOKEN}`,
+            clientid: process.env.CLIENT_ID,
+          };
+
           try {
             if (
               maxBusServicePrices.hasOwnProperty(
                 userSessionData[sessionID].selectedOption
               )
             ) {
-              service = userSessionData[sessionID].service;
-              // Get the price dynamically from the mapping
+              const service = userSessionData[sessionID].service;
               let amount = parseInt(
                 maxBusServicePrices[userSessionData[sessionID].selectedOption]
               );
-              await juni.pay(
-                amount,
-                amount,
-                userSessionData[sessionID].phoneNumber,
-                "Purchasing a 3rd party commercial insurance package for a Max Bus car."
+
+              // Additional data for the POST request
+              // const postData = {
+              // //   amount,
+              // //   amount,
+              // //   phoneNumber: userSessionData[sessionID].phoneNumber,
+              // //   description: "Max bus insurance purchase",
+              // //   callbackUrl: "https://sampleurl.com/callback",
+              // //   senderEmail: "test@mail.com",
+              // //   provider: "mtn",
+              // //   channel: "mobile_money",
+              // //   foreignID: uuidv4().replace(/\D/g, ""),
+              // // };
+
+              // console.log("Data", postData);
+              // Send POST request using Axios
+              const response = await axios.post(
+                url,
+                {
+                  amount: amount,
+                  tot_amnt: amount,
+                  provider: "mtn",
+                  phoneNumber: userSessionData[sessionID].phoneNumber, // Replace with the actual phone number
+                  channel: "mobile_money",
+                  senderEmail: "payer@email.com", // Replace with the actual email
+                  description: "Purchase for MaxBus Car Insurance",
+                  foreignID: uuidv4().replace(/\D/g, ""),
+                  callbackUrl: "https://yoururl/callbackUrl", // Replace with the actual callback URL
+                },
+                { headers }
               );
-              // Inform the user about the payment prompt
-              message = `You will receive a prompt to authorize payment of ${amount.toFixed(
-                2
-              )} now!`;
-              continueSession = false;
+              console.log("res", response);
+              // Check the response and handle accordingly
+              if (response.data.status === "pending") {
+                // message = `Payment successful! Transaction ID: ${response.data.transactionID}`;
+                message = "You will receive a payment prompt";
+                continueSession = false;
+              } else {
+                message = "Payment failed. Please try again.";
+              }
             } else {
               message = "Only numbers between 23 - 70 are allowed.";
               continueSession = false;
             }
           } catch (error) {
-            message = "Error processing payment";
+            message = "Error processing payment: " + error.message;
             continueSession = false;
           }
         } else if (userSessionData[sessionID].type === "hiringCars") {
