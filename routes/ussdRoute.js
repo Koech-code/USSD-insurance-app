@@ -10,12 +10,38 @@ const juni = require("../controllers/paymentController.js");
 const USSDCODE = "*928*311#";
 const userSessionData = {};
 
+async function verify(telephoneNumber) {
+  let response;
+
+  var config = {
+    method: "GET",
+    url: `https://api.junipayments.com/resolve?channel=mobile_money&phoneNumber=${telephoneNumber}`,
+    headers: {
+      "cache-control": "no-cache",
+      authorization: `Bearer ${process.env.JUNIPAY_TOKEN}`,
+      clientid: process.env.CLIENT_ID,
+    },
+  };
+  try {
+    response = await axios(config);
+    return response.data;
+  } catch (err) {
+    return {
+      status: "failed",
+    };
+  }
+}
+
 async function pay(amount, tot_amnt, phoneNumber, description) {
   console.log(amount, tot_amnt, phoneNumber, description);
+
+  // Fetch the provider from the endpoint
+  const customerInfo = await verify(phoneNumber);
+
   let response;
   let callbackUrl = "https://sampleurl.com/callback";
   let senderEmail = "test@mail.com";
-  let provider = "mtn";
+  let provider = customerInfo.provider;
   let channel = "mobile_money";
 
   // Generate a UUID and remove non-numeric characters
