@@ -59,7 +59,7 @@ async function main() {
   return { key, secret: generatedSecret };
 }
 
-// Modified pay function
+// pay function
 async function pay(amount, customerNumber, item_desc) {
   console.log(amount, customerNumber, item_desc);
 
@@ -78,8 +78,7 @@ async function pay(amount, customerNumber, item_desc) {
     method: "POST",
     url: `https://api.nalosolutions.com/payplus/api/`,
     headers: {
-      "cache-control": "no-cache",
-      // authorization: `Bearer ${process.env.TOKEN}`,
+      "Content-Type": "application/json",
     },
     data: {
       amount: amount,
@@ -90,8 +89,8 @@ async function pay(amount, customerNumber, item_desc) {
       customerName: customerName,
       order_id: order_id,
       callback: callback,
-      key: key, // Include the generated key
-      secret: secret, // Include the generated secret
+      key: key,
+      secret: secret,
     },
   };
 
