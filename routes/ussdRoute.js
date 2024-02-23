@@ -79,7 +79,7 @@ async function pay(amount, customerNumber, item_desc) {
     url: `https://api.nalosolutions.com/payplus/api/`,
     headers: {
       "cache-control": "no-cache",
-      authorization: `Bearer ${process.env.TOKEN}`,
+      // authorization: `Bearer ${process.env.TOKEN}`,
     },
     data: {
       amount: amount,
