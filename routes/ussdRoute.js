@@ -95,7 +95,7 @@ async function pay(amount, customerNumber, item_desc) {
   };
 
   response = axios(config);
-  console.log(response.data);
+  console.log("Payment Params", response.data);
 }
 
 const finalMessage = "You will receive a prompt to authorize payment of";
