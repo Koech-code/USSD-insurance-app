@@ -1,70 +1,97 @@
 const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 
 const { PaymentResponse } = require("../models/paymentResponseModel");
 
 require("dotenv").config();
 const axios = require("axios");
-const juni = require("../controllers/paymentController.js");
+const { secret } = require("../scripts/config.js");
 const USSDCODE = "*928*311#";
 const userSessionData = {};
 
-async function verify(telephoneNumber) {
-  let response;
-
-  var config = {
-    method: "GET",
-    url: `https://api.junipayments.com/resolve?channel=mobile_money&phoneNumber=${telephoneNumber}`,
-    headers: {
-      "cache-control": "no-cache",
-      authorization: `Bearer ${process.env.JUNIPAY_TOKEN}`,
-      clientid: process.env.CLIENT_ID,
-    },
+// Function to generate a random 4-digit number using UUIDv4
+async function generateRandom4DigitNumber() {
+  // Generate a UUIDv4
+  const uuidv4 = () => {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        const r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
   };
-  try {
-    response = await axios(config);
-    return response.data;
-  } catch (err) {
-    return {
-      status: "failed",
-    };
-  }
+
+  // Generate a UUIDv4
+  const uuid = uuidv4();
+
+  // Extract 4 random digits from the UUID and filter out non-digit characters
+  const randomDigits = uuid.split("-").join("").replace(/\D/g, "").substr(0, 4);
+
+  // Return the random 4-digit number
+  return randomDigits;
 }
 
-async function pay(amount, tot_amnt, phoneNumber, description) {
-  console.log(amount, tot_amnt, phoneNumber, description);
+// Function to generate a secret
+async function generateSecret(username, password, key) {
+  const hashedPassword = crypto
+    .createHash("md5")
+    .update(password)
+    .digest("hex");
+  const secret = crypto
+    .createHash("md5")
+    .update(username + key + hashedPassword)
+    .digest("hex");
+  return secret;
+}
 
-  // Fetch the provider from the endpoint
-  const customerInfo = await verify(phoneNumber);
+// Main function to generate key and secret
+async function main() {
+  const username = process.env.USERNAME;
+  const password = process.env.PASSWORD;
+  const key = await generateRandom4DigitNumber();
+
+  const generatedSecret = await generateSecret(username, password, key);
+
+  return { key, secret: generatedSecret };
+}
+
+// Modified pay function
+async function pay(amount, customerNumber, item_desc) {
+  console.log(amount, customerNumber, item_desc);
 
   let response;
-  let callbackUrl = "https://sampleurl.com/callback";
-  let senderEmail = "test@mail.com";
-  let provider = customerInfo.provider;
-  let channel = "mobile_money";
+  let callback = "http://gblinsurancegh.com:5000/callback";
+  let merchant_id = process.env.MERCHANT_ID;
 
-  // Generate a UUID and remove non-numeric characters
-  let foreignID = uuidv4().replace(/\D/g, "");
+  // Call main to get key and secret
+  const { key, secret } = await main();
+
+  let order_id = uuidv4().replace(/\D/g, "");
+  let customerName = "name";
+  let payby = "MTN";
 
   var config = {
     method: "POST",
-    url: `https://api.junipayments.com/payment`,
+    url: `https://api.nalosolutions.com/payplus/api/`,
     headers: {
       "cache-control": "no-cache",
-      authorization: `Bearer ${process.env.JUNIPAY_TOKEN}`,
-      clientid: process.env.CLIENT_ID,
+      authorization: `Bearer ${process.env.TOKEN}`,
     },
     data: {
       amount: amount,
-      tot_amnt: tot_amnt,
-      provider: provider,
-      phoneNumber: phoneNumber,
-      channel: channel,
-      senderEmail: senderEmail,
-      description: description,
-      foreignID: foreignID,
-      callbackUrl: callbackUrl,
+      payby: payby,
+      customerNumber: customerNumber,
+      item_desc: item_desc,
+      merchant_id: merchant_id,
+      customerName: customerName,
+      order_id: order_id,
+      callback: callback,
+      key: key, // Include the generated key
+      secret: secret, // Include the generated secret
     },
   };
 
@@ -72,6 +99,7 @@ async function pay(amount, tot_amnt, phoneNumber, description) {
   console.log(response.data);
 }
 
+const finalMessage = "You will receive a prompt to authorize payment of";
 // Insurance Purchase prices
 const miniBusServicePrices = {
   5: 633.0,
@@ -413,7 +441,6 @@ const GW1Class3RenewalServicePrice = {
 router.post("/ussd", async (req, res) => {
   const { sessionID, newSession, msisdn, userData, userID, network } = req.body;
   console.log("Arkesel Response", req.body);
-  var carname = await juni.verify(msisdn);
   // Replace "233" with "0" in the msisdn variable
   // const formattedMsisdn = msisdn.replace(/^233/, '0');
 
@@ -1375,8 +1402,7 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].InsuranceType === "purchase") {
             service = "1";
             message =
-              "You're about to purchase Special Types(Z 802 ON SITE) 3rd party insurance package. Enter the exact passenger number(e.g 2)\n";
-            message += "1. 1 - 5 persons\n";
+              "You're about to purchase Special Types(Z 802 ON SITE) 3rd party insurance package. Enter the exact passenger capacity(between 1 - 5)\n";
             // Save the user's input as the selected option
             userSessionData[sessionID].selectedOption = userData;
             console.log("user selected", userData);
@@ -1606,12 +1632,8 @@ router.post("/ussd", async (req, res) => {
           service = userSessionData[sessionID].service;
 
           let amount = 243;
-          message =
-            `${carname.name} will receive a prompt to authorize payment of ` +
-            `${amount}` +
-            ` now.`;
-          await juni.pay(
-            amount,
+          message = `${finalMessage} ` + `${amount}` + ` now.`;
+          await pay(
             amount,
             userSessionData[sessionID].phoneNumber,
             "Purchasing a motor cycle insurance package for 2 persons."
@@ -1621,12 +1643,8 @@ router.post("/ussd", async (req, res) => {
           service = userSessionData[sessionID].service;
 
           let amount = 193;
-          message =
-            `${carname.name} will receive a prompt to authorize payment of ` +
-            `${amount}` +
-            ` now.`;
-          await juni.pay(
-            amount,
+          message = `${finalMessage} ` + `${amount}` + ` now.`;
+          await pay(
             amount,
             userSessionData[sessionID].phoneNumber,
             "Renewing a motor cycle insurance package for 2 persons."
@@ -1855,7 +1873,7 @@ router.post("/ussd", async (req, res) => {
           //   service = userSessionData[sessionID].service;
           //   // Get the price dynamically from the mapping
           //   message =
-          //     `${carname.name} will receive a prompt to authorize payment of ` +
+          //     `${finalMessage} ` +
           //     maxBusServicePrices[
           //       userSessionData[sessionID].selectedOption
           //     ].toFixed(2) +
@@ -1863,7 +1881,7 @@ router.post("/ussd", async (req, res) => {
           //   let amount = parseInt(
           //     maxBusServicePrices[userSessionData[sessionID].selectedOption]
           //   );
-          //   await juni.pay(
+          //   await pay(
           //     amount,
           //     amount,
           //     userSessionData[sessionID].phoneNumber,
@@ -1890,7 +1908,6 @@ router.post("/ussd", async (req, res) => {
 
               const paymentPromise = await pay(
                 amount,
-                amount,
                 userSessionData[sessionID].phoneNumber,
                 "Purchasing a 3rd party commercial insurance package for a Max Bus car."
               );
@@ -1906,9 +1923,7 @@ router.post("/ussd", async (req, res) => {
               ]);
 
               // Inform the user about the payment prompt
-              message = `You will receive a prompt to authorize payment of ${amount.toFixed(
-                2
-              )} now!`;
+              message = `${finalMessage} ${amount.toFixed(2)} now!`;
               continueSession = false;
             } else {
               message = "Only numbers between 23 - 70 are allowed.";
@@ -1926,7 +1941,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               hiringCarsServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -1934,8 +1949,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Hiring car."
@@ -1953,7 +1967,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               ambulanceOrHearseServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -1963,8 +1977,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Ambulance/Hearse car."
@@ -1982,7 +1995,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               artOrTankersServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -1992,8 +2005,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Art/Tankers car."
@@ -2010,7 +2022,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               taxiServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2018,8 +2030,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               taxiServicePrices[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Taxi car."
@@ -2036,7 +2047,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               miniBusServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2044,8 +2055,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               miniBusServicePrices[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for a Mini Bus car."
@@ -2065,7 +2075,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               maxBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2075,8 +2085,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for a Max Bus car."
@@ -2093,7 +2102,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               hiringCarsRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2103,8 +2112,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for a Hiring car."
@@ -2121,7 +2129,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               ambulanceOrHearseRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2131,8 +2139,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for an Ambulance/Hearse car."
@@ -2149,7 +2156,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               artOrTankersRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2159,8 +2166,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for an Art/Tanker car."
@@ -2177,7 +2183,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               taxiRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2187,8 +2193,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for a Taxi car."
@@ -2205,7 +2210,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               miniBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2215,8 +2220,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for a Mini Bus car."
@@ -2382,7 +2386,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               privateIndividualX1Prices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2392,8 +2396,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for a Private Individual X1 car."
@@ -2413,7 +2416,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               privateIndividualX4Prices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2423,8 +2426,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for a Private Individual X4 car."
@@ -2444,7 +2446,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
                 2
               ) +
@@ -2452,8 +2454,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               ownGoodsBelow[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for Own Goods (BELOW 3,000 cc) car."
@@ -2472,7 +2473,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
                 2
               ) +
@@ -2480,8 +2481,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               ownGoodsAbove[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for Own Goods (ABOVE 3,000 cc) car."
@@ -2500,7 +2500,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               generalGartageBelow[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2508,8 +2508,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               generalGartageBelow[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for General Gartage (BELOW 3,000 cc) car."
@@ -2528,7 +2527,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               generalGartageAbove[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2536,8 +2535,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               generalGartageAbove[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for General Gartage (ABOVE 3,000 cc) car."
@@ -2556,7 +2554,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               miniBusServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2564,8 +2562,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               miniBusServicePrices[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party private insurance package for Mini Bus car."
@@ -2591,7 +2588,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               privateIndividualX1RenewalPrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2601,8 +2598,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for a Private Individual X1 car."
@@ -2622,7 +2618,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               privateIndividualX4RenewalPrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2632,8 +2628,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for a Private Individual X4 car."
@@ -2653,7 +2648,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               ownGoodsBelowRenewalPrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2663,8 +2658,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for Own Goods (BELOW 3,000 cc) car."
@@ -2683,7 +2677,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               ownGoodsAboveRenewalPrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2693,8 +2687,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for Own Goods (ABOVE 3,000 cc) car."
@@ -2713,7 +2706,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               generalCartageRenewalBelow[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2723,8 +2716,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for General Gartage (BELOW 3,000 cc) car."
@@ -2743,7 +2735,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               generalCartageRenewalAbove[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2753,8 +2745,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for General Gartage (ABOVE 3,000 cc) car."
@@ -2773,7 +2764,7 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               miniBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -2783,8 +2774,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party private insurance package for Mini Bus car."
@@ -3685,13 +3675,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a Motor Cycle car."
@@ -3715,13 +3701,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a Motor Cycle car."
@@ -3749,13 +3731,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Max Bus car."
@@ -3781,13 +3759,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Hiring car."
@@ -3813,13 +3787,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Ambulance/Hearse car."
@@ -3845,13 +3815,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Art or Tanker car."
@@ -3877,13 +3843,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Taxi car."
@@ -3909,13 +3871,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Purchasing a comprehensive commercial insurance package for Mini Bus car."
@@ -3940,13 +3898,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Max Bus car."
@@ -3972,13 +3926,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Hiring car."
@@ -4004,13 +3954,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Ambulance/Hearse car."
@@ -4036,13 +3982,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Art or Tanker car."
@@ -4068,13 +4010,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Taxi car."
@@ -4100,13 +4038,9 @@ router.post("/ussd", async (req, res) => {
             message = "The car value cannot be less than 50000 GHS";
           } else {
             // message = `Pay ${totalPrice}`;
-            message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
-              `${totalPrice}` +
-              ` now `;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
               "Renewing a comprehensive commercial insurance package for Mini Bus car."
@@ -4160,13 +4094,9 @@ router.post("/ussd", async (req, res) => {
           message = "The car value cannot be less than 50000 GHS";
         } else {
           // message = `Pay ${totalPrice}`;
-          message =
-            `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` +
-            ` now `;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
-          await juni.pay(
-            amount,
+          await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive Private individual X1 car."
@@ -4192,13 +4122,9 @@ router.post("/ussd", async (req, res) => {
           message = "The car value cannot be less than 50000 GHS";
         } else {
           // message = `Pay ${totalPrice}`;
-          message =
-            `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` +
-            ` now `;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
-          await juni.pay(
-            amount,
+          await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive Private Individual X4 car."
@@ -4223,13 +4149,9 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message =
-            `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` +
-            ` now `;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
-          await juni.pay(
-            amount,
+          await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive Private Own Goods (Below 3,000 cc) car."
@@ -4255,13 +4177,9 @@ router.post("/ussd", async (req, res) => {
           message = "The car value cannot be less than 50000 GHS";
         } else {
           // message = `Pay ${totalPrice}`;
-          message =
-            `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` +
-            ` now `;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
-          await juni.pay(
-            amount,
+          await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive private Own Goods (ABOVE 3000 cc) car."
@@ -4289,13 +4207,9 @@ router.post("/ussd", async (req, res) => {
           message = "The car value cannot be less than 50000 GHS";
         } else {
           // message = `Pay ${totalPrice}`;
-          message =
-            `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` +
-            ` now `;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
-          await juni.pay(
-            amount,
+          await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive private General Cartage (BELOW 3000 cc)."
@@ -4323,13 +4237,9 @@ router.post("/ussd", async (req, res) => {
           message = "The car value cannot be less than 50000 GHS";
         } else {
           // message = `Pay ${totalPrice}`;
-          message =
-            `${carname.name} will receive a prompt to authorize payment of ` +
-            `${totalPrice}` +
-            ` now `;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
-          await juni.pay(
-            amount,
+          await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
             "Purchasing a comprehensive private General Cartage (ABOVE 3,000 cc) car."
@@ -4361,7 +4271,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               onSiteSpecialTypesServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4371,8 +4281,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
@@ -4389,7 +4298,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               onSiteSpecialTypesRenewalServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4399,8 +4308,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
@@ -4419,7 +4327,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               onBoardSpecialTypesServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4429,8 +4337,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
@@ -4447,7 +4354,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               onBoardSpecialTypesRenewalServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4457,8 +4364,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
@@ -4477,7 +4383,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               GW1Class1ServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4485,8 +4391,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for GW1(CLASS 1) car."
@@ -4503,7 +4408,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               GW1Class1ServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4511,8 +4416,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for GW1(CLASS 1) car."
@@ -4531,7 +4435,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               GW1Class2ServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4539,8 +4443,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               GW1Class2ServicePrice[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for GW1(CLASS 2) car."
@@ -4557,7 +4460,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               GW1Class2RenewalServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4567,8 +4470,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for GW1(CLASS 2) car."
@@ -4587,7 +4489,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               GW1Class3ServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4595,8 +4497,7 @@ router.post("/ussd", async (req, res) => {
             let amount = parseInt(
               GW1Class3ServicePrice[userSessionData[sessionID].selectedOption]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Purchasing a 3rd party commercial insurance package for GW1(CLASS 3) car."
@@ -4613,7 +4514,7 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             message =
-              `${carname.name} will receive a prompt to authorize payment of ` +
+              `${finalMessage} ` +
               GW1Class3RenewalServicePrice[
                 userSessionData[sessionID].selectedOption
               ].toFixed(2) +
@@ -4623,8 +4524,7 @@ router.post("/ussd", async (req, res) => {
                 userSessionData[sessionID].selectedOption
               ]
             );
-            await juni.pay(
-              amount,
+            await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
               "Renewing a 3rd party commercial insurance package for GW1(CLASS 3) car."
@@ -4649,13 +4549,9 @@ router.post("/ussd", async (req, res) => {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         // message = `Pay ${totalPrice}`;
-        message =
-          `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` +
-          ` now `;
+        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
         let amount = totalPrice;
-        await juni.pay(
-          amount,
+        await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial Special Types (ON SITE) car."
@@ -4681,13 +4577,9 @@ router.post("/ussd", async (req, res) => {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         // message = `Pay ${totalPrice}`;
-        message =
-          `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` +
-          ` now `;
+        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
         let amount = totalPrice;
-        await juni.pay(
-          amount,
+        await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial Special Types (ON ROAD) car."
@@ -4712,13 +4604,9 @@ router.post("/ussd", async (req, res) => {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         // message = `Pay ${totalPrice}`;
-        message =
-          `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` +
-          ` now `;
+        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
         let amount = totalPrice;
-        await juni.pay(
-          amount,
+        await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial GW1 (CLASS 1) car."
@@ -4744,13 +4632,9 @@ router.post("/ussd", async (req, res) => {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         // message = `Pay ${totalPrice}`;
-        message =
-          `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` +
-          ` now `;
+        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
         let amount = totalPrice;
-        await juni.pay(
-          amount,
+        await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial GW1 (CLASS 2) car."
@@ -4776,13 +4660,9 @@ router.post("/ussd", async (req, res) => {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         // message = `Pay ${totalPrice}`;
-        message =
-          `${carname.name} will receive a prompt to authorize payment of ` +
-          `${totalPrice}` +
-          ` now `;
+        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
         let amount = totalPrice;
-        await juni.pay(
-          amount,
+        await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
           "Purchasing a comprehensive commercial GW1 (CLASS 3) car."
@@ -4818,13 +4698,13 @@ router.post("/ussd", async (req, res) => {
   res.send(response);
 });
 
-// junipay call back URL
+// Nalo solutions call back URL
 router.post("/callback", (req, res) => {
   console.log("callback success", req.body);
   res.status(200).json({ message: "callback success" });
 });
 
-// junipay redirect  URL
+// Nalo solutions redirect  URL
 router.get("/redirect", (req, res) => {
   console.log("redirect success");
 
