@@ -60,6 +60,44 @@ async function main() {
 }
 
 // pay function
+// async function pay(amount, customerNumber, item_desc) {
+//   console.log(amount, customerNumber, item_desc);
+
+//   let response;
+//   let callback = "http://gblinsurancegh.com:5000/callback";
+//   let merchant_id = process.env.MERCHANT_ID;
+
+//   // Call main to get key and secret
+//   const { key, secret } = await main();
+
+//   let order_id = uuidv4().replace(/\D/g, "");
+//   let customerName = "name";
+//   let payby = "MTN";
+
+//   var config = {
+//     method: "POST",
+//     url: `https://api.nalosolutions.com/payplus/api/`,
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     data: {
+//       amount: amount,
+//       payby: payby,
+//       customerNumber: customerNumber,
+//       item_desc: item_desc,
+//       merchant_id: merchant_id,
+//       customerName: customerName,
+//       order_id: order_id,
+//       callback: callback,
+//       key: key,
+//       secret: secret,
+//     },
+//   };
+
+//   response = axios(config);
+//   console.log("Payment Params", response.data);
+// }
+
 async function pay(amount, customerNumber, item_desc) {
   console.log(amount, customerNumber, item_desc);
 
@@ -94,8 +132,12 @@ async function pay(amount, customerNumber, item_desc) {
     },
   };
 
-  response = axios(config);
-  console.log("Payment Params", response.data);
+  try {
+    response = await axios(config); // await the axios call
+    console.log("Payment Params", response.data);
+  } catch (error) {
+    console.error("Error occurred during payment:", error);
+  }
 }
 
 const finalMessage = "You will receive a prompt to authorize payment of";
