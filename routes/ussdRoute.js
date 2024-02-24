@@ -11,28 +11,54 @@ const { secret } = require("../scripts/config.js");
 const USSDCODE = "*928*311#";
 const userSessionData = {};
 
-// Function to generate a random 4-digit number using UUIDv4
-async function generateRandom4DigitNumber() {
-  // Generate a UUIDv4
-  const uuidv4 = () => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        const r = (Math.random() * 16) | 0,
-          v = c == "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      }
-    );
-  };
+// // Function to generate a random 4-digit number using UUIDv4
+// async function generateRandom4DigitNumber() {
+//   // Generate a UUIDv4
+//   const uuidv4 = () => {
+//     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+//       /[xy]/g,
+//       function (c) {
+//         const r = (Math.random() * 16) | 0,
+//           v = c == "x" ? r : (r & 0x3) | 0x8;
+//         return v.toString(16);
+//       }
+//     );
+//   };
 
-  // Generate a UUIDv4
-  const uuid = uuidv4();
+//   // Generate a UUIDv4
+//   const uuid = uuidv4();
 
-  // Extract 4 random digits from the UUID and filter out non-digit characters
-  const randomDigits = uuid.split("-").join("").replace(/\D/g, "").substr(0, 4);
+//   // Extract 4 random digits from the UUID and filter out non-digit characters
+//   const randomDigits = uuid.split("-").join("").replace(/\D/g, "").substr(0, 4);
 
-  // Return the random 4-digit number
-  return randomDigits;
+//   // Return the random 4-digit number
+//   return randomDigits;
+// }
+
+async function generateUnique4DigitNumber() {
+  let numbersGenerated = [];
+
+  // Generate a random 4-digit number
+  function generateNumber() {
+    return (1000 + Math.floor(Math.random() * 9000)).toString();
+  }
+
+  let newNumber = generateNumber();
+
+  // Check if the number is unique
+  while (numbersGenerated.includes(newNumber)) {
+    newNumber = generateNumber();
+  }
+
+  // Add the number to the array of generated numbers
+  numbersGenerated.push(newNumber);
+
+  // If the array exceeds 9000 in length, reset it
+  if (numbersGenerated.length > 9000) {
+    numbersGenerated = [];
+  }
+
+  return newNumber;
 }
 
 // Function to generate a secret
@@ -52,7 +78,7 @@ async function generateSecret(username, password, key) {
 async function main() {
   const username = process.env.USERNAME;
   const password = process.env.PASSWORD;
-  const key = await generateRandom4DigitNumber();
+  const key = await generateUnique4DigitNumber();
 
   const generatedSecret = await generateSecret(username, password, key);
 
@@ -133,7 +159,7 @@ async function pay(amount, customerNumber, item_desc) {
   };
 
   try {
-    response = await axios(config); // await the axios call
+    response = await axios(config);
     console.log("Payment Params", response.data);
   } catch (error) {
     console.error("Error occurred during payment:", error);
