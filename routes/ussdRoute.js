@@ -11,30 +11,6 @@ const { secret } = require("../scripts/config.js");
 const USSDCODE = "*928*311#";
 const userSessionData = {};
 
-// // Function to generate a random 4-digit number using UUIDv4
-// async function generateRandom4DigitNumber() {
-//   // Generate a UUIDv4
-//   const uuidv4 = () => {
-//     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-//       /[xy]/g,
-//       function (c) {
-//         const r = (Math.random() * 16) | 0,
-//           v = c == "x" ? r : (r & 0x3) | 0x8;
-//         return v.toString(16);
-//       }
-//     );
-//   };
-
-//   // Generate a UUIDv4
-//   const uuid = uuidv4();
-
-//   // Extract 4 random digits from the UUID and filter out non-digit characters
-//   const randomDigits = uuid.split("-").join("").replace(/\D/g, "").substr(0, 4);
-
-//   // Return the random 4-digit number
-//   return randomDigits;
-// }
-
 async function generateUnique4DigitNumber() {
   let numbersGenerated = [];
 
@@ -76,7 +52,7 @@ async function generateSecret(username, password, key) {
 
 // Main function to generate key and secret
 async function main() {
-  const username = process.env.USERNAME;
+  const username = process.env.NALO_USERNAME;
   const password = process.env.PASSWORD;
   const key = await generateUnique4DigitNumber();
 
@@ -109,20 +85,24 @@ async function pay(amount, customerNumber, item_desc) {
       amount: amount,
       payby: payby,
       customerNumber: customerNumber,
-      item_desc: item_desc,
+      item_desc: "item_desc test",
       merchant_id: merchant_id,
       customerName: customerName,
       order_id: order_id,
       callback: callback,
       key: key,
-      secret: secret,
+      secrete: secret,
+      isussd: true,
+      newVodaPayment: true,
+      // username: process.env.NALO_USERNAME,
+      // password: process.env.PASSWORD,
     },
   };
 
   try {
     console.log({ config });
-    console.log(username);
-    console.log(password);
+    // console.log(username);
+    // console.log(password);
     response = await axios(config);
 
     console.log("Payment Params - ", response.data);
