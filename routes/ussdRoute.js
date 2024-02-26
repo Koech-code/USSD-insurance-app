@@ -61,6 +61,28 @@ async function main() {
   return { key, secret: generatedSecret };
 }
 
+async function verifyPhoneNumber(customerNumber) {
+  if (
+    customerNumber.startsWith("23324") ||
+    customerNumber.startsWith("23354") ||
+    customerNumber.startsWith("23355")
+  ) {
+    return "MTN";
+  } else if (
+    customerNumber.startsWith("23320") ||
+    customerNumber.startsWith("23350")
+  ) {
+    return "VODAFONE";
+  } else if (
+    customerNumber.startsWith("23326") ||
+    customerNumber.startsWith("23327") ||
+    customerNumber.startsWith("23357")
+  ) {
+    return "AIRTELIGO";
+  } else {
+    return "Unknown";
+  }
+}
 async function pay(amount, customerNumber, item_desc) {
   console.log(amount, customerNumber, item_desc);
 
@@ -73,7 +95,8 @@ async function pay(amount, customerNumber, item_desc) {
 
   let order_id = uuidv4().replace(/\D/g, "");
   let customerName = "name";
-  let payby = "MTN";
+  // Dynamically determine payby
+  let payby = await verifyPhoneNumber(customerNumber);
 
   var config = {
     method: "POST",
@@ -1921,7 +1944,7 @@ router.post("/ussd", async (req, res) => {
               const paymentPromise = await pay(
                 amount,
                 userSessionData[sessionID].phoneNumber,
-                "Purchasing a 3rd party commercial insurance package for a Max Bus car."
+                "Buy 3rd-party for Max Bus."
               );
               // Set a timeout for the payment operation
               await Promise.race([
@@ -1964,7 +1987,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for a Hiring car."
+              "Buy 3rd-party for Hiring car."
             );
             continueSession = false;
           } else {
