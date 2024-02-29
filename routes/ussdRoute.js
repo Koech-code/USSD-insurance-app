@@ -95,7 +95,7 @@ async function sendConfirmationMessage(callbackUrl, phoneNumber) {
     const paymentStatus = response.data.Status;
 
     // Check if payment status is "PAID"
-    if (paymentStatus === "PAID") {
+    if (paymentStatus === "FAILED") {
       // Compose SMS message
       const SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
 
