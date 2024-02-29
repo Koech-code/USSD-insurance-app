@@ -4778,33 +4778,9 @@ router.post("/ussd", async (req, res) => {
 // Nalo solutions callback URL
 router.post("/callback", async (req, res) => {
   console.log("callback success", req.body);
-
-  const paymentStatus = req.body.Status;
-  const orderId = req.body.Order_id;
-
-  if (paymentStatus === "PAID") {
-    // Send SMS confirmation
-    await sendConfirmationSMS(orderId);
-  }
-
   res.status(200).json({ message: "callback success" });
 });
 
-// Function to send SMS confirmation
-async function sendConfirmationSMS(orderId) {
-  userSessionData[sessionID].phoneNumber = userData;
-  // Replace this with your SMS sending logic
-  console.log(`Sending SMS confirmation for order ${orderId}`);
-  // Example SMS sending code
-  // smsClient.sendMessage(orderId, 'Your payment has been successfully processed.');
-  const SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
-  const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${userSessionData[sessionID].phoneNumber}&from=Flexible&sms=${SMS_MESSAGE}`;
-
-  // Make the GET request using Axios
-  const response = await axios.get(SEND_SMS_URL);
-
-  console.log("SMS Sent:", response.data.message);
-}
 // Nalo solutions redirect  URL
 router.get("/redirect", (req, res) => {
   console.log("redirect success");
