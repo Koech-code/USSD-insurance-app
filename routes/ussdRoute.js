@@ -64,8 +64,10 @@ async function main() {
 async function verifyPhoneNumber(customerNumber) {
   if (
     customerNumber.startsWith("23324") ||
+    customerNumber.startsWith("23325") ||
     customerNumber.startsWith("23354") ||
-    customerNumber.startsWith("23355")
+    customerNumber.startsWith("23355") ||
+    customerNumber.startsWith("23359")
   ) {
     return "MTN";
   } else if (
@@ -84,6 +86,11 @@ async function verifyPhoneNumber(customerNumber) {
   }
 }
 async function pay(amount, customerNumber, item_desc) {
+  // Check if customerNumber starts with '0'
+  if (customerNumber.startsWith("0")) {
+    // Replace '0' with '233'
+    customerNumber = "233" + customerNumber.slice(1);
+  }
   console.log(amount, customerNumber, item_desc);
 
   let response;
@@ -196,7 +203,7 @@ const generalGartageAbove = {
 
 // Third party commercial prices
 const maxBusServicePrices = {
-  23: 2.0,
+  23: 1.0,
   24: 861.0,
   25: 873.0,
   26: 885.0,

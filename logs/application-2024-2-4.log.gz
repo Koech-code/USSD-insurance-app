@@ -1,0 +1,140 @@
+{
+  error: TypeError: Cannot read properties of undefined (reading 'step')
+      at /root/USSD-insurance-app/routes/ussdRoute.js:513:65
+      at Layer.handle [as handle_request] (/root/USSD-insurance-app/node_modules/express/lib/router/layer.js:95:5)
+      at next (/root/USSD-insurance-app/node_modules/express/lib/router/route.js:144:13)
+      at Route.dispatch (/root/USSD-insurance-app/node_modules/express/lib/router/route.js:114:3)
+      at Layer.handle [as handle_request] (/root/USSD-insurance-app/node_modules/express/lib/router/layer.js:95:5)
+      at /root/USSD-insurance-app/node_modules/express/lib/router/index.js:284:15
+      at Function.process_params (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:346:12)
+      at next (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:280:10)
+      at Function.handle (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:175:3)
+      at router (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:47:12),
+  level: 'error',
+  message: "uncaughtException: Cannot read properties of undefined (reading 'step')\n" +
+    "TypeError: Cannot read properties of undefined (reading 'step')\n" +
+    '    at /root/USSD-insurance-app/routes/ussdRoute.js:513:65\n' +
+    '    at Layer.handle [as handle_request] (/root/USSD-insurance-app/node_modules/express/lib/router/layer.js:95:5)\n' +
+    '    at next (/root/USSD-insurance-app/node_modules/express/lib/router/route.js:144:13)\n' +
+    '    at Route.dispatch (/root/USSD-insurance-app/node_modules/express/lib/router/route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (/root/USSD-insurance-app/node_modules/express/lib/router/layer.js:95:5)\n' +
+    '    at /root/USSD-insurance-app/node_modules/express/lib/router/index.js:284:15\n' +
+    '    at Function.process_params (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:346:12)\n' +
+    '    at next (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:280:10)\n' +
+    '    at Function.handle (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:175:3)\n' +
+    '    at router (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:47:12)',
+  stack: "TypeError: Cannot read properties of undefined (reading 'step')\n" +
+    '    at /root/USSD-insurance-app/routes/ussdRoute.js:513:65\n' +
+    '    at Layer.handle [as handle_request] (/root/USSD-insurance-app/node_modules/express/lib/router/layer.js:95:5)\n' +
+    '    at next (/root/USSD-insurance-app/node_modules/express/lib/router/route.js:144:13)\n' +
+    '    at Route.dispatch (/root/USSD-insurance-app/node_modules/express/lib/router/route.js:114:3)\n' +
+    '    at Layer.handle [as handle_request] (/root/USSD-insurance-app/node_modules/express/lib/router/layer.js:95:5)\n' +
+    '    at /root/USSD-insurance-app/node_modules/express/lib/router/index.js:284:15\n' +
+    '    at Function.process_params (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:346:12)\n' +
+    '    at next (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:280:10)\n' +
+    '    at Function.handle (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:175:3)\n' +
+    '    at router (/root/USSD-insurance-app/node_modules/express/lib/router/index.js:47:12)',
+  exception: true,
+  date: 'Thu Feb 29 2024 08:51:17 GMT+0000 (Coordinated Universal Time)',
+  process: {
+    pid: 3045220,
+    uid: 0,
+    gid: 0,
+    cwd: '/root/USSD-insurance-app',
+    execPath: '/usr/bin/node',
+    version: 'v18.17.1',
+    argv: [ '/usr/bin/node', '/root/USSD-insurance-app/server.js' ],
+    memoryUsage: {
+      rss: 87351296,
+      heapTotal: 38678528,
+      heapUsed: 23913664,
+      external: 1395480,
+      arrayBuffers: 478674
+    }
+  },
+  os: { loadavg: [ 0.07, 0.05, 0.01 ], uptime: 4003250.08 },
+  trace: [
+    {
+      column: 65,
+      file: '/root/USSD-insurance-app/routes/ussdRoute.js',
+      function: null,
+      line: 513,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    },
+    {
+      column: 13,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/route.js',
+      function: 'next',
+      line: 144,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/route.js',
+      function: 'Route.dispatch',
+      line: 114,
+      method: 'dispatch',
+      native: false
+    },
+    {
+      column: 5,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/layer.js',
+      function: 'Layer.handle [as handle_request]',
+      line: 95,
+      method: 'handle [as handle_request]',
+      native: false
+    },
+    {
+      column: 15,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/index.js',
+      function: null,
+      line: 284,
+      method: null,
+      native: false
+    },
+    {
+      column: 12,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/index.js',
+      function: 'Function.process_params',
+      line: 346,
+      method: 'process_params',
+      native: false
+    },
+    {
+      column: 10,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/index.js',
+      function: 'next',
+      line: 280,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/index.js',
+      function: 'Function.handle',
+      line: 175,
+      method: 'handle',
+      native: false
+    },
+    {
+      column: 12,
+      file: '/root/USSD-insurance-app/node_modules/express/lib/router/index.js',
+      function: 'router',
+      line: 47,
+      method: null,
+      native: false
+    }
+  ],
+  timestamp: '2024-02-29 08:51:17',
+  label: 'Event Log 🏷'
+}
