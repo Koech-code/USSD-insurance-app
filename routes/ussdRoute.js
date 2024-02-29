@@ -115,7 +115,7 @@ async function pay(amount, customerNumber, item_desc) {
       amount: amount,
       payby: payby,
       customerNumber: customerNumber,
-      item_desc: "item_desc test",
+      item_desc: item_desc,
       merchant_id: merchant_id,
       customerName: customerName,
       order_id: order_id,
