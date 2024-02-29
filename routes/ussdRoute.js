@@ -4762,8 +4762,7 @@ async function sendConfirmationSMS(orderId) {
   console.log(`Sending SMS confirmation for order ${orderId}`);
   // Example SMS sending code
   // smsClient.sendMessage(orderId, 'Your payment has been successfully processed.');
-  SMS_MESSAGE = `Thank you for choosing Fast Insurance.`;
-
+  const SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
   const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${userSessionData[sessionID].phoneNumber}&from=Flexible&sms=${SMS_MESSAGE}`;
 
   // Make the GET request using Axios
