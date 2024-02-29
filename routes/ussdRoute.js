@@ -573,7 +573,7 @@ router.post("/ussd", async (req, res) => {
     if (userSessionData[sessionID].service === "1") {
       // Car type selection for Third Party commercial
       service = "1";
-      message = "1.Max Bus\n";
+      message = "1. Max Bus\n";
       message += "2. Hiring cars\n";
       message += "3. Ambulance/Hearse\n";
       message += "4. Special types\n";
@@ -586,7 +586,7 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "2") {
       // Car type selection for Third Party private
       service = "2";
-      message = "1.Private individual (X1)\n";
+      message = "1. Private individual (X1)\n";
       message += "2. Private company (X4)\n";
       message += "3. Own goods(Below 3000 cc)\n";
       message += "4. Own goods(Above 3000 cc)\n";
@@ -629,7 +629,7 @@ router.post("/ussd", async (req, res) => {
       // Car type selection for comprehensive commercial
       service = "5";
       message = "Please select your car type\n";
-      message += "1.Max Bus\n";
+      message += "1. Max Bus\n";
       message += "2. Hiring cars\n";
       message += "3. Ambulance/Hearse\n";
       message += "4. Special types\n";
@@ -643,7 +643,7 @@ router.post("/ussd", async (req, res) => {
       // Car type selection for comprehensive private
       service = "6";
       message = "Please select your car type\n";
-      message += "1.Private individual (X1)\n";
+      message += "1. Private individual (X1)\n";
       message += "2. Private company (X4)\n";
       message += "3. Own goods(Below 3000 cc)\n";
       message += "4. Own goods(Above 3000 cc)";
@@ -1951,7 +1951,7 @@ router.post("/ussd", async (req, res) => {
               const paymentPromise = await pay(
                 amount,
                 userSessionData[sessionID].phoneNumber,
-                "Buy 3rd-party for Max Bus."
+                "Buy Max Bus 3rd-party."
               );
               // Set a timeout for the payment operation
               await Promise.race([
@@ -1994,7 +1994,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Buy 3rd-party for Hiring car."
+              "Buy Hiring car 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2022,7 +2022,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for a Ambulance/Hearse car."
+              "Buy Ambulance/hearse 3rd-party"
             );
             continueSession = false;
           } else {
@@ -2050,7 +2050,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for a Art/Tankers car."
+              "Buy Art/Tankers 3rd-party"
             );
             continueSession = false;
           } else {
@@ -2075,7 +2075,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for a Taxi car."
+              "Buy Taxi car 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2100,7 +2100,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for a Mini Bus car."
+              "Buy Mini Bus 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2130,7 +2130,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for a Max Bus car."
+              "Renew Max Bus 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2157,7 +2157,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for a Hiring car."
+              "Renew Hiring car 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2184,7 +2184,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for an Ambulance/Hearse car."
+              "Renew Ambu/Hearse 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2211,7 +2211,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for an Art/Tanker car."
+              "Renew Art/Tanker 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2238,7 +2238,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for a Taxi car."
+              "Renew Taxi car 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2265,7 +2265,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for a Mini Bus car."
+              "Renew Mini Bus 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2441,7 +2441,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party private insurance package for a Private Individual X1 car."
+              "Buy Pvt Indiv X1 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2471,7 +2471,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party private insurance package for a Private Individual X4 car."
+              "Buy Pvt Indiv X4 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2499,7 +2499,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party private insurance package for Own Goods (BELOW 3,000 cc) car."
+              "Buy Own Goods(<3,000 cc) 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2526,7 +2526,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party private insurance package for Own Goods (ABOVE 3,000 cc) car."
+              "Buy Own Goods(>3,000 cc) 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2553,7 +2553,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party private insurance package for General Gartage (BELOW 3,000 cc) car."
+              "Buy Gen.Gar (<3,000 cc) 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2580,7 +2580,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party private insurance package for General Gartage (ABOVE 3,000 cc) car."
+              "Buy Gen.Gar (>3,000 cc) 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2607,7 +2607,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party private insurance package for Mini Bus car."
+              "Buy Mini Bus 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2643,7 +2643,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party private insurance package for a Private Individual X1 car."
+              "Renew Pvt Indiv X1 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2673,7 +2673,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party private insurance package for a Private Individual X4 car."
+              "Renew Pvt Indiv X4 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2703,7 +2703,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party private insurance package for Own Goods (BELOW 3,000 cc) car."
+              "Renew Own Goods(<3,000 cc) 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2732,7 +2732,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party private insurance package for Own Goods (ABOVE 3,000 cc) car."
+              "Renew Own Goods(>3,000 cc) 3rd-party."
             );
             continueSession = false;
           } else {
@@ -2761,7 +2761,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party private insurance package for General Gartage (BELOW 3,000 cc) car."
+              "Renew Gen.Gar (<3,000 cc)"
             );
             continueSession = false;
           } else {
@@ -2790,7 +2790,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party private insurance package for General Gartage (ABOVE 3,000 cc) car."
+              "Renew Gen.Gar (>3,000 cc)"
             );
             continueSession = false;
           } else {
@@ -2819,7 +2819,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party private insurance package for Mini Bus car."
+              "Renew Mini Bus 3rd-party"
             );
             continueSession = false;
           } else {
@@ -3722,7 +3722,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a Motor Cycle car."
+              "Buy a Motor Cycle car insur."
             );
           }
           console.log(
@@ -3778,7 +3778,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Purchasing a comprehensive commercial insurance package for Max Bus car."
+              "Buy Max Bus comp. comm"
             );
           }
 
@@ -3806,7 +3806,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Purchasing a comprehensive commercial insurance package for Hiring car."
+              "Buy Hiring car comp. comm"
             );
           }
 
@@ -3834,7 +3834,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Purchasing a comprehensive commercial insurance package for Ambulance/Hearse car."
+              "Buy Ambul/Hearse comp. comm"
             );
           }
 
@@ -3862,7 +3862,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Purchasing a comprehensive commercial insurance package for Art or Tanker car."
+              "Buy Art/Tanker comp. comm"
             );
           }
 
@@ -3890,7 +3890,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Purchasing a comprehensive commercial insurance package for Taxi car."
+              "Buy Taxi car comp. comm"
             );
           }
 
@@ -3918,7 +3918,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Purchasing a comprehensive commercial insurance package for Mini Bus car."
+              "Buy Mini Bus comp. comm"
             );
           }
 
@@ -3945,7 +3945,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Renewing a comprehensive commercial insurance package for Max Bus car."
+              "Renew Max Bus comp. comm"
             );
           }
 
@@ -3973,7 +3973,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Renewing a comprehensive commercial insurance package for Hiring car."
+              "Renew Hiring car comp. comm"
             );
           }
 
@@ -4001,7 +4001,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Renewing a comprehensive commercial insurance package for Ambulance/Hearse car."
+              "Renew Ambul/Hearse comp. comm"
             );
           }
 
@@ -4029,7 +4029,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Renewing a comprehensive commercial insurance package for Art or Tanker car."
+              "Renew Art/Tanker comp. comm"
             );
           }
 
@@ -4057,7 +4057,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Renewing a comprehensive commercial insurance package for Taxi car."
+              "Renew Taxi car comp. comm"
             );
           }
 
@@ -4085,7 +4085,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumberComp,
-              "Renewing a comprehensive commercial insurance package for Mini Bus car."
+              "Renew Mini Bus comp. comm"
             );
           }
 
@@ -4141,7 +4141,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
-            "Purchasing a comprehensive Private individual X1 car."
+            "Buy indv X1 comp. pvt"
           );
         }
 
@@ -4169,7 +4169,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
-            "Purchasing a comprehensive Private Individual X4 car."
+            "Buy indv X4 comp. pvt"
           );
         }
 
@@ -4196,7 +4196,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
-            "Purchasing a comprehensive Private Own Goods (Below 3,000 cc) car."
+            "Buy Own Goods(<3,000) comp. pvt"
           );
         }
 
@@ -4224,7 +4224,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
-            "Purchasing a comprehensive private Own Goods (ABOVE 3000 cc) car."
+            "Buy Own.G (>3,000) comp. pvt"
           );
         }
 
@@ -4254,7 +4254,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
-            "Purchasing a comprehensive private General Cartage (BELOW 3000 cc)."
+            "Buy Gen.Crt (<3,000) comp. pvt"
           );
         }
 
@@ -4284,7 +4284,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             amount,
             userSessionData[sessionID].phoneNumberComp,
-            "Purchasing a comprehensive private General Cartage (ABOVE 3,000 cc) car."
+            "Buy Gen.Crt (>3,000) comp. pvt"
           );
         }
 
@@ -4326,7 +4326,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
+              "Buy spc(ON SITE) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4353,7 +4353,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for Special Types(ON SITE) car."
+              "Renew spc(ON SITE) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4382,7 +4382,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
+              "Buy spc(ON ROAD) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4409,7 +4409,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for Special Types(ON ROAD) car."
+              "Renew spc(ON ROAD) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4436,7 +4436,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 1) car."
+              "Buy GW1(CLASS 1) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4461,7 +4461,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for GW1(CLASS 1) car."
+              "Renew GW1(CLASS 1) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4488,7 +4488,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 2) car."
+              "Buy GW1(CLASS 2) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4515,7 +4515,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for GW1(CLASS 2) car."
+              "Renew GW1(CLASS 2) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4542,7 +4542,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Purchasing a 3rd party commercial insurance package for GW1(CLASS 3) car."
+              "Buy GW1(CLASS 3) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4569,7 +4569,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               amount,
               userSessionData[sessionID].phoneNumber,
-              "Renewing a 3rd party commercial insurance package for GW1(CLASS 3) car."
+              "Renew GW1(CLASS 3) 3rd-party"
             );
             continueSession = false;
           } else {
@@ -4596,7 +4596,7 @@ router.post("/ussd", async (req, res) => {
         await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
-          "Purchasing a comprehensive commercial Special Types (ON SITE) car."
+          "Buy spc(ON SITE) comp. comm"
         );
       }
 
@@ -4624,7 +4624,7 @@ router.post("/ussd", async (req, res) => {
         await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
-          "Purchasing a comprehensive commercial Special Types (ON ROAD) car."
+          "Buy spc(ON ROAD) comp. comm"
         );
       }
       console.log(
@@ -4651,7 +4651,7 @@ router.post("/ussd", async (req, res) => {
         await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
-          "Purchasing a comprehensive commercial GW1 (CLASS 1) car."
+          "Buy GW1(CLASS 1) comp. comm"
         );
       }
 
@@ -4679,7 +4679,7 @@ router.post("/ussd", async (req, res) => {
         await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
-          "Purchasing a comprehensive commercial GW1 (CLASS 2) car."
+          "Buy GW1(CLASS 2) comp. comm"
         );
       }
 
@@ -4707,7 +4707,7 @@ router.post("/ussd", async (req, res) => {
         await pay(
           amount,
           userSessionData[sessionID].phoneNumber,
-          "Purchasing a comprehensive commercial GW1 (CLASS 3) car."
+          "Buy GW1(CLASS 3) comp. comm"
         );
       }
 
