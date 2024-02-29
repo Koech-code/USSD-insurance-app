@@ -85,6 +85,35 @@ async function verifyPhoneNumber(customerNumber) {
     return "Unknown";
   }
 }
+
+async function sendConfirmationMessage(callbackUrl, phoneNumber) {
+  try {
+    // Make GET request to the callback URL
+    const response = await axios.get(callbackUrl);
+
+    // Extract payment status from the response data
+    const paymentStatus = response.data.Status;
+
+    // Check if payment status is "PAID"
+    if (paymentStatus === "PAID") {
+      // Compose SMS message
+      const SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
+
+      // Compose URL for sending SMS
+      const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${phoneNumber}&from=Flexible&sms=${SMS_MESSAGE}`;
+
+      // Send SMS
+      const smsResponse = await axios.get(SEND_SMS_URL);
+
+      console.log("SMS Sent:", smsResponse.data.message);
+    } else {
+      console.log("Payment status is not 'PAID'. No SMS will be sent.");
+    }
+  } catch (error) {
+    console.error("Error occurred while sending confirmation message:", error);
+  }
+}
+
 async function pay(amount, customerNumber, item_desc) {
   // Check if customerNumber starts with '0'
   if (customerNumber.startsWith("0")) {
@@ -136,6 +165,12 @@ async function pay(amount, customerNumber, item_desc) {
     response = await axios(config);
 
     console.log("Payment Params - ", response.data);
+    // Extract callback URL and customer number
+    const callbackUrl = response.data.callback;
+    const phoneNumber = response.data.customerNumber;
+
+    // Call sendConfirmationMessage function
+    await sendConfirmationMessage(callbackUrl, phoneNumber);
   } catch (error) {
     console.error("Error occurred during payment:", error);
   }
