@@ -1880,79 +1880,94 @@ router.post("/ussd", async (req, res) => {
         }
       }
     } else if (userSessionData[sessionID].service === "6") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (userSessionData[sessionID].type === "privateX1") {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (userSessionData[sessionID].type === "privateX4") {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (
-          userSessionData[sessionID].type === "generalCartageBelow3000"
-        ) {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (
-          userSessionData[sessionID].type === "generalCartageAbove3000"
-        ) {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (userSessionData[sessionID].type === "privateX1") {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (userSessionData[sessionID].type === "privateX4") {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (
-          userSessionData[sessionID].type === "generalCartageBelow3000"
-        ) {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        } else if (
-          userSessionData[sessionID].type === "generalCartageAbove3000"
-        ) {
-          service = "1";
-          message = "Please enter the phone number you would like to pay with.";
-          userSessionData[sessionID].phoneNumberComp = userData;
-          continueSession = true;
-        }
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      if (userSessionData[sessionID].type === "privateX1") {
+        // service = "1";
+        // message = "Please enter the phone number you would like to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        // continueSession = true;
+        service = "1";
+        message = caRegMessage;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "privateX4") {
+        // service = "1";
+        // message = "Please enter the phone number you would like to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        // continueSession = true;
+        service = "1";
+        message = caRegMessage;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+        // service = "1";
+        // message = "Please enter the phone number you would like to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        // continueSession = true;
+        service = "1";
+        message = caRegMessage;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+        // service = "1";
+        // message = "Please enter the phone number you would like to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        // continueSession = true;
+        service = "1";
+        message = caRegMessage;
+        continueSession = true;
+      } else if (
+        userSessionData[sessionID].type === "generalCartageBelow3000"
+      ) {
+        service = "1";
+        message = caRegMessage;
+        continueSession = true;
+      } else if (
+        userSessionData[sessionID].type === "generalCartageAbove3000"
+      ) {
+        // service = "1";
+        // message = "Please enter the phone number you would like to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        // continueSession = true;
+        service = "1";
+        message = caRegMessage;
+        continueSession = true;
       }
+      // }
+      // else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   if (userSessionData[sessionID].type === "privateX1") {
+      //     service = "1";
+      //     message = "Please enter the phone number you would like to pay with.";
+      //     userSessionData[sessionID].phoneNumberComp = userData;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "privateX4") {
+      //     service = "1";
+      //     message = "Please enter the phone number you would like to pay with.";
+      //     userSessionData[sessionID].phoneNumberComp = userData;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+      //     service = "1";
+      //     message = "Please enter the phone number you would like to pay with.";
+      //     userSessionData[sessionID].phoneNumberComp = userData;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+      //     service = "1";
+      //     message = "Please enter the phone number you would like to pay with.";
+      //     userSessionData[sessionID].phoneNumberComp = userData;
+      //     continueSession = true;
+      //   } else if (
+      //     userSessionData[sessionID].type === "generalCartageBelow3000"
+      //   ) {
+      //     service = "1";
+      //     message = "Please enter the phone number you would like to pay with.";
+      //     userSessionData[sessionID].phoneNumberComp = userData;
+      //     continueSession = true;
+      //   } else if (
+      //     userSessionData[sessionID].type === "generalCartageAbove3000"
+      //   ) {
+      //     service = "1";
+      //     message = "Please enter the phone number you would like to pay with.";
+      //     userSessionData[sessionID].phoneNumberComp = userData;
+      //     continueSession = true;
+      //   }
+      // }
     }
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
@@ -2592,271 +2607,172 @@ router.post("/ussd", async (req, res) => {
         }
       }
     } else if (userSessionData[sessionID].service === "6") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (userSessionData[sessionID].type === "privateX1") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX1Prices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // privateIndividualX1Prices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              privateIndividualX1Prices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "privateX4") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX4Prices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // privateIndividualX4Prices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              privateIndividualX4Prices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // ownGoodsBelow[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
-                2
-              );
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // ownGoodsAbove[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
-                2
-              );
-            continueSession = true;
-          }
-        } else if (
-          userSessionData[sessionID].type === "generalCartageBelow3000"
-        ) {
-          // Check if the selected option exists in the mapping
-          if (
-            generalGartageBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // generalGartageBelow[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              generalGartageBelow[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (
-          userSessionData[sessionID].type === "generalCartageAbove3000"
-        ) {
-          // Check if the selected option exists in the mapping
-          if (
-            generalGartageAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // generalGartageAbove[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              generalGartageAbove[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (userSessionData[sessionID].type === "privateX1") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX1RenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // privateIndividualX1RenewalPrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              privateIndividualX1RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "privateX4") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX4RenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // privateIndividualX4RenewalPrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              privateIndividualX4RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsBelowRenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // ownGoodsBelowRenewalPrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              ownGoodsBelowRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsAboveRenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // ownGoodsAboveRenewalPrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              ownGoodsAboveRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (
-          userSessionData[sessionID].type === "generalCartageBelow3000"
-        ) {
-          // Check if the selected option exists in the mapping
-          if (
-            generalCartageRenewalBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // generalCartageRenewalBelow[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              generalCartageRenewalBelow[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (
-          userSessionData[sessionID].type === "generalCartageAbove3000"
-        ) {
-          // Check if the selected option exists in the mapping
-          if (
-            generalCartageRenewalAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // generalCartageRenewalAbove[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              generalCartageRenewalAbove[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        }
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      if (userSessionData[sessionID].type === "privateX1") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (userSessionData[sessionID].type === "privateX4") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (
+        userSessionData[sessionID].type === "generalCartageBelow3000"
+      ) {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (
+        userSessionData[sessionID].type === "generalCartageAbove3000"
+      ) {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
       }
+      // }
+
+      // Beba yote
+      //  else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   if (userSessionData[sessionID].type === "privateX1") {
+      //     // Check if the selected option exists in the mapping
+      //     if (
+      //       privateIndividualX1RenewalPrices.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // privateIndividualX1RenewalPrices[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         privateIndividualX1RenewalPrices[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "privateX4") {
+      //     // Check if the selected option exists in the mapping
+      //     if (
+      //       privateIndividualX4RenewalPrices.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // privateIndividualX4RenewalPrices[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         privateIndividualX4RenewalPrices[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+      //     // Check if the selected option exists in the mapping
+      //     if (
+      //       ownGoodsBelowRenewalPrices.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // ownGoodsBelowRenewalPrices[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         ownGoodsBelowRenewalPrices[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+      //     // Check if the selected option exists in the mapping
+      //     if (
+      //       ownGoodsAboveRenewalPrices.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // ownGoodsAboveRenewalPrices[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         ownGoodsAboveRenewalPrices[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (
+      //     userSessionData[sessionID].type === "generalCartageBelow3000"
+      //   ) {
+      //     // Check if the selected option exists in the mapping
+      //     if (
+      //       generalCartageRenewalBelow.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // generalCartageRenewalBelow[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         generalCartageRenewalBelow[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   } else if (
+      //     userSessionData[sessionID].type === "generalCartageAbove3000"
+      //   ) {
+      //     // Check if the selected option exists in the mapping
+      //     if (
+      //       generalCartageRenewalAbove.hasOwnProperty(
+      //         userSessionData[sessionID].selectedOption
+      //       )
+      //     ) {
+      //       service = userSessionData[sessionID].service;
+      //       // Get the price dynamically from the mapping
+      //       message =
+      //         // "Pay " +
+      //         // generalCartageRenewalAbove[
+      //         //   userSessionData[sessionID].selectedOption
+      //         // ].toFixed(2) +
+      //         "Please enter the value of your car";
+      //       userSessionData[sessionID].thirdPartyPrice =
+      //         generalCartageRenewalAbove[
+      //           userSessionData[sessionID].selectedOption
+      //         ].toFixed(2);
+      //       continueSession = true;
+      //     }
+      //   }
+      // }
     }
     // end of copy
 
@@ -3611,176 +3527,137 @@ router.post("/ussd", async (req, res) => {
       }
     } else if (userSessionData[sessionID].service === "6") {
       if (userSessionData[sessionID].type === "privateX1") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-          let amount = totalPrice;
-          await pay(
-            amount,
-            userSessionData[sessionID].phoneNumberComp,
-            "Buy indv X1 comp. pvt"
-          );
+        // Check if the selected option exists in the mapping
+        if (
+          privateIndividualX1Prices.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          // Get the price dynamically from the mapping
+          message =
+            // "Pay " +
+            // privateIndividualX1Prices[
+            //   userSessionData[sessionID].selectedOption
+            // ].toFixed(2) +
+            "Please enter the value of your car";
+          userSessionData[sessionID].thirdPartyPrice =
+            privateIndividualX1Prices[
+              userSessionData[sessionID].selectedOption
+            ].toFixed(2);
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
         }
-
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private individual X1 is",
-          totalPrice
-        );
-        continueSession = false;
       } else if (userSessionData[sessionID].type === "privateX4") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-          let amount = totalPrice;
-          await pay(
-            amount,
-            userSessionData[sessionID].phoneNumberComp,
-            "Buy indv X4 comp. pvt"
-          );
+        // Check if the selected option exists in the mapping
+        if (
+          privateIndividualX4Prices.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          // Get the price dynamically from the mapping
+          message =
+            // "Pay " +
+            // privateIndividualX4Prices[
+            //   userSessionData[sessionID].selectedOption
+            // ].toFixed(2) +
+            "Please enter the value of your car";
+          userSessionData[sessionID].thirdPartyPrice =
+            privateIndividualX4Prices[
+              userSessionData[sessionID].selectedOption
+            ].toFixed(2);
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
         }
-
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private individual X4 is",
-          totalPrice
-        );
-        continueSession = true;
       } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-          let amount = totalPrice;
-          await pay(
-            amount,
-            userSessionData[sessionID].phoneNumberComp,
-            "Buy Own Goods(<3,000) comp. pvt"
-          );
+        // Check if the selected option exists in the mapping
+        if (
+          ownGoodsBelow.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          // Get the price dynamically from the mapping
+          message =
+            // "Pay " +
+            // ownGoodsBelow[
+            //   userSessionData[sessionID].selectedOption
+            // ].toFixed(2) +
+            "Please enter the value of your car";
+          userSessionData[sessionID].thirdPartyPrice =
+            ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(2);
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
         }
-
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private own goods below 3000 cc is",
-          totalPrice
-        );
-        continueSession = false;
       } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-          let amount = totalPrice;
-          await pay(
-            amount,
-            userSessionData[sessionID].phoneNumberComp,
-            "Buy Own.G (>3,000) comp. pvt"
-          );
+        // Check if the selected option exists in the mapping
+        if (
+          ownGoodsAbove.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          // Get the price dynamically from the mapping
+          message =
+            // "Pay " +
+            // ownGoodsAbove[
+            //   userSessionData[sessionID].selectedOption
+            // ].toFixed(2) +
+            "Please enter the value of your car";
+          userSessionData[sessionID].thirdPartyPrice =
+            ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(2);
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
         }
-
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
-          totalPrice
-        );
-        continueSession = false;
       } else if (
         userSessionData[sessionID].type === "generalCartageBelow3000"
       ) {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-          let amount = totalPrice;
-          await pay(
-            amount,
-            userSessionData[sessionID].phoneNumberComp,
-            "Buy Gen.Crt (<3,000) comp. pvt"
-          );
+        // Check if the selected option exists in the mapping
+        if (
+          generalGartageBelow.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          // Get the price dynamically from the mapping
+          message =
+            // "Pay " +
+            // generalGartageBelow[
+            //   userSessionData[sessionID].selectedOption
+            // ].toFixed(2) +
+            "Please enter the value of your car";
+          userSessionData[sessionID].thirdPartyPrice =
+            generalGartageBelow[
+              userSessionData[sessionID].selectedOption
+            ].toFixed(2);
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
         }
-
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
-          totalPrice
-        );
-        continueSession = false;
       } else if (
         userSessionData[sessionID].type === "generalCartageAbove3000"
       ) {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-          let amount = totalPrice;
-          await pay(
-            amount,
-            userSessionData[sessionID].phoneNumberComp,
-            "Buy Gen.Crt (>3,000) comp. pvt"
-          );
+        // Check if the selected option exists in the mapping
+        if (
+          generalGartageAbove.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          // Get the price dynamically from the mapping
+          message =
+            // "Pay " +
+            // generalGartageAbove[
+            //   userSessionData[sessionID].selectedOption
+            // ].toFixed(2) +
+            "Please enter the value of your car";
+          userSessionData[sessionID].thirdPartyPrice =
+            generalGartageAbove[
+              userSessionData[sessionID].selectedOption
+            ].toFixed(2);
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
         }
-
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
-          totalPrice
-        );
-        continueSession = false;
       }
     }
     // End of copy
@@ -4879,6 +4756,36 @@ router.post("/ussd", async (req, res) => {
       //   continueSession = true;
       // }
       // }
+    } else if (userSessionData[sessionID].service === "6") {
+      if (userSessionData[sessionID].type === "privateX1") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "privateX4") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (
+        userSessionData[sessionID].type === "generalCartageBelow3000"
+      ) {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (
+        userSessionData[sessionID].type === "generalCartageAbove3000"
+      ) {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      }
     } else if (userSessionData[sessionID].type === "specialOnSite") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
@@ -5423,6 +5330,180 @@ router.post("/ussd", async (req, res) => {
           );
           continueSession = false;
         }
+      }
+    } else if (userSessionData[sessionID].service === "6") {
+      if (userSessionData[sessionID].type === "privateX1") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+          let amount = totalPrice;
+          await pay(
+            amount,
+            // userSessionData[sessionID].phoneNumberComp,
+            userSessionData[sessionID].phoneNumber,
+            "Buy indv X1 comp. pvt"
+          );
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+
+        console.log(
+          "Total amount to be paid for comprehensive private individual X1 is",
+          totalPrice
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "privateX4") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+          let amount = totalPrice;
+          await pay(
+            amount,
+            userSessionData[sessionID].phoneNumber,
+            "Buy indv X4 comp. pvt"
+          );
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+
+        console.log(
+          "Total amount to be paid for comprehensive private individual X4 is",
+          totalPrice
+        );
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+          let amount = totalPrice;
+          await pay(
+            amount,
+            userSessionData[sessionID].phoneNumber,
+            "Buy Own Goods(<3,000) comp. pvt"
+          );
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+
+        console.log(
+          "Total amount to be paid for comprehensive private own goods below 3000 cc is",
+          totalPrice
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+          let amount = totalPrice;
+          await pay(
+            amount,
+            userSessionData[sessionID].phoneNumber,
+            "Buy Own.G (>3,000) comp. pvt"
+          );
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+
+        console.log(
+          "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
+          totalPrice
+        );
+        continueSession = false;
+      } else if (
+        userSessionData[sessionID].type === "generalCartageBelow3000"
+      ) {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+          let amount = totalPrice;
+          await pay(
+            amount,
+            userSessionData[sessionID].phoneNumber,
+            "Buy Gen.Crt (<3,000) comp. pvt"
+          );
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+
+        console.log(
+          "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
+          totalPrice
+        );
+        continueSession = false;
+      } else if (
+        userSessionData[sessionID].type === "generalCartageAbove3000"
+      ) {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+          let amount = totalPrice;
+          await pay(
+            amount,
+            userSessionData[sessionID].phoneNumber,
+            "Buy Gen.Crt (>3,000) comp. pvt"
+          );
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+
+        console.log(
+          "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
+          totalPrice
+        );
+        continueSession = false;
       }
     }
   } else {
