@@ -1411,6 +1411,7 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].phoneNumber = userData;
     userSessionData[sessionID].carRegNumber = userData;
 
+    const caRegMessage = "Please enter your car registration number.";
     if (userSessionData[sessionID].service === "1") {
       // Check if the service is Third Party Commercial
 
@@ -1418,66 +1419,73 @@ router.post("/ussd", async (req, res) => {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
-          message = "Please enter your car registration number.";
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "artOrTankers") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "taxi") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         if (userSessionData[sessionID].type === "maxBus") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "artOrTankers") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "taxi") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         }
       }
@@ -1627,38 +1635,45 @@ router.post("/ussd", async (req, res) => {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else {
           message =
@@ -1669,38 +1684,45 @@ router.post("/ussd", async (req, res) => {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else {
           message =
@@ -1731,13 +1753,16 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          // continueSession = true;
+          message = caRegMessage;
           continueSession = true;
         }
       }
@@ -1935,11 +1960,11 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].carRegNumber = userData;
 
     // Purchase prices for third party
+    const whatsappMessage =
+      "Please enter your Whatsapp phone number for communication.";
 
     // copied from step 4
     if (userSessionData[sessionID].service === "1") {
-      // Check if the service is Third Party Commercial
-
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
@@ -1985,306 +2010,66 @@ router.post("/ussd", async (req, res) => {
           //   continueSession = false;
           // }
           service = userSessionData[sessionID].service;
-          message =
-            "Please enter your Whatsapp phone number for communication.";
+          message = whatsappMessage;
           carNum = userSessionData[sessionID].carRegNumber;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
-          if (
-            hiringCarsServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              hiringCarsServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Hiring car 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 5 - 15 are allowed.";
-            continueSession = false;
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-          if (
-            ambulanceOrHearseServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              ambulanceOrHearseServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              ambulanceOrHearseServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Ambulance/hearse 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Please input 5 to access this service.";
-            continueSession = false;
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "artOrTankers") {
-          if (
-            artOrTankersServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              artOrTankersServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              artOrTankersServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Art/Tankers 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Please input 3.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "taxi") {
-          if (
-            taxiServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              taxiServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              taxiServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Taxi car 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Please input 5.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          if (
-            miniBusServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              miniBusServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              miniBusServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Mini Bus 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Please input 5.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         if (userSessionData[sessionID].type === "maxBus") {
-          if (
-            maxBusRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              maxBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              maxBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Max Bus 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 23 - 70 are allowed.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
-          if (
-            hiringCarsRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              hiringCarsRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              hiringCarsRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Hiring car 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 5 - 15 are allowed.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-          if (
-            ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              ambulanceOrHearseRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              ambulanceOrHearseRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Ambu/Hearse 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Please input 5 to access this service.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "artOrTankers") {
-          if (
-            artOrTankersRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              artOrTankersRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              artOrTankersRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Art/Tanker 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Please input 3.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "taxi") {
-          if (
-            taxiRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              taxiRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              taxiRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Taxi car 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Please input 5.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          if (
-            miniBusRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Mini Bus 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Please input 5.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       }
       // step 4 for special types and GW1
@@ -2433,200 +2218,40 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX1Prices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              privateIndividualX1Prices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              privateIndividualX1Prices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Pvt Indiv X1 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false;
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX4Prices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              privateIndividualX4Prices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              privateIndividualX4Prices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Pvt Indiv X4 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false;
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
-                2
-              ) +
-              ` now.`;
-            let amount = parseInt(
-              ownGoodsBelow[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Own Goods(<3,000 cc) 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
-                2
-              ) +
-              ` now.`;
-            let amount = parseInt(
-              ownGoodsAbove[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Own Goods(>3,000 cc) 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-          // Check if the selected option exists in the mapping
-          if (
-            generalGartageBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              generalGartageBelow[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              generalGartageBelow[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Gen.Gar (<3,000 cc) 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-          // Check if the selected option exists in the mapping
-          if (
-            generalGartageAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              generalGartageAbove[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              generalGartageAbove[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Gen.Gar (>3,000 cc) 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          // Check if the selected option exists in the mapping
-          if (
-            miniBusServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              miniBusServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              miniBusServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy Mini Bus 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Please input a value between 5 - 22.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else {
           message =
             "Invalid option selected for purchase of Third Party Private.";
@@ -2635,210 +2260,40 @@ router.post("/ussd", async (req, res) => {
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX1RenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              privateIndividualX1RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              privateIndividualX1RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Pvt Indiv X1 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false;
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX4RenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              privateIndividualX4RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              privateIndividualX4RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Pvt Indiv X4 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false;
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsBelowRenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              ownGoodsBelowRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              ownGoodsBelowRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Own Goods(<3,000 cc) 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsAboveRenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              ownGoodsAboveRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              ownGoodsAboveRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Own Goods(>3,000 cc) 3rd-party."
-            );
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-          // Check if the selected option exists in the mapping
-          if (
-            generalCartageRenewalBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              generalCartageRenewalBelow[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              generalCartageRenewalBelow[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Gen.Gar (<3,000 cc)"
-            );
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-          // Check if the selected option exists in the mapping
-          if (
-            generalCartageRenewalAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              generalCartageRenewalAbove[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              generalCartageRenewalAbove[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Gen.Gar (>3,000 cc)"
-            );
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          // Check if the selected option exists in the mapping
-          if (
-            miniBusRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
-            let amount = parseInt(
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew Mini Bus 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Please input a value between 5 - 22.";
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else {
           message =
             "Invalid option selected for renewal of Third Party Private.";
@@ -2863,41 +2318,28 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          // Check if the selected option exists in the mapping
-          if (
-            motorCycleServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message = "Please enter the value of your motor cycle.";
-            userSessionData[sessionID].thirdPartyPrice =
-              motorCycleServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            console.log(
-              "Car price is: ",
-              userSessionData[sessionID].thirdPartyPrice
-            );
-            continueSession = true;
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          // Check if the selected option exists in the mapping
-          if (
-            motorCycleRenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message = "Please enter the value of your motor cycle.";
-            userSessionData[sessionID].thirdPartyPrice =
-              motorCycleRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
+          // // Check if the selected option exists in the mapping
+          // if (
+          //   motorCycleRenewalPrices.hasOwnProperty(
+          //     userSessionData[sessionID].selectedOption
+          //   )
+          // ) {
+          //   service = userSessionData[sessionID].service;
+          //   // Get the price dynamically from the mapping
+          //   message = "Please enter the value of your motor cycle.";
+          //   userSessionData[sessionID].thirdPartyPrice =
+          //     motorCycleRenewalPrices[
+          //       userSessionData[sessionID].selectedOption
+          //     ].toFixed(2);
+          //   continueSession = true;
+          // }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
         }
       }
     } else if (userSessionData[sessionID].service === "5") {
@@ -3733,10 +3175,137 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].phoneNumberComp;
     userSessionData[sessionID].whatsappNumber = userData;
 
+    const numberToPayWithMessage =
+      "Please enter the phone number you wish to pay with.";
     if (userSessionData[sessionID].service === "1") {
-      message = "Please enter the phone number you wish to pay with.";
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "maxBus") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "hiringCars") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "artOrTankers") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "taxi") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (userSessionData[sessionID].type === "maxBus") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "hiringCars") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "artOrTankers") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "taxi") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        }
+      }
+    } else if (userSessionData[sessionID].service === "2") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        // Check if the service is Third Party Private
+        if (userSessionData[sessionID].type === "privateIndividualX1") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else {
+          message =
+            "Invalid option selected for purchase of Third Party Private.";
+          continueSession = false;
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        // Check if the service is Third Party Private
+        if (userSessionData[sessionID].type === "privateIndividualX1") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        } else {
+          message =
+            "Invalid option selected for renewal of Third Party Private.";
+          continueSession = false;
+        }
+      } else {
+        message = "Invalid option selected for Third Party Private.";
+        continueSession = false;
+      }
     } else if (userSessionData[sessionID].service === "3") {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         service = userSessionData[sessionID].service;
@@ -3764,30 +3333,27 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy a Motor Cycle car insur."
+          // Check if the selected option exists in the mapping
+          if (
+            motorCycleServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message = "Please enter the value of your motor cycle.";
+            userSessionData[sessionID].thirdPartyPrice =
+              motorCycleServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            console.log(
+              "Car price is: ",
+              userSessionData[sessionID].thirdPartyPrice
             );
+            continueSession = true;
           }
-          console.log(
-            "Motor cycle is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-          console.log(
-            "Total amount to be paid for comprehensive co-oporate motor cycle is",
-            totalPrice
-          );
           continueSession = false;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           const totalPrice =
@@ -4637,48 +4203,785 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 7) {
     userSessionData[sessionID].phoneNumber = userData;
+    userSessionData[sessionID].whatsappNumber = userData;
+
+    userSessionData[sessionID].thirdPartyPrice;
+
+    const numberToPayWithMessage =
+      "Please enter the phone number you wish to pay with.";
     if (userSessionData[sessionID].service === "1") {
-      const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "maxBus") {
+          const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
 
-      try {
-        if (
-          maxBusServicePrices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          let amount = parseInt(
-            maxBusServicePrices[userSessionData[sessionID].selectedOption]
-          );
-
-          const paymentPromise = await pay(
-            amount,
-            userSessionData[sessionID].phoneNumber,
-            "Buy Max Bus 3rd-party."
-          );
-          // Set a timeout for the payment operation
-          await Promise.race([
-            paymentPromise,
-            new Promise((_, reject) =>
-              setTimeout(
-                () => reject(new Error("Payment operation timed out")),
-                timeoutDuration
+          try {
+            if (
+              maxBusServicePrices.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
               )
-            ),
-          ]);
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              let amount = parseInt(
+                maxBusServicePrices[userSessionData[sessionID].selectedOption]
+              );
 
-          // Inform the user about the payment prompt
-          message = `${finalMessage} ${amount.toFixed(2)} now!`;
-          continueSession = false;
+              const paymentPromise = await pay(
+                amount,
+                userSessionData[sessionID].phoneNumber,
+                "Buy Max Bus 3rd-party."
+              );
+              // Set a timeout for the payment operation
+              await Promise.race([
+                paymentPromise,
+                new Promise((_, reject) =>
+                  setTimeout(
+                    () => reject(new Error("Payment operation timed out")),
+                    timeoutDuration
+                  )
+                ),
+              ]);
+
+              // Inform the user about the payment prompt
+              message = `${finalMessage} ${amount.toFixed(2)} now!`;
+              continueSession = false;
+            } else {
+              message =
+                "Only numbers between 23 - 70 are allowed. Back to step 3 and re-enter.";
+              continueSession = false;
+            }
+          } catch (error) {
+            message = "Error processing payment: " + error.message;
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "hiringCars") {
+          if (
+            hiringCarsServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              hiringCarsServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Hiring car 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 5 - 15 are allowed.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+          if (
+            ambulanceOrHearseServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              ambulanceOrHearseServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              ambulanceOrHearseServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Ambulance/hearse 3rd-party"
+            );
+            continueSession = false;
+          } else {
+            message = "Please input 5 to access this service.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "artOrTankers") {
+          if (
+            artOrTankersServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              artOrTankersServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              artOrTankersServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Art/Tankers 3rd-party"
+            );
+            continueSession = false;
+          } else {
+            message = "Please input 3.";
+          }
+        } else if (userSessionData[sessionID].type === "taxi") {
+          if (
+            taxiServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              taxiServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              taxiServicePrices[userSessionData[sessionID].selectedOption]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Taxi car 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          if (
+            miniBusServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              miniBusServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              miniBusServicePrices[userSessionData[sessionID].selectedOption]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Mini Bus 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (userSessionData[sessionID].type === "maxBus") {
+          if (
+            maxBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              maxBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              maxBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Max Bus 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 23 - 70 are allowed.";
+          }
+        } else if (userSessionData[sessionID].type === "hiringCars") {
+          if (
+            hiringCarsRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              hiringCarsRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              hiringCarsRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Hiring car 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Only numbers between 5 - 15 are allowed.";
+          }
+        } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+          if (
+            ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              ambulanceOrHearseRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              ambulanceOrHearseRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Ambu/Hearse 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Please input 5 to access this service.";
+          }
+        } else if (userSessionData[sessionID].type === "artOrTankers") {
+          if (
+            artOrTankersRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              artOrTankersRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              artOrTankersRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Art/Tanker 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Please input 3.";
+          }
+        } else if (userSessionData[sessionID].type === "taxi") {
+          if (
+            taxiRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              taxiRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              taxiRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Taxi car 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          if (
+            miniBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            message =
+              `${finalMessage} ` +
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Mini Bus 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
+        }
+      }
+    } else if (userSessionData[sessionID].service === "2") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        // Check if the service is Third Party Private
+        if (userSessionData[sessionID].type === "privateIndividualX1") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1Prices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              privateIndividualX1Prices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              privateIndividualX1Prices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Pvt Indiv X1 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4Prices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              privateIndividualX4Prices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              privateIndividualX4Prices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Pvt Indiv X4 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              ) +
+              ` now.`;
+            let amount = parseInt(
+              ownGoodsBelow[userSessionData[sessionID].selectedOption]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Own Goods(<3,000 cc) 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              ) +
+              ` now.`;
+            let amount = parseInt(
+              ownGoodsAbove[userSessionData[sessionID].selectedOption]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Own Goods(>3,000 cc) 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              generalGartageBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              generalGartageBelow[userSessionData[sessionID].selectedOption]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Gen.Gar (<3,000 cc) 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              generalGartageAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              generalGartageAbove[userSessionData[sessionID].selectedOption]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Gen.Gar (>3,000 cc) 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          // Check if the selected option exists in the mapping
+          if (
+            miniBusServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              miniBusServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              miniBusServicePrices[userSessionData[sessionID].selectedOption]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Mini Bus 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Please input a value between 5 - 22.";
+          }
         } else {
           message =
-            "Only numbers between 23 - 70 are allowed. Back to step 3 and re-enter.";
+            "Invalid option selected for purchase of Third Party Private.";
           continueSession = false;
         }
-      } catch (error) {
-        message = "Error processing payment: " + error.message;
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        // Check if the service is Third Party Private
+        if (userSessionData[sessionID].type === "privateIndividualX1") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              privateIndividualX1RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              privateIndividualX1RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Pvt Indiv X1 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              privateIndividualX4RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              privateIndividualX4RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Pvt Indiv X4 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelowRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              ownGoodsBelowRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              ownGoodsBelowRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Own Goods(<3,000 cc) 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAboveRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              ownGoodsAboveRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              ownGoodsAboveRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Own Goods(>3,000 cc) 3rd-party."
+            );
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              generalCartageRenewalBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              generalCartageRenewalBelow[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Gen.Gar (<3,000 cc)"
+            );
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              generalCartageRenewalAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              generalCartageRenewalAbove[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Gen.Gar (>3,000 cc)"
+            );
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          // Check if the selected option exists in the mapping
+          if (
+            miniBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              `${finalMessage} ` +
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2) +
+              ` now.`;
+            let amount = parseInt(
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Mini Bus 3rd-party"
+            );
+            continueSession = false;
+          } else {
+            message = "Please input a value between 5 - 22.";
+          }
+        } else {
+          message =
+            "Invalid option selected for renewal of Third Party Private.";
+          continueSession = false;
+        }
+      } else {
+        message = "Invalid option selected for Third Party Private.";
         continueSession = false;
+      }
+    } else if (userSessionData[sessionID].service === "4") {
+      if (userSessionData[sessionID].type === "motorCycle") {
+        if (userSessionData[sessionID].InsuranceType === "purchase") {
+          message = numberToPayWithMessage;
+          userSessionData[sessionID].carPrice = userData;
+          continueSession = true;
+        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+          message = numberToPayWithMessage;
+          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          continueSession = true;
+        }
       }
     } else if (userSessionData[sessionID].type === "specialOnSite") {
       const totalPrice =
@@ -4819,6 +5122,44 @@ router.post("/ussd", async (req, res) => {
         totalPrice
       );
       continueSession = false;
+    }
+
+    // Increment the step for the next interaction
+    userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
+  } else if (newSession === false && userSessionData[sessionID].step === 8) {
+    // userSessionData[sessionID].thirdPartyPrice;
+    // userSessionData[sessionID].carPrice = userData;
+
+    userSessionData[sessionID].phoneNumber = userData;
+    userSessionData[sessionID].phoneNumberComp;
+    // userSessionData[sessionID].whatsappNumber = userData;
+    if (userSessionData[sessionID].type === "motorCycle") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+          let amount = totalPrice;
+          await pay(
+            amount,
+            userSessionData[sessionID].phoneNumber,
+            "Buy a Motor Cycle car insur."
+          );
+        }
+        console.log(
+          "Motor cycle is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+        console.log(
+          "Total amount to be paid for comprehensive co-oporate motor cycle is",
+          totalPrice
+        );
+      }
     }
   } else {
     message = "Bad choice!";
