@@ -1769,8 +1769,9 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "5") {
       if (userSessionData[sessionID].type === "maxiBus") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumberComp = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "hiring") {
         service = "1";
@@ -2330,26 +2331,9 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "5") {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         if (userSessionData[sessionID].type === "maxiBus") {
-          // Check if the selected option exists in the mapping
-          if (
-            maxBusServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // maxBusServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              maxBusServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
+          service = userSessionData[sessionID].service;
+          message = whatsappMessage;
+          carNum = userSessionData[sessionID].carRegNumber;
         } else if (userSessionData[sessionID].type === "hiring") {
           // Check if the selected option exists in the mapping
           if (
@@ -3366,33 +3350,28 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "5") {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         if (userSessionData[sessionID].type === "maxiBus") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Buy Max Bus comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            maxBusServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // maxBusServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              maxBusServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial maxi bus is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "hiring") {
           const totalPrice =
             parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
@@ -4963,6 +4942,20 @@ router.post("/ussd", async (req, res) => {
           continueSession = true;
         }
       }
+    } else if (userSessionData[sessionID].service === "5") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "maxiBus") {
+          message = numberToPayWithMessage;
+          userSessionData[sessionID].carPrice = userData;
+          continueSession = true;
+        }
+      } else if (userSessionData[sessionID].service === "renewal") {
+        if (userSessionData[sessionID].type === "maxiBus") {
+          message = numberToPayWithMessage;
+          userSessionData[sessionID].carPrice = userData;
+          continueSession = true;
+        }
+      }
     } else if (userSessionData[sessionID].type === "specialOnSite") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
@@ -5166,6 +5159,41 @@ router.post("/ussd", async (req, res) => {
           totalPrice
         );
         continueSession = false;
+      }
+    } else if (userSessionData[sessionID].service === "5") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "maxiBus") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Max Bus comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial maxi bus is",
+            totalPrice
+          );
+          continueSession = false;
+        }
+      } else if (userSessionData[sessionID].service === "renewal") {
+        if (userSessionData[sessionID].type === "maxiBus") {
+        }
       }
     }
   } else {
