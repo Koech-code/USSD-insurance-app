@@ -1775,28 +1775,33 @@ router.post("/ussd", async (req, res) => {
         continueSession = true;
       } else if (userSessionData[sessionID].type === "hiring") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumberComp = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "ambulance") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumberComp = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "artOrTanker") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumberComp = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "Taxi") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumberComp = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "miniBus") {
         service = "1";
-        message = "Please enter the phone number you would like to pay with.";
-        userSessionData[sessionID].phoneNumberComp = userData;
+        // message = "Please enter the phone number you would like to pay with.";
+        // userSessionData[sessionID].phoneNumberComp = userData;
+        message = caRegMessage;
         continueSession = true;
       }
 
@@ -2329,246 +2334,33 @@ router.post("/ussd", async (req, res) => {
         }
       }
     } else if (userSessionData[sessionID].service === "5") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (userSessionData[sessionID].type === "maxiBus") {
-          service = userSessionData[sessionID].service;
-          message = whatsappMessage;
-          carNum = userSessionData[sessionID].carRegNumber;
-        } else if (userSessionData[sessionID].type === "hiring") {
-          // Check if the selected option exists in the mapping
-          if (
-            hiringCarsServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // hiringCarsServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              hiringCarsServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "ambulance") {
-          // Check if the selected option exists in the mapping
-          if (
-            ambulanceOrHearseServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // ambulanceOrHearseServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              ambulanceOrHearseServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "artOrTanker") {
-          // Check if the selected option exists in the mapping
-          if (
-            artOrTankersServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // artOrTankersServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              artOrTankersServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "Taxi") {
-          // Check if the selected option exists in the mapping
-          if (
-            taxiServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // taxiServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              taxiServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "miniBus") {
-          // Check if the selected option exists in the mapping
-          if (
-            miniBusServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // miniBusServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              miniBusServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (userSessionData[sessionID].type === "maxiBus") {
-          // Check if the selected option exists in the mapping
-          if (
-            maxBusRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // maxBusRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              maxBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "hiring") {
-          // Check if the selected option exists in the mapping
-          if (
-            hiringCarsRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // hiringCarsRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              hiringCarsRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "ambulance") {
-          // Check if the selected option exists in the mapping
-          if (
-            ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // ambulanceOrHearseRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              ambulanceOrHearseRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "artOrTanker") {
-          // Check if the selected option exists in the mapping
-          if (
-            artOrTankersRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // artOrTankersRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              artOrTankersRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "Taxi") {
-          // Check if the selected option exists in the mapping
-          if (
-            taxiRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // taxiRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              taxiRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        } else if (userSessionData[sessionID].type === "miniBus") {
-          // Check if the selected option exists in the mapping
-          if (
-            miniBusRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              // "Pay " +
-              // miniBusRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
-              "Please enter the value of your car";
-            userSessionData[sessionID].thirdPartyPrice =
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2);
-            continueSession = true;
-          }
-        }
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      if (userSessionData[sessionID].type === "maxiBus") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (userSessionData[sessionID].type === "hiring") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (userSessionData[sessionID].type === "ambulance") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (userSessionData[sessionID].type === "artOrTanker") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (userSessionData[sessionID].type === "Taxi") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
+      } else if (userSessionData[sessionID].type === "miniBus") {
+        service = userSessionData[sessionID].service;
+        message = whatsappMessage;
+        carNum = userSessionData[sessionID].carRegNumber;
       }
+      // }
 
       if (userSessionData[sessionID].selectedOption === "1") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
@@ -3373,311 +3165,422 @@ router.post("/ussd", async (req, res) => {
             continueSession = true;
           }
         } else if (userSessionData[sessionID].type === "hiring") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Buy Hiring car comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            hiringCarsServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // hiringCarsServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              hiringCarsServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial hiring cars is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "ambulance") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Buy Ambul/Hearse comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            ambulanceOrHearseServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ambulanceOrHearseServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ambulanceOrHearseServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial ambulance/hearse is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "artOrTanker") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Buy Art/Tanker comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            artOrTankersServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // artOrTankersServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              artOrTankersServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial art/tankers is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "Taxi") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Buy Taxi car comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            taxiServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // taxiServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              taxiServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial taxi is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Buy Mini Bus comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            miniBusServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // miniBusServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              miniBusServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial Mini Bus is",
-            totalPrice
-          );
-          continueSession = false;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         if (userSessionData[sessionID].type === "maxiBus") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Renew Max Bus comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            maxBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // maxBusRenewalServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              maxBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial maxi bus is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "hiring") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Renew Hiring car comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            hiringCarsRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // hiringCarsRenewalServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              hiringCarsRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial hiring cars is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "ambulance") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Renew Ambul/Hearse comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ambulanceOrHearseRenewalServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ambulanceOrHearseRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial ambulance/hearse is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "artOrTanker") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Renew Art/Tanker comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            artOrTankersRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // artOrTankersRenewalServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              artOrTankersRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial art/tankers is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "Taxi") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Renew Taxi car comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            taxiRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // taxiRenewalServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              taxiRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial taxi is",
-            totalPrice
-          );
-          continueSession = false;
         } else if (userSessionData[sessionID].type === "miniBus") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumberComp,
-              "Renew Mini Bus comp. comm"
-            );
+          // Check if the selected option exists in the mapping
+          if (
+            miniBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // miniBusRenewalServicePrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
           }
-
-          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial Mini Bus is",
-            totalPrice
-          );
-          continueSession = false;
         }
       }
+      // else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   if (userSessionData[sessionID].type === "maxiBus") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //       let amount = totalPrice;
+      //       await pay(
+      //         amount,
+      //         userSessionData[sessionID].phoneNumberComp,
+      //         "Renew Max Bus comp. comm"
+      //       );
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial maxi bus is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "hiring") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //       let amount = totalPrice;
+      //       await pay(
+      //         amount,
+      //         userSessionData[sessionID].phoneNumberComp,
+      //         "Renew Hiring car comp. comm"
+      //       );
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial hiring cars is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "ambulance") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //       let amount = totalPrice;
+      //       await pay(
+      //         amount,
+      //         userSessionData[sessionID].phoneNumberComp,
+      //         "Renew Ambul/Hearse comp. comm"
+      //       );
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial ambulance/hearse is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "artOrTanker") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //       let amount = totalPrice;
+      //       await pay(
+      //         amount,
+      //         userSessionData[sessionID].phoneNumberComp,
+      //         "Renew Art/Tanker comp. comm"
+      //       );
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial art/tankers is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "Taxi") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //       let amount = totalPrice;
+      //       await pay(
+      //         amount,
+      //         userSessionData[sessionID].phoneNumberComp,
+      //         "Renew Taxi car comp. comm"
+      //       );
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial taxi is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "miniBus") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //       let amount = totalPrice;
+      //       await pay(
+      //         amount,
+      //         userSessionData[sessionID].phoneNumberComp,
+      //         "Renew Mini Bus comp. comm"
+      //       );
+      //     }
+
+      //     console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial Mini Bus is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   }
+      // }
 
       // collect phone number from user
       if (userSessionData[sessionID].type === "specialOnSite") {
@@ -4943,19 +4846,39 @@ router.post("/ussd", async (req, res) => {
         }
       }
     } else if (userSessionData[sessionID].service === "5") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (userSessionData[sessionID].type === "maxiBus") {
-          message = numberToPayWithMessage;
-          userSessionData[sessionID].carPrice = userData;
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].service === "renewal") {
-        if (userSessionData[sessionID].type === "maxiBus") {
-          message = numberToPayWithMessage;
-          userSessionData[sessionID].carPrice = userData;
-          continueSession = true;
-        }
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      if (userSessionData[sessionID].type === "maxiBus") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "hiring") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "ambulance") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "artOrTanker") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "Taxi") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
+      } else if (userSessionData[sessionID].type === "miniBus") {
+        message = numberToPayWithMessage;
+        userSessionData[sessionID].carPrice = userData;
+        continueSession = true;
       }
+      // } else if (userSessionData[sessionID].service === "renewal") {
+      // if (userSessionData[sessionID].type === "maxiBus") {
+      //   message = numberToPayWithMessage;
+      //   userSessionData[sessionID].carPrice = userData;
+      //   continueSession = true;
+      // }
+      // }
     } else if (userSessionData[sessionID].type === "specialOnSite") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
@@ -5190,9 +5113,315 @@ router.post("/ussd", async (req, res) => {
             totalPrice
           );
           continueSession = false;
+        } else if (userSessionData[sessionID].type === "hiring") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Hiring car comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial hiring cars is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "ambulance") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              // userSessionData[sessionID].phoneNumberComp,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Ambul/Hearse comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial ambulance/hearse is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "artOrTanker") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              // userSessionData[sessionID].phoneNumberComp,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Art/Tanker comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial art/tankers is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "Taxi") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              // userSessionData[sessionID].phoneNumberComp,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Taxi car comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial taxi is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              // userSessionData[sessionID].phoneNumberComp,
+              userSessionData[sessionID].phoneNumber,
+              "Buy Mini Bus comp. comm"
+            );
+          }
+
+          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial Mini Bus is",
+            totalPrice
+          );
+          continueSession = false;
         }
-      } else if (userSessionData[sessionID].service === "renewal") {
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         if (userSessionData[sessionID].type === "maxiBus") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Max Bus comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial maxi bus is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "hiring") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Hiring car comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial hiring cars is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "ambulance") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Ambul/Hearse comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial ambulance/hearse is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "artOrTanker") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Art/Tanker comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial art/tankers is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "Taxi") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Taxi car comp. comm"
+            );
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial taxi is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+            let amount = totalPrice;
+            await pay(
+              amount,
+              // userSessionData[sessionID].phoneNumberComp,
+              userSessionData[sessionID].phoneNumber,
+              "Renew Mini Bus comp. comm"
+            );
+          }
+
+          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial Mini Bus is",
+            totalPrice
+          );
+          continueSession = false;
         }
       }
     }
