@@ -11,6 +11,9 @@ const { secret } = require("../scripts/config.js");
 const USSDCODE = "*928*311#";
 const userSessionData = {};
 
+let carNum = "";
+let whatsappNum = "";
+
 async function generateUnique4DigitNumber() {
   let numbersGenerated = [];
 
@@ -153,6 +156,8 @@ async function pay(amount, customerNumber, item_desc) {
       secrete: secret,
       isussd: true,
       newVodaPayment: true,
+      carnums: carNum,
+      whatsappNums: whatsappNum,
       // username: process.env.NALO_USERNAME,
       // password: process.env.PASSWORD,
     },
@@ -539,6 +544,8 @@ router.post("/ussd", async (req, res) => {
       amount: undefined,
       phoneNumber: undefined,
       phoneNumberComp: undefined,
+      carRegNumber: undefined,
+      whatsappNumber: undefined,
     };
     message = "Welcome to Fast Insurance\n";
     message += "1. Purchase insurance\n";
@@ -1171,13 +1178,11 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          message = "Please enter a MOMO phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          message = "Please enter your car registration number.";
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          message = "Please enter your car registration number.";
           continueSession = true;
         }
       }
@@ -1404,6 +1409,8 @@ router.post("/ussd", async (req, res) => {
   } else if (newSession === false && userSessionData[sessionID].step === 4) {
     userSessionData[sessionID].selectedOption = userData;
     userSessionData[sessionID].phoneNumber = userData;
+    userSessionData[sessionID].carRegNumber = userData;
+
     if (userSessionData[sessionID].service === "1") {
       // Check if the service is Third Party Commercial
 
@@ -1411,8 +1418,9 @@ router.post("/ussd", async (req, res) => {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = "Please enter your car registration number.";
           continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
           service = "1";
@@ -1706,27 +1714,17 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "3") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          service = userSessionData[sessionID].service;
-
-          let amount = 243;
-          message = `${finalMessage} ` + `${amount}` + ` now.`;
-          await pay(
-            amount,
-            userSessionData[sessionID].phoneNumber,
-            "Purchasing a motor cycle insurance package for 2 persons."
-          );
-          continueSession = false;
+          service = "1";
+          message =
+            "Please enter your Whatsapp phone number for communication.";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          service = userSessionData[sessionID].service;
-
-          let amount = 193;
-          message = `${finalMessage} ` + `${amount}` + ` now.`;
-          await pay(
-            amount,
-            userSessionData[sessionID].phoneNumber,
-            "Renewing a motor cycle insurance package for 2 persons."
-          );
-          continueSession = false;
+          service = "1";
+          message =
+            "Please enter your Whatsapp phone number for communication.";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       }
     } else if (userSessionData[sessionID].service === "4") {
@@ -1933,6 +1931,9 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].phoneNumber = userData;
 
     userSessionData[sessionID].phoneNumberComp = userData;
+    userSessionData[sessionID].whatsappNumber = userData;
+    userSessionData[sessionID].carRegNumber = userData;
+
     // Purchase prices for third party
 
     // copied from step 4
@@ -1942,74 +1943,52 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
-          // if (
-          //   maxBusServicePrices.hasOwnProperty(
-          //     userSessionData[sessionID].selectedOption
-          //   )
-          // ) {
-          //   service = userSessionData[sessionID].service;
-          //   // Get the price dynamically from the mapping
-          //   message =
-          //     `${finalMessage} ` +
-          //     maxBusServicePrices[
+          // const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
+
+          // try {
+          //   if (
+          //     maxBusServicePrices.hasOwnProperty(
           //       userSessionData[sessionID].selectedOption
-          //     ].toFixed(2) +
-          //     ` now `;
-          //   let amount = parseInt(
-          //     maxBusServicePrices[userSessionData[sessionID].selectedOption]
-          //   );
-          //   await pay(
-          //     amount,
-          //     amount,
-          //     userSessionData[sessionID].phoneNumber,
-          //     "Purchasing a 3rd party commercial insurance package for a Max Bus car."
-          //   );
-          //   continueSession = false;
-          // } else {
-          //   message = "Only numbers between 23 - 70 are allowed.";
+          //     )
+          //   ) {
+          //     service = userSessionData[sessionID].service;
+          //     // Get the price dynamically from the mapping
+          //     let amount = parseInt(
+          //       maxBusServicePrices[userSessionData[sessionID].selectedOption]
+          //     );
+
+          //     const paymentPromise = await pay(
+          //       amount,
+          //       userSessionData[sessionID].phoneNumber,
+          //       "Buy Max Bus 3rd-party."
+          //     );
+          //     // Set a timeout for the payment operation
+          //     await Promise.race([
+          //       paymentPromise,
+          //       new Promise((_, reject) =>
+          //         setTimeout(
+          //           () => reject(new Error("Payment operation timed out")),
+          //           timeoutDuration
+          //         )
+          //       ),
+          //     ]);
+
+          //     // Inform the user about the payment prompt
+          //     message = `${finalMessage} ${amount.toFixed(2)} now!`;
+          //     continueSession = false;
+          //   } else {
+          //     message = "Only numbers between 23 - 70 are allowed.";
+          //     continueSession = false;
+          //   }
+          // } catch (error) {
+          //   message = "Error processing payment: " + error.message;
           //   continueSession = false;
           // }
-          const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
-
-          try {
-            if (
-              maxBusServicePrices.hasOwnProperty(
-                userSessionData[sessionID].selectedOption
-              )
-            ) {
-              service = userSessionData[sessionID].service;
-              // Get the price dynamically from the mapping
-              let amount = parseInt(
-                maxBusServicePrices[userSessionData[sessionID].selectedOption]
-              );
-
-              const paymentPromise = await pay(
-                amount,
-                userSessionData[sessionID].phoneNumber,
-                "Buy Max Bus 3rd-party."
-              );
-              // Set a timeout for the payment operation
-              await Promise.race([
-                paymentPromise,
-                new Promise((_, reject) =>
-                  setTimeout(
-                    () => reject(new Error("Payment operation timed out")),
-                    timeoutDuration
-                  )
-                ),
-              ]);
-
-              // Inform the user about the payment prompt
-              message = `${finalMessage} ${amount.toFixed(2)} now!`;
-              continueSession = false;
-            } else {
-              message = "Only numbers between 23 - 70 are allowed.";
-              continueSession = false;
-            }
-          } catch (error) {
-            message = "Error processing payment: " + error.message;
-            continueSession = false;
-          }
+          service = userSessionData[sessionID].service;
+          message =
+            "Please enter your Whatsapp phone number for communication.";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
           if (
             hiringCarsServicePrices.hasOwnProperty(
@@ -2868,6 +2847,18 @@ router.post("/ussd", async (req, res) => {
       } else {
         message = "Invalid option selected for Third Party Private.";
         continueSession = false;
+      }
+    } else if (userSessionData[sessionID].service === "3") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        service = "1";
+        message = "Please enter a MOMO phone number you wish to pay with.";
+        whatsappNum = userSessionData[sessionID].whatsappNumber;
+        continueSession = true;
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        service = "1";
+        message = "Please enter the phone number you wish to pay with.";
+        whatsappNum = userSessionData[sessionID].whatsappNumber;
+        continueSession = true;
       }
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
@@ -3740,9 +3731,37 @@ router.post("/ussd", async (req, res) => {
 
     userSessionData[sessionID].phoneNumber = userData;
     userSessionData[sessionID].phoneNumberComp;
-    // Copied from step 5
+    userSessionData[sessionID].whatsappNumber = userData;
 
-    if (userSessionData[sessionID].service === "4") {
+    if (userSessionData[sessionID].service === "1") {
+      message = "Please enter the phone number you wish to pay with.";
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].service === "3") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        service = userSessionData[sessionID].service;
+
+        let amount = 243;
+        message = `${finalMessage} ` + `${amount}` + ` now.`;
+        await pay(
+          amount,
+          userSessionData[sessionID].phoneNumber,
+          "Purchasing a motor cycle insurance package for 2 persons."
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        service = userSessionData[sessionID].service;
+
+        let amount = 193;
+        message = `${finalMessage} ` + `${amount}` + ` now.`;
+        await pay(
+          amount,
+          userSessionData[sessionID].phoneNumber,
+          "Renewing a motor cycle insurance package for 2 persons."
+        );
+        continueSession = false;
+      }
+    } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           const totalPrice =
@@ -4618,7 +4637,50 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 7) {
     userSessionData[sessionID].phoneNumber = userData;
-    if (userSessionData[sessionID].type === "specialOnSite") {
+    if (userSessionData[sessionID].service === "1") {
+      const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
+
+      try {
+        if (
+          maxBusServicePrices.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          // Get the price dynamically from the mapping
+          let amount = parseInt(
+            maxBusServicePrices[userSessionData[sessionID].selectedOption]
+          );
+
+          const paymentPromise = await pay(
+            amount,
+            userSessionData[sessionID].phoneNumber,
+            "Buy Max Bus 3rd-party."
+          );
+          // Set a timeout for the payment operation
+          await Promise.race([
+            paymentPromise,
+            new Promise((_, reject) =>
+              setTimeout(
+                () => reject(new Error("Payment operation timed out")),
+                timeoutDuration
+              )
+            ),
+          ]);
+
+          // Inform the user about the payment prompt
+          message = `${finalMessage} ${amount.toFixed(2)} now!`;
+          continueSession = false;
+        } else {
+          message =
+            "Only numbers between 23 - 70 are allowed. Back to step 3 and re-enter.";
+          continueSession = false;
+        }
+      } catch (error) {
+        message = "Error processing payment: " + error.message;
+        continueSession = false;
+      }
+    } else if (userSessionData[sessionID].type === "specialOnSite") {
       const totalPrice =
         parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
         parseInt(userSessionData[sessionID].thirdPartyPrice);
