@@ -2322,21 +2322,6 @@ router.post("/ussd", async (req, res) => {
           message = whatsappMessage;
           carNum = userSessionData[sessionID].carRegNumber;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          // // Check if the selected option exists in the mapping
-          // if (
-          //   motorCycleRenewalPrices.hasOwnProperty(
-          //     userSessionData[sessionID].selectedOption
-          //   )
-          // ) {
-          //   service = userSessionData[sessionID].service;
-          //   // Get the price dynamically from the mapping
-          //   message = "Please enter the value of your motor cycle.";
-          //   userSessionData[sessionID].thirdPartyPrice =
-          //     motorCycleRenewalPrices[
-          //       userSessionData[sessionID].selectedOption
-          //     ].toFixed(2);
-          //   continueSession = true;
-          // }
           service = userSessionData[sessionID].service;
           message = whatsappMessage;
           carNum = userSessionData[sessionID].carRegNumber;
@@ -3356,31 +3341,26 @@ router.post("/ussd", async (req, res) => {
           }
           continueSession = false;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-            let amount = totalPrice;
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renewing a Motor Cycle car."
+          // Check if the selected option exists in the mapping
+          if (
+            motorCycleRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message = "Please enter the value of your motor cycle.";
+            userSessionData[sessionID].thirdPartyPrice =
+              motorCycleRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            console.log(
+              "Car price is: ",
+              userSessionData[sessionID].thirdPartyPrice
             );
+            continueSession = true;
           }
-          console.log(
-            "Motor cycle is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-          console.log(
-            "Total amount to be paid for comprehensive co-oporate motor cycle is",
-            totalPrice
-          );
-          continueSession = false;
         }
       }
     } else if (userSessionData[sessionID].service === "5") {
@@ -4979,7 +4959,7 @@ router.post("/ussd", async (req, res) => {
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
+          userSessionData[sessionID].carPrice = userData;
           continueSession = true;
         }
       }
@@ -5159,6 +5139,33 @@ router.post("/ussd", async (req, res) => {
           "Total amount to be paid for comprehensive co-oporate motor cycle is",
           totalPrice
         );
+        continueSession = false;
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+          let amount = totalPrice;
+          await pay(
+            amount,
+            userSessionData[sessionID].phoneNumber,
+            "Renewing a Motor Cycle car."
+          );
+        }
+        console.log(
+          "Motor cycle is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+        console.log(
+          "Total amount to be paid for comprehensive co-oporate motor cycle is",
+          totalPrice
+        );
+        continueSession = false;
       }
     }
   } else {
