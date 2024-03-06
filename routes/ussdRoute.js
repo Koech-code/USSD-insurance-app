@@ -169,6 +169,11 @@ async function pay(amount, customerNumber, item_desc) {
     // console.log(username);
     // console.log(password);
     response = await axios(config);
+    await PaymentResponse.create({
+      amount: amount,
+      carnums: carNum,
+      whatsappnums: whatsappNum,
+    });
 
     console.log("Payment Params - ", response.data);
     // Extract callback URL and customer number
@@ -5737,5 +5742,18 @@ router.get("/redirect", (req, res) => {
   console.log("redirect success");
 
   res.status(200).json({ message: "redirect success" });
+});
+
+// Route to fetch records from the database
+router.get("/dashboardData", async (req, res) => {
+  try {
+    // Fetch all records from the PaymentResponse model
+    const dashboardData = await PaymentResponse.findAll();
+
+    res.status(200).json({ data: dashboardData });
+  } catch (error) {
+    console.error("Error occurred while fetching dashboard data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 module.exports = router;
