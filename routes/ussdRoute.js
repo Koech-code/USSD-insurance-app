@@ -14,6 +14,7 @@ const userSessionData = {};
 let carNum = "";
 let whatsappNum = "";
 
+const processingFeePercentage = 3;
 async function generateUnique4DigitNumber() {
   let numbersGenerated = [];
 
@@ -536,6 +537,13 @@ router.post("/ussd", async (req, res) => {
   let GW1Options = "";
   let InsuranceType = "";
   let isThirdPartyComm = "";
+  let specialAndGW1 = "";
+
+  const caRegMessage = "Please enter your car registration number.";
+  const whatsappMessage =
+    "Please enter your Whatsapp phone number for communication.";
+  const numberToPayWithMessage =
+    "Please enter the phone number you wish to pay with.";
 
   if (newSession && userData === USSDCODE) {
     // Initial session setup
@@ -1411,7 +1419,6 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].phoneNumber = userData;
     userSessionData[sessionID].carRegNumber = userData;
 
-    const caRegMessage = "Please enter your car registration number.";
     if (userSessionData[sessionID].service === "1") {
       // Check if the service is Third Party Commercial
 
@@ -1981,8 +1988,6 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].carRegNumber = userData;
 
     // Purchase prices for third party
-    const whatsappMessage =
-      "Please enter your Whatsapp phone number for communication.";
 
     // copied from step 4
     if (userSessionData[sessionID].service === "1") {
@@ -2781,62 +2786,70 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].type === "specialOnSite") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "specialOnRoad") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           userSessionData[sessionID].isThirdPartyComm = "thirdPartyComm";
           continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS1") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS2") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS3") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          message = "Please enter the phone number you wish to pay with.";
-          userSessionData[sessionID].phoneNumber = userData;
+          // message = "Please enter the phone number you wish to pay with.";
+          // userSessionData[sessionID].phoneNumber = userData;
+          message = caRegMessage;
           continueSession = true;
         }
       }
@@ -2851,6 +2864,7 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].phoneNumber = userData;
     userSessionData[sessionID].phoneNumberComp;
     userSessionData[sessionID].whatsappNumber = userData;
+    userSessionData[sessionID].carRegNumber = userData;
 
     const numberToPayWithMessage =
       "Please enter the phone number you wish to pay with.";
@@ -2988,23 +3002,30 @@ router.post("/ussd", async (req, res) => {
         service = userSessionData[sessionID].service;
 
         let amount = 243;
-        message = `${finalMessage} ` + `${amount}` + ` now.`;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
         await pay(
-          amount,
+          tot_amt,
           userSessionData[sessionID].phoneNumber,
           "Purchasing a motor cycle insurance package for 2 persons."
         );
+
+        message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
         continueSession = false;
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         service = userSessionData[sessionID].service;
 
         let amount = 193;
-        message = `${finalMessage} ` + `${amount}` + ` now.`;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
         await pay(
-          amount,
+          tot_amt,
           userSessionData[sessionID].phoneNumber,
           "Renewing a motor cycle insurance package for 2 persons."
         );
+
+        message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
         continueSession = false;
       }
     } else if (userSessionData[sessionID].service === "4") {
@@ -3329,200 +3350,36 @@ router.post("/ussd", async (req, res) => {
           }
         }
       }
-      // else if (userSessionData[sessionID].InsuranceType === "renewal") {
-      //   if (userSessionData[sessionID].type === "maxiBus") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-      //       let amount = totalPrice;
-      //       await pay(
-      //         amount,
-      //         userSessionData[sessionID].phoneNumberComp,
-      //         "Renew Max Bus comp. comm"
-      //       );
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial maxi bus is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "hiring") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-      //       let amount = totalPrice;
-      //       await pay(
-      //         amount,
-      //         userSessionData[sessionID].phoneNumberComp,
-      //         "Renew Hiring car comp. comm"
-      //       );
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial hiring cars is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "ambulance") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-      //       let amount = totalPrice;
-      //       await pay(
-      //         amount,
-      //         userSessionData[sessionID].phoneNumberComp,
-      //         "Renew Ambul/Hearse comp. comm"
-      //       );
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial ambulance/hearse is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "artOrTanker") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-      //       let amount = totalPrice;
-      //       await pay(
-      //         amount,
-      //         userSessionData[sessionID].phoneNumberComp,
-      //         "Renew Art/Tanker comp. comm"
-      //       );
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial art/tankers is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "Taxi") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-      //       let amount = totalPrice;
-      //       await pay(
-      //         amount,
-      //         userSessionData[sessionID].phoneNumberComp,
-      //         "Renew Taxi car comp. comm"
-      //       );
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial taxi is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "miniBus") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-      //       let amount = totalPrice;
-      //       await pay(
-      //         amount,
-      //         userSessionData[sessionID].phoneNumberComp,
-      //         "Renew Mini Bus comp. comm"
-      //       );
-      //     }
-
-      //     console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial Mini Bus is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   }
-      // }
-
       // collect phone number from user
       if (userSessionData[sessionID].type === "specialOnSite") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumber = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumber = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "specialOnRoad") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumber = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumber = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS1") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumber = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumber = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS2") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumber = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumber = userData;
+        message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS3") {
         service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        userSessionData[sessionID].phoneNumber = userData;
+        // message = "Please enter the phone number you wish to pay with.";
+        // userSessionData[sessionID].phoneNumber = userData;
+        message = caRegMessage;
         continueSession = true;
       }
     } else if (userSessionData[sessionID].service === "6") {
@@ -3665,275 +3522,63 @@ router.post("/ussd", async (req, res) => {
     if (userSessionData[sessionID].service === "1") {
       if (userSessionData[sessionID].type === "specialOnSite") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            onSiteSpecialTypesServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              onSiteSpecialTypesServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              onSiteSpecialTypesServicePrice[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy spc(ON SITE) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yeSpecialOnSite";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              onSiteSpecialTypesRenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              onSiteSpecialTypesRenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew spc(ON SITE) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yeSpecialOnSite";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "specialOnRoad") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            onBoardSpecialTypesServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              onBoardSpecialTypesServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              onBoardSpecialTypesServicePrice[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy spc(ON ROAD) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yeSpecialOnRoad";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              onBoardSpecialTypesRenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              onBoardSpecialTypesRenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew spc(ON ROAD) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yeSpecialOnRoad";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS1") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            GW1Class1ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              GW1Class1ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy GW1(CLASS 1) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yesGW1Class1";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            GW1Class1RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              GW1Class1ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew GW1(CLASS 1) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yesGW1Class1";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS2") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            GW1Class2ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              GW1Class2ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              GW1Class2ServicePrice[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy GW1(CLASS 2) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yesGW1Class2";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            GW1Class2RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              GW1Class2RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              GW1Class2RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew GW1(CLASS 2) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yesGW1Class2";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS3") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          if (
-            GW1Class3ServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              GW1Class3ServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              GW1Class3ServicePrice[userSessionData[sessionID].selectedOption]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Buy GW1(CLASS 3) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yesGW1Class3";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          if (
-            GW1Class3RenewalServicePrice.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              GW1Class3RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now `;
-            let amount = parseInt(
-              GW1Class3RenewalServicePrice[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            await pay(
-              amount,
-              userSessionData[sessionID].phoneNumber,
-              "Renew GW1(CLASS 3) 3rd-party"
-            );
-            continueSession = false;
-          } else {
-            message = "Only numbers between 1 - 5 are allowed.";
-          }
+          message = whatsappMessage;
+          userSessionData[sessionID].specialAndGW1 = "yesGW1Class3";
+          carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       }
     }
@@ -3944,10 +3589,9 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].phoneNumber = userData;
     userSessionData[sessionID].whatsappNumber = userData;
 
+    userSessionData[sessionID].carRegNumber = userData;
     userSessionData[sessionID].thirdPartyPrice;
 
-    const numberToPayWithMessage =
-      "Please enter the phone number you wish to pay with.";
     if (userSessionData[sessionID].service === "1") {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         if (userSessionData[sessionID].type === "maxBus") {
@@ -3965,8 +3609,11 @@ router.post("/ussd", async (req, res) => {
                 maxBusServicePrices[userSessionData[sessionID].selectedOption]
               );
 
+              // add 3% of the amount as processing fee
+              let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
               const paymentPromise = await pay(
-                amount,
+                tot_amt,
                 userSessionData[sessionID].phoneNumber,
                 "Buy Max Bus 3rd-party."
               );
@@ -3982,7 +3629,7 @@ router.post("/ussd", async (req, res) => {
               ]);
 
               // Inform the user about the payment prompt
-              message = `${finalMessage} ${amount.toFixed(2)} now!`;
+              message = `${finalMessage} ${tot_amt.toFixed(2)} now!`;
               continueSession = false;
             } else {
               message =
@@ -4000,20 +3647,19 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              hiringCarsServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Hiring car 3rd-party."
             );
+
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Only numbers between 5 - 15 are allowed.";
@@ -4026,22 +3672,20 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              ambulanceOrHearseServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               ambulanceOrHearseServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Ambulance/hearse 3rd-party"
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input 5 to access this service.";
@@ -4054,22 +3698,20 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              artOrTankersServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               artOrTankersServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Art/Tankers 3rd-party"
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input 3.";
@@ -4081,20 +3723,17 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              taxiServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               taxiServicePrices[userSessionData[sessionID].selectedOption]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Taxi car 3rd-party."
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input 5.";
@@ -4106,20 +3745,18 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              miniBusServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               miniBusServicePrices[userSessionData[sessionID].selectedOption]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Mini Bus 3rd-party."
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input 5.";
@@ -4133,23 +3770,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              maxBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               maxBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Max Bus 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Only numbers between 23 - 70 are allowed.";
@@ -4161,22 +3796,20 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              hiringCarsRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               hiringCarsRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Hiring car 3rd-party."
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Only numbers between 5 - 15 are allowed.";
@@ -4188,22 +3821,20 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              ambulanceOrHearseRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               ambulanceOrHearseRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Ambu/Hearse 3rd-party."
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input 5 to access this service.";
@@ -4215,22 +3846,20 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              artOrTankersRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               artOrTankersRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Art/Tanker 3rd-party."
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input 3.";
@@ -4242,22 +3871,20 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              taxiRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               taxiRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Taxi car 3rd-party."
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input 5.";
@@ -4269,22 +3896,20 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            message =
-              `${finalMessage} ` +
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               miniBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Mini Bus 3rd-party."
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input 5.";
@@ -4303,22 +3928,20 @@ router.post("/ussd", async (req, res) => {
           ) {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              privateIndividualX1Prices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               privateIndividualX1Prices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Pvt Indiv X1 3rd-party."
             );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
@@ -4332,23 +3955,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              privateIndividualX4Prices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               privateIndividualX4Prices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Pvt Indiv X4 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
@@ -4362,21 +3983,19 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
-                2
-              ) +
-              ` now.`;
             let amount = parseInt(
               ownGoodsBelow[userSessionData[sessionID].selectedOption]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Own Goods(<3,000 cc) 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Input 3 to access this service";
@@ -4389,21 +4008,19 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
-                2
-              ) +
-              ` now.`;
             let amount = parseInt(
               ownGoodsAbove[userSessionData[sessionID].selectedOption]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Own Goods(>3,000 cc) 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Input 3 to access this service";
@@ -4416,21 +4033,19 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              generalGartageBelow[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               generalGartageBelow[userSessionData[sessionID].selectedOption]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Gen.Gar (<3,000 cc) 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Input 3 to access this service";
@@ -4443,21 +4058,19 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              generalGartageAbove[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               generalGartageAbove[userSessionData[sessionID].selectedOption]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Gen.Gar (>3,000 cc) 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Input 3 to access this service";
@@ -4470,21 +4083,19 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              miniBusServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               miniBusServicePrices[userSessionData[sessionID].selectedOption]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Mini Bus 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input a value between 5 - 22.";
@@ -4504,23 +4115,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              privateIndividualX1RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               privateIndividualX1RenewalPrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Pvt Indiv X1 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
@@ -4534,23 +4143,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              privateIndividualX4RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               privateIndividualX4RenewalPrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Pvt Indiv X4 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Only inputs from 5 - 12 are allowed.";
@@ -4564,23 +4171,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              ownGoodsBelowRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               ownGoodsBelowRenewalPrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Own Goods(<3,000 cc) 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Input 3 to access this service";
@@ -4593,23 +4198,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              ownGoodsAboveRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               ownGoodsAboveRenewalPrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Own Goods(>3,000 cc) 3rd-party."
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Input 3 to access this service";
@@ -4622,23 +4225,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              generalCartageRenewalBelow[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               generalCartageRenewalBelow[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Gen.Gar (<3,000 cc)"
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Input 3 to access this service";
@@ -4651,23 +4252,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              generalCartageRenewalAbove[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               generalCartageRenewalAbove[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Gen.Gar (>3,000 cc)"
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Input 3 to access this service";
@@ -4680,23 +4279,21 @@ router.post("/ussd", async (req, res) => {
             )
           ) {
             service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            message =
-              `${finalMessage} ` +
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ].toFixed(2) +
-              ` now.`;
             let amount = parseInt(
               miniBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
               ]
             );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Mini Bus 3rd-party"
             );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
             continueSession = false;
           } else {
             message = "Please input a value between 5 - 22.";
@@ -4786,145 +4383,165 @@ router.post("/ussd", async (req, res) => {
         userSessionData[sessionID].carPrice = userData;
         continueSession = true;
       }
-    } else if (userSessionData[sessionID].type === "specialOnSite") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-        let amount = totalPrice;
-        await pay(
-          amount,
-          userSessionData[sessionID].phoneNumber,
-          "Buy spc(ON SITE) comp. comm"
-        );
-      }
+    }
 
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      console.log(
-        "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
-        totalPrice
-      );
-      continueSession = false;
+    if (userSessionData[sessionID].type === "specialOnSite") {
+      service = userSessionData[sessionID].service;
+      message = whatsappMessage;
+      carNum = userSessionData[sessionID].carRegNumber;
+      continueSession = true;
     } else if (userSessionData[sessionID].type === "specialOnRoad") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-        let amount = totalPrice;
-        await pay(
-          amount,
-          userSessionData[sessionID].phoneNumber,
-          "Buy spc(ON ROAD) comp. comm"
-        );
-      }
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      // const totalPrice =
+      //   parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      // if (userSessionData[sessionID].carPrice < 50000) {
+      //   message = "The car value cannot be less than 50000 GHS";
+      // } else {
+      //   // message = `Pay ${totalPrice}`;
+      //   message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //   let amount = totalPrice;
+      //   await pay(
+      //     amount,
+      //     userSessionData[sessionID].phoneNumber,
+      //     "Buy spc(ON ROAD) comp. comm"
+      //   );
+      // }
+      // console.log(
+      //   "3rd party price is ",
+      //   userSessionData[sessionID].thirdPartyPrice
+      // );
+      // console.log("And car value is", userSessionData[sessionID].carPrice);
 
-      console.log(
-        "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
-        totalPrice
-      );
-      continueSession = false;
+      // console.log(
+      //   "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
+      //   totalPrice
+      // );
+      // continueSession = false;
+      service = userSessionData[sessionID].service;
+      message = whatsappMessage;
+      carNum = userSessionData[sessionID].carRegNumber;
+      continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-        let amount = totalPrice;
-        await pay(
-          amount,
-          userSessionData[sessionID].phoneNumber,
-          "Buy GW1(CLASS 1) comp. comm"
-        );
-      }
+      // const totalPrice =
+      //   parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      // if (userSessionData[sessionID].carPrice < 50000) {
+      //   message = "The car value cannot be less than 50000 GHS";
+      // } else {
+      //   // message = `Pay ${totalPrice}`;
+      //   message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //   let amount = totalPrice;
+      //   await pay(
+      //     amount,
+      //     userSessionData[sessionID].phoneNumber,
+      //     "Buy GW1(CLASS 1) comp. comm"
+      //   );
+      // }
 
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      // console.log(
+      //   "3rd party price is ",
+      //   userSessionData[sessionID].thirdPartyPrice
+      // );
+      // console.log("And car value is", userSessionData[sessionID].carPrice);
 
-      console.log(
-        "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
-        totalPrice
-      );
-      continueSession = false;
+      // console.log(
+      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
+      //   totalPrice
+      // );
+      // continueSession = false;
+
+      service = userSessionData[sessionID].service;
+      message = whatsappMessage;
+      carNum = userSessionData[sessionID].carRegNumber;
+      continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-        let amount = totalPrice;
-        await pay(
-          amount,
-          userSessionData[sessionID].phoneNumber,
-          "Buy GW1(CLASS 2) comp. comm"
-        );
-      }
+      // const totalPrice =
+      //   parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      // if (userSessionData[sessionID].carPrice < 50000) {
+      //   message = "The car value cannot be less than 50000 GHS";
+      // } else {
+      //   // message = `Pay ${totalPrice}`;
+      //   message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //   let amount = totalPrice;
+      //   await pay(
+      //     amount,
+      //     userSessionData[sessionID].phoneNumber,
+      //     "Buy GW1(CLASS 2) comp. comm"
+      //   );
+      // }
 
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      // console.log(
+      //   "3rd party price is ",
+      //   userSessionData[sessionID].thirdPartyPrice
+      // );
+      // console.log("And car value is", userSessionData[sessionID].carPrice);
 
-      console.log(
-        "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
-        totalPrice
-      );
-      continueSession = false;
+      // console.log(
+      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
+      //   totalPrice
+      // );
+      // continueSession = false;
+
+      service = userSessionData[sessionID].service;
+      message = whatsappMessage;
+      carNum = userSessionData[sessionID].carRegNumber;
+      continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + `${totalPrice}` + ` now `;
-        let amount = totalPrice;
-        await pay(
-          amount,
-          userSessionData[sessionID].phoneNumber,
-          "Buy GW1(CLASS 3) comp. comm"
-        );
-      }
+      // const totalPrice =
+      //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      // if (userSessionData[sessionID].carPrice < 50000) {
+      //   message = "The car value cannot be less than 50000 GHS";
+      // } else {
+      //   // message = `Pay ${totalPrice}`;
+      //   message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //   let amount = totalPrice;
+      //   await pay(
+      //     amount,
+      //     userSessionData[sessionID].phoneNumber,
+      //     "Buy GW1(CLASS 3) comp. comm"
+      //   );
+      // }
 
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      // console.log(
+      //   "3rd party price is ",
+      //   userSessionData[sessionID].thirdPartyPrice
+      // );
+      // console.log("And car value is", userSessionData[sessionID].carPrice);
 
-      console.log(
-        "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
-        totalPrice
-      );
-      continueSession = false;
+      // console.log(
+      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
+      //   totalPrice
+      // );
+      // continueSession = false;
+
+      service = userSessionData[sessionID].service;
+      message = whatsappMessage;
+      carNum = userSessionData[sessionID].carRegNumber;
+      continueSession = true;
+    }
+
+    if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnSite") {
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnRoad") {
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class1") {
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class2") {
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class3") {
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
     }
 
     // Increment the step for the next interaction
@@ -4935,6 +4552,8 @@ router.post("/ussd", async (req, res) => {
 
     userSessionData[sessionID].phoneNumber = userData;
     userSessionData[sessionID].phoneNumberComp;
+
+    userSessionData[sessionID].whatsappNumber = userData;
     // userSessionData[sessionID].whatsappNumber = userData;
     if (userSessionData[sessionID].type === "motorCycle") {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
@@ -4944,14 +4563,18 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
           await pay(
-            amount,
+            tot_amt,
             userSessionData[sessionID].phoneNumber,
             "Buy a Motor Cycle car insur."
           );
+
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
         console.log(
           "Motor cycle is ",
@@ -4970,14 +4593,18 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
           await pay(
-            amount,
+            tot_amt,
             userSessionData[sessionID].phoneNumber,
             "Renewing a Motor Cycle car."
           );
+
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
         console.log(
           "Motor cycle is ",
@@ -4999,14 +4626,18 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Max Bus comp. comm"
             );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           }
 
           console.log(
@@ -5027,14 +4658,17 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Buy Hiring car comp. comm"
             );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5055,15 +4689,18 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
               "Buy Ambul/Hearse comp. comm"
             );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5084,15 +4721,17 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
               "Buy Art/Tanker comp. comm"
             );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5113,15 +4752,18 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
               "Buy Taxi car comp. comm"
             );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5142,15 +4784,18 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
               "Buy Mini Bus comp. comm"
             );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
@@ -5170,14 +4815,17 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Max Bus comp. comm"
             );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5198,14 +4846,17 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Hiring car comp. comm"
             );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5226,14 +4877,16 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Ambul/Hearse comp. comm"
             );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5254,14 +4907,16 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Art/Tanker comp. comm"
             );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5282,14 +4937,16 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               userSessionData[sessionID].phoneNumber,
               "Renew Taxi car comp. comm"
             );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log(
@@ -5310,15 +4967,17 @@ router.post("/ussd", async (req, res) => {
           if (userSessionData[sessionID].carPrice < 50000) {
             message = "The car value cannot be less than 50000 GHS";
           } else {
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + `${totalPrice}` + ` now `;
             let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
-              amount,
+              tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
               "Renew Mini Bus comp. comm"
             );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
           }
 
           console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
@@ -5339,15 +4998,17 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
           await pay(
-            amount,
+            tot_amt,
             // userSessionData[sessionID].phoneNumberComp,
             userSessionData[sessionID].phoneNumber,
             "Buy indv X1 comp. pvt"
           );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
 
         console.log(
@@ -5368,14 +5029,16 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
           await pay(
-            amount,
+            tot_amt,
             userSessionData[sessionID].phoneNumber,
             "Buy indv X4 comp. pvt"
           );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
 
         console.log(
@@ -5396,13 +5059,15 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
           await pay(
-            amount,
+            tot_amt,
             userSessionData[sessionID].phoneNumber,
             "Buy Own Goods(<3,000) comp. pvt"
           );
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
 
         console.log(
@@ -5423,14 +5088,16 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
           await pay(
-            amount,
+            tot_amt,
             userSessionData[sessionID].phoneNumber,
             "Buy Own.G (>3,000) comp. pvt"
           );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
 
         console.log(
@@ -5453,14 +5120,16 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
           await pay(
-            amount,
+            tot_amt,
             userSessionData[sessionID].phoneNumber,
             "Buy Gen.Crt (<3,000) comp. pvt"
           );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
 
         console.log(
@@ -5483,14 +5152,16 @@ router.post("/ussd", async (req, res) => {
         if (userSessionData[sessionID].carPrice < 50000) {
           message = "The car value cannot be less than 50000 GHS";
         } else {
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + `${totalPrice}` + ` now `;
           let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
           await pay(
-            amount,
+            tot_amt,
             userSessionData[sessionID].phoneNumber,
             "Buy Gen.Crt (>3,000) comp. pvt"
           );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
 
         console.log(
@@ -5505,6 +5176,538 @@ router.post("/ussd", async (req, res) => {
         );
         continueSession = false;
       }
+    }
+
+    if (userSessionData[sessionID].type === "specialOnSite") {
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].type === "specialOnRoad") {
+      // const totalPrice =
+      //   parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      // if (userSessionData[sessionID].carPrice < 50000) {
+      //   message = "The car value cannot be less than 50000 GHS";
+      // } else {
+      //   // message = `Pay ${totalPrice}`;
+      //   message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //   let amount = totalPrice;
+      //   await pay(
+      //     amount,
+      //     userSessionData[sessionID].phoneNumber,
+      //     "Buy spc(ON ROAD) comp. comm"
+      //   );
+      // }
+      // console.log(
+      //   "3rd party price is ",
+      //   userSessionData[sessionID].thirdPartyPrice
+      // );
+      // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      // console.log(
+      //   "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
+      //   totalPrice
+      // );
+      // continueSession = false;
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+      // const totalPrice =
+      //   parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      // if (userSessionData[sessionID].carPrice < 50000) {
+      //   message = "The car value cannot be less than 50000 GHS";
+      // } else {
+      //   // message = `Pay ${totalPrice}`;
+      //   message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //   let amount = totalPrice;
+      //   await pay(
+      //     amount,
+      //     userSessionData[sessionID].phoneNumber,
+      //     "Buy GW1(CLASS 1) comp. comm"
+      //   );
+      // }
+
+      // console.log(
+      //   "3rd party price is ",
+      //   userSessionData[sessionID].thirdPartyPrice
+      // );
+      // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      // console.log(
+      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
+      //   totalPrice
+      // );
+      // continueSession = false;
+
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+      // const totalPrice =
+      //   parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      // if (userSessionData[sessionID].carPrice < 50000) {
+      //   message = "The car value cannot be less than 50000 GHS";
+      // } else {
+      //   // message = `Pay ${totalPrice}`;
+      //   message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //   let amount = totalPrice;
+      //   await pay(
+      //     amount,
+      //     userSessionData[sessionID].phoneNumber,
+      //     "Buy GW1(CLASS 2) comp. comm"
+      //   );
+      // }
+
+      // console.log(
+      //   "3rd party price is ",
+      //   userSessionData[sessionID].thirdPartyPrice
+      // );
+      // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      // console.log(
+      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
+      //   totalPrice
+      // );
+      // continueSession = false;
+
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+      // const totalPrice =
+      //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      // if (userSessionData[sessionID].carPrice < 50000) {
+      //   message = "The car value cannot be less than 50000 GHS";
+      // } else {
+      //   // message = `Pay ${totalPrice}`;
+      //   message = `${finalMessage} ` + `${totalPrice}` + ` now `;
+      //   let amount = totalPrice;
+      //   await pay(
+      //     amount,
+      //     userSessionData[sessionID].phoneNumber,
+      //     "Buy GW1(CLASS 3) comp. comm"
+      //   );
+      // }
+
+      // console.log(
+      //   "3rd party price is ",
+      //   userSessionData[sessionID].thirdPartyPrice
+      // );
+      // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      // console.log(
+      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
+      //   totalPrice
+      // );
+      // continueSession = false;
+
+      message = numberToPayWithMessage;
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      continueSession = true;
+    }
+
+    if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnSite") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          onSiteSpecialTypesServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            onSiteSpecialTypesServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Buy spc(ON SITE) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            onSiteSpecialTypesRenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Renew spc(ON SITE) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    } else if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnRoad") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          onBoardSpecialTypesServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            onBoardSpecialTypesServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Buy spc(ON ROAD) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            onBoardSpecialTypesRenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Renew spc(ON ROAD) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class1") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          GW1Class1ServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Buy GW1(CLASS 1) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          GW1Class1RenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Renew GW1(CLASS 1) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class2") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          GW1Class2ServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class2ServicePrice[userSessionData[sessionID].selectedOption]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Buy GW1(CLASS 2) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          GW1Class2RenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class2RenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Renew GW1(CLASS 2) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class3") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          GW1Class3ServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class3ServicePrice[userSessionData[sessionID].selectedOption]
+          );
+
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Buy GW1(CLASS 3) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          GW1Class3RenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class3RenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Renew GW1(CLASS 3) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    }
+
+    // Increment the step for the next interaction
+    userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
+  } else if (newSession === false && userSessionData[sessionID].step === 9) {
+    userSessionData[sessionID].phoneNumber = userData;
+    if (userSessionData[sessionID].type === "specialOnSite") {
+      const totalPrice =
+        parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
+        parseInt(userSessionData[sessionID].thirdPartyPrice);
+      if (userSessionData[sessionID].carPrice < 50000) {
+        message = "The car value cannot be less than 50000 GHS";
+      } else {
+        let amount = totalPrice;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+        await pay(
+          tot_amt,
+          userSessionData[sessionID].phoneNumber,
+          "Buy spc(ON SITE) comp. comm"
+        );
+        // message = `Pay ${totalPrice}`;
+        message = `${finalMessage} ` + tot_amt + ` now `;
+      }
+
+      console.log(
+        "3rd party price is ",
+        userSessionData[sessionID].thirdPartyPrice
+      );
+      console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      console.log(
+        "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
+        totalPrice
+      );
+      continueSession = false;
+    } else if (userSessionData[sessionID].type === "specialOnRoad") {
+      const totalPrice =
+        parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+        parseInt(userSessionData[sessionID].thirdPartyPrice);
+      if (userSessionData[sessionID].carPrice < 50000) {
+        message = "The car value cannot be less than 50000 GHS";
+      } else {
+        let amount = totalPrice;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+        await pay(
+          tot_amt,
+          userSessionData[sessionID].phoneNumber,
+          "Buy spc(ON ROAD) comp. comm"
+        );
+        // message = `Pay ${totalPrice}`;
+        message = `${finalMessage} ` + tot_amt + ` now `;
+      }
+      console.log(
+        "3rd party price is ",
+        userSessionData[sessionID].thirdPartyPrice
+      );
+      console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      console.log(
+        "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
+        totalPrice
+      );
+      continueSession = false;
+    } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+      const totalPrice =
+        parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+        parseInt(userSessionData[sessionID].thirdPartyPrice);
+      if (userSessionData[sessionID].carPrice < 50000) {
+        message = "The car value cannot be less than 50000 GHS";
+      } else {
+        let amount = totalPrice;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+        await pay(
+          tot_amt,
+          userSessionData[sessionID].phoneNumber,
+          "Buy GW1(CLASS 1) comp. comm"
+        );
+        // message = `Pay ${totalPrice}`;
+        message = `${finalMessage} ` + tot_amt + ` now `;
+      }
+
+      console.log(
+        "3rd party price is ",
+        userSessionData[sessionID].thirdPartyPrice
+      );
+      console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      console.log(
+        "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
+        totalPrice
+      );
+      continueSession = false;
+    } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+      const totalPrice =
+        parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+        parseInt(userSessionData[sessionID].thirdPartyPrice);
+      if (userSessionData[sessionID].carPrice < 50000) {
+        message = "The car value cannot be less than 50000 GHS";
+      } else {
+        let amount = totalPrice;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+        await pay(
+          tot_amt,
+          userSessionData[sessionID].phoneNumber,
+          "Buy GW1(CLASS 2) comp. comm"
+        );
+        // message = `Pay ${totalPrice}`;
+        message = `${finalMessage} ` + tot_amt + ` now `;
+      }
+
+      console.log(
+        "3rd party price is ",
+        userSessionData[sessionID].thirdPartyPrice
+      );
+      console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      console.log(
+        "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
+        totalPrice
+      );
+      continueSession = false;
+    } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+      const totalPrice =
+        parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+        parseInt(userSessionData[sessionID].thirdPartyPrice);
+      if (userSessionData[sessionID].carPrice < 50000) {
+        message = "The car value cannot be less than 50000 GHS";
+      } else {
+        let amount = totalPrice;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+        await pay(
+          tot_amt,
+          userSessionData[sessionID].phoneNumber,
+          "Buy GW1(CLASS 3) comp. comm"
+        );
+        // message = `Pay ${totalPrice}`;
+        message = `${finalMessage} ` + tot_amt + ` now `;
+      }
+
+      console.log(
+        "3rd party price is ",
+        userSessionData[sessionID].thirdPartyPrice
+      );
+      console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      console.log(
+        "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
+        totalPrice
+      );
+      continueSession = false;
     }
   } else {
     message = "Bad choice!";
