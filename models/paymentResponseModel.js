@@ -23,9 +23,12 @@ const { sequelize } = require("../scripts/config.js");
 class PaymentResponse extends Model {}
 PaymentResponse.init(
   {
-    status: DataTypes.STRING,
-    message: DataTypes.STRING,
-    transactionID: DataTypes.STRING,
+    // status: DataTypes.STRING,
+    // message: DataTypes.STRING,
+    // transactionID: DataTypes.STRING,
+    amount: DataTypes.FLOAT,
+    carnums: DataTypes.STRING,
+    whatsappnums: DataTypes.STRING,
 
     createdBy: DataTypes.STRING,
     createdAt: DataTypes.DATE,
