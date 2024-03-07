@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const cors = require("cors");
 
 require("dotenv").config();
 // const mongoose = require("mongoose");
@@ -21,6 +22,8 @@ const arkeselUssdRoutes = require("./routes/ussdRoute");
 
 const app = express();
 const port = 5000;
+// Enable CORS for all routes
+app.use(cors());
 
 app.use(bodyParser.json());
 
