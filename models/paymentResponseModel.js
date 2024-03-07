@@ -26,9 +26,12 @@ PaymentResponse.init(
     // status: DataTypes.STRING,
     // message: DataTypes.STRING,
     // transactionID: DataTypes.STRING,
+    itemName: DataTypes.STRING,
     amount: DataTypes.FLOAT,
     carnums: DataTypes.STRING,
     whatsappnums: DataTypes.STRING,
+    // description: DataTypes.STRING,
+    phoneNumber: DataTypes.STRING,
 
     createdBy: DataTypes.STRING,
     createdAt: DataTypes.DATE,
