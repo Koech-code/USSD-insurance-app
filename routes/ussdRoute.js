@@ -13,6 +13,7 @@ const userSessionData = {};
 
 let carNum = "";
 let whatsappNum = "";
+let itemNumber = "";
 
 const processingFeePercentage = 3;
 async function generateUnique4DigitNumber() {
@@ -118,13 +119,13 @@ async function sendConfirmationMessage(callbackUrl, phoneNumber) {
   }
 }
 
-async function pay(amount, customerNumber, item_desc) {
+async function pay(amount, customerNumber, item_name, item_desc) {
   // Check if customerNumber starts with '0'
   if (customerNumber.startsWith("0")) {
     // Replace '0' with '233'
     customerNumber = "233" + customerNumber.slice(1);
   }
-  console.log(amount, customerNumber, item_desc);
+  console.log(amount, customerNumber, item_name, item_desc);
 
   let response;
   let callback = "http://gblinsurancegh.com:5000/callback";
@@ -159,6 +160,7 @@ async function pay(amount, customerNumber, item_desc) {
       newVodaPayment: true,
       carnums: carNum,
       whatsappNums: whatsappNum,
+      item_name: item_name,
       // username: process.env.NALO_USERNAME,
       // password: process.env.PASSWORD,
     },
@@ -170,8 +172,10 @@ async function pay(amount, customerNumber, item_desc) {
     // console.log(password);
     response = await axios(config);
     await PaymentResponse.create({
+      itemName: item_name,
       amount: amount,
       carnums: carNum,
+      phoneNumber: customerNumber,
       whatsappnums: whatsappNum,
     });
 
@@ -559,6 +563,7 @@ router.post("/ussd", async (req, res) => {
       phoneNumberComp: undefined,
       carRegNumber: undefined,
       whatsappNumber: undefined,
+      itemNumber: undefined,
     };
     message = "Welcome to Fast Insurance\n";
     message += "1. Purchase insurance\n";
@@ -624,7 +629,6 @@ router.post("/ussd", async (req, res) => {
   } else if (newSession === false && userSessionData[sessionID].step === 2) {
     userSessionData[sessionID].service = userData;
     // Store the user's selection from step 2
-
     if (userSessionData[sessionID].service === "1") {
       // Car type selection for Third Party commercial
       service = "1";
@@ -1423,7 +1427,7 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].selectedOption = userData;
     userSessionData[sessionID].phoneNumber = userData;
     userSessionData[sessionID].carRegNumber = userData;
-
+    userSessionData[sessionID].itemNumber = userData;
     if (userSessionData[sessionID].service === "1") {
       // Check if the service is Third Party Commercial
 
@@ -1991,6 +1995,7 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].phoneNumberComp = userData;
     userSessionData[sessionID].whatsappNumber = userData;
     userSessionData[sessionID].carRegNumber = userData;
+    // userSessionData[sessionID].itemNumber = userData;
 
     // Purchase prices for third party
 
@@ -2105,6 +2110,7 @@ router.post("/ussd", async (req, res) => {
       }
       // step 4 for special types and GW1
       if (userSessionData[sessionID].selectedOption === "1") {
+        userSessionData[sessionID].itemNumber = userData;
         if (userSessionData[sessionID].type === "specialTypes") {
           if (userSessionData[sessionID].InsuranceType === "purchase") {
             service = "1";
@@ -3012,7 +3018,8 @@ router.post("/ussd", async (req, res) => {
         await pay(
           tot_amt,
           userSessionData[sessionID].phoneNumber,
-          "Purchasing a motor cycle insurance package for 2 persons."
+          "Motor Cylce 2-seater",
+          "Buy Motor Cycle 2 persons."
         );
 
         message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
@@ -3027,7 +3034,8 @@ router.post("/ussd", async (req, res) => {
         await pay(
           tot_amt,
           userSessionData[sessionID].phoneNumber,
-          "Renewing a motor cycle insurance package for 2 persons."
+          "Motor Cycle 2-seater",
+          "Renew Motor Cycle 2 persons."
         );
 
         message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
@@ -3620,8 +3628,10 @@ router.post("/ussd", async (req, res) => {
               const paymentPromise = await pay(
                 tot_amt,
                 userSessionData[sessionID].phoneNumber,
+                "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
                 "Buy Max Bus 3rd-party."
               );
+
               // Set a timeout for the payment operation
               await Promise.race([
                 paymentPromise,
@@ -3661,6 +3671,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Hiring Car " + userSessionData[sessionID].itemNumber,
               "Buy Hiring car 3rd-party."
             );
 
@@ -3688,6 +3699,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Ambulance/Hearse " +
+                userSessionData[sessionID].itemNumber,
               "Buy Ambulance/hearse 3rd-party"
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3714,6 +3727,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Art/Tankers " +
+                userSessionData[sessionID].itemNumber,
               "Buy Art/Tankers 3rd-party"
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3736,6 +3751,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Taxi " + userSessionData[sessionID].itemNumber,
               "Buy Taxi car 3rd-party."
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3759,6 +3775,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
               "Buy Mini Bus 3rd-party."
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3786,6 +3803,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
               "Renew Max Bus 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -3812,6 +3830,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Hiring car " + userSessionData[sessionID].itemNumber,
               "Renew Hiring car 3rd-party."
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3837,6 +3856,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Ambulance/Hearse " +
+                userSessionData[sessionID].itemNumber,
               "Renew Ambu/Hearse 3rd-party."
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3862,6 +3883,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Art/Tanker " + userSessionData[sessionID].itemNumber,
               "Renew Art/Tanker 3rd-party."
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3887,6 +3909,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Taxi " + userSessionData[sessionID].itemNumber,
               "Renew Taxi car 3rd-party."
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3912,6 +3935,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
               "Renew Mini Bus 3rd-party."
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3944,6 +3968,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Private Individual X1 " +
+                userSessionData[sessionID].itemNumber,
               "Buy Pvt Indiv X1 3rd-party."
             );
             message = `${finalMessage} ` + tot_amt + ` now.`;
@@ -3971,6 +3997,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Private Individual X4 " +
+                userSessionData[sessionID].itemNumber,
               "Buy Pvt Indiv X4 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -3997,6 +4025,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Own Goods(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
               "Buy Own Goods(<3,000 cc) 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4022,6 +4052,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Own Goods(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
               "Buy Own Goods(>3,000 cc) 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4047,6 +4079,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party General Cartage(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
               "Buy Gen.Gar (<3,000 cc) 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4072,6 +4106,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party General Cartage(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
               "Buy Gen.Gar (>3,000 cc) 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4097,6 +4133,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
               "Buy Mini Bus 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4131,6 +4168,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "3rd-party-private Private Individual X1 " +
+                userSessionData[sessionID].itemNumber,
               "Renew Pvt Indiv X1 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4159,6 +4198,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "3rd-party-private Private Individual X4 " +
+                userSessionData[sessionID].itemNumber,
               "Renew Pvt Indiv X4 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4187,6 +4228,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "3rd-party-private Own Goods(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
               "Renew Own Goods(<3,000 cc) 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4214,6 +4257,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "3rd-party-private Own Goods(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
               "Renew Own Goods(>3,000 cc) 3rd-party."
             );
             // Get the price dynamically from the mapping
@@ -4241,6 +4286,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "3rd-party-private General Cartage(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
               "Renew Gen.Gar (<3,000 cc)"
             );
             // Get the price dynamically from the mapping
@@ -4268,6 +4315,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "3rd-party-private General Cartage(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
               "Renew Gen.Gar (>3,000 cc)"
             );
             // Get the price dynamically from the mapping
@@ -4295,6 +4344,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "3rd-party-private Mini Bus " +
+                userSessionData[sessionID].itemNumber,
               "Renew Mini Bus 3rd-party"
             );
             // Get the price dynamically from the mapping
@@ -4393,7 +4444,7 @@ router.post("/ussd", async (req, res) => {
     if (userSessionData[sessionID].type === "specialOnSite") {
       service = userSessionData[sessionID].service;
       message = whatsappMessage;
-      carNum = userSessionData[sessionID].carRegNumber;
+      // carNum = userSessionData[sessionID].carRegNumber;
       continueSession = true;
     } else if (userSessionData[sessionID].type === "specialOnRoad") {
       // const totalPrice =
@@ -4424,7 +4475,7 @@ router.post("/ussd", async (req, res) => {
       // continueSession = false;
       service = userSessionData[sessionID].service;
       message = whatsappMessage;
-      carNum = userSessionData[sessionID].carRegNumber;
+      // carNum = userSessionData[sessionID].carRegNumber;
       continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS1") {
       // const totalPrice =
@@ -4457,7 +4508,7 @@ router.post("/ussd", async (req, res) => {
 
       service = userSessionData[sessionID].service;
       message = whatsappMessage;
-      carNum = userSessionData[sessionID].carRegNumber;
+      // carNum = userSessionData[sessionID].carRegNumber;
       continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS2") {
       // const totalPrice =
@@ -4490,7 +4541,7 @@ router.post("/ussd", async (req, res) => {
 
       service = userSessionData[sessionID].service;
       message = whatsappMessage;
-      carNum = userSessionData[sessionID].carRegNumber;
+      // carNum = userSessionData[sessionID].carRegNumber;
       continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS3") {
       // const totalPrice =
@@ -4523,7 +4574,7 @@ router.post("/ussd", async (req, res) => {
 
       service = userSessionData[sessionID].service;
       message = whatsappMessage;
-      carNum = userSessionData[sessionID].carRegNumber;
+      // carNum = userSessionData[sessionID].carRegNumber;
       continueSession = true;
     }
 
@@ -4575,6 +4626,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "Comprehensive Co-orporate Motor Cycle " +
+              userSessionData[sessionID].itemNumber,
             "Buy a Motor Cycle car insur."
           );
 
@@ -4605,6 +4658,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "Comprehensive Co-orporate Motor Cycle " +
+              userSessionData[sessionID].itemNumber,
             "Renewing a Motor Cycle car."
           );
 
@@ -4638,6 +4693,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Max Bus " +
+                userSessionData[sessionID].itemNumber,
               "Buy Max Bus comp. comm"
             );
 
@@ -4669,6 +4726,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Hiring Car " +
+                userSessionData[sessionID].itemNumber,
               "Buy Hiring car comp. comm"
             );
 
@@ -4701,6 +4760,8 @@ router.post("/ussd", async (req, res) => {
               tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Ambulance/Hearse " +
+                userSessionData[sessionID].itemNumber,
               "Buy Ambul/Hearse comp. comm"
             );
 
@@ -4733,6 +4794,8 @@ router.post("/ussd", async (req, res) => {
               tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Art/Tanker " +
+                userSessionData[sessionID].itemNumber,
               "Buy Art/Tanker comp. comm"
             );
             // message = `Pay ${totalPrice}`;
@@ -4764,6 +4827,8 @@ router.post("/ussd", async (req, res) => {
               tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Taxi " +
+                userSessionData[sessionID].itemNumber,
               "Buy Taxi car comp. comm"
             );
 
@@ -4796,6 +4861,8 @@ router.post("/ussd", async (req, res) => {
               tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Mini Bus " +
+                userSessionData[sessionID].itemNumber,
               "Buy Mini Bus comp. comm"
             );
 
@@ -4826,6 +4893,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Max Bus " +
+                userSessionData[sessionID].itemNumber,
               "Renew Max Bus comp. comm"
             );
 
@@ -4857,6 +4926,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Hiring Car " +
+                userSessionData[sessionID].itemNumber,
               "Renew Hiring car comp. comm"
             );
 
@@ -4888,6 +4959,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Ambulance/Hearse " +
+                userSessionData[sessionID].itemNumber,
               "Renew Ambul/Hearse comp. comm"
             );
             // message = `Pay ${totalPrice}`;
@@ -4918,6 +4991,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Art/Tanker " +
+                userSessionData[sessionID].itemNumber,
               "Renew Art/Tanker comp. comm"
             );
             // message = `Pay ${totalPrice}`;
@@ -4948,6 +5023,8 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Taxi " +
+                userSessionData[sessionID].itemNumber,
               "Renew Taxi car comp. comm"
             );
             // message = `Pay ${totalPrice}`;
@@ -4979,6 +5056,8 @@ router.post("/ussd", async (req, res) => {
               tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
               userSessionData[sessionID].phoneNumber,
+              "Comprehensive Commercial Mini Bus " +
+                userSessionData[sessionID].itemNumber,
               "Renew Mini Bus comp. comm"
             );
             // message = `Pay ${totalPrice}`;
@@ -5010,6 +5089,8 @@ router.post("/ussd", async (req, res) => {
             tot_amt,
             // userSessionData[sessionID].phoneNumberComp,
             userSessionData[sessionID].phoneNumber,
+            "Comprehensive-Prvt Private Individual X1 " +
+              userSessionData[sessionID].itemNumber,
             "Buy indv X1 comp. pvt"
           );
           // message = `Pay ${totalPrice}`;
@@ -5040,6 +5121,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "Comprehensive-Prvt Private Individual X4 " +
+              userSessionData[sessionID].itemNumber,
             "Buy indv X4 comp. pvt"
           );
           // message = `Pay ${totalPrice}`;
@@ -5070,6 +5153,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "Comprehensive-Prvt Own Goods(Below 3,000 cc) " +
+              userSessionData[sessionID].itemNumber,
             "Buy Own Goods(<3,000) comp. pvt"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5099,6 +5184,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "Comprehensive-Prvt Own Goods(Above 3,000 cc) " +
+              userSessionData[sessionID].itemNumber,
             "Buy Own.G (>3,000) comp. pvt"
           );
           // message = `Pay ${totalPrice}`;
@@ -5131,6 +5218,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "Comprehensive-Prvt General Cartage(Below 3,000 cc) " +
+              userSessionData[sessionID].itemNumber,
             "Buy Gen.Crt (<3,000) comp. pvt"
           );
           // message = `Pay ${totalPrice}`;
@@ -5163,6 +5252,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "Comprehensive-Prvt General Cartage(Above 3,000 cc) " +
+              userSessionData[sessionID].itemNumber,
             "Buy Gen.Crt (>3,000) comp. pvt"
           );
           // message = `Pay ${totalPrice}`;
@@ -5185,7 +5276,7 @@ router.post("/ussd", async (req, res) => {
 
     if (userSessionData[sessionID].type === "specialOnSite") {
       message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      // whatsappNum = userSessionData[sessionID].whatsappNumber;
       continueSession = true;
     } else if (userSessionData[sessionID].type === "specialOnRoad") {
       // const totalPrice =
@@ -5215,7 +5306,7 @@ router.post("/ussd", async (req, res) => {
       // );
       // continueSession = false;
       message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      // whatsappNum = userSessionData[sessionID].whatsappNumber;
       continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS1") {
       // const totalPrice =
@@ -5247,7 +5338,7 @@ router.post("/ussd", async (req, res) => {
       // continueSession = false;
 
       message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      // whatsappNum = userSessionData[sessionID].whatsappNumber;
       continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS2") {
       // const totalPrice =
@@ -5279,7 +5370,7 @@ router.post("/ussd", async (req, res) => {
       // continueSession = false;
 
       message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      // whatsappNum = userSessionData[sessionID].whatsappNumber;
       continueSession = true;
     } else if (userSessionData[sessionID].type === "GW1CLASS3") {
       // const totalPrice =
@@ -5311,7 +5402,7 @@ router.post("/ussd", async (req, res) => {
       // continueSession = false;
 
       message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
+      // whatsappNum = userSessionData[sessionID].whatsappNumber;
       continueSession = true;
     }
 
@@ -5333,6 +5424,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party Special Types(ON SITE) " +
+              userSessionData[sessionID].itemNumber,
             "Buy spc(ON SITE) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5357,6 +5450,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party Special Types(ON SITE) " +
+              userSessionData[sessionID].itemNumber,
             "Renew spc(ON SITE) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5383,6 +5478,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party Special Types(ON ROAD) " +
+              userSessionData[sessionID].itemNumber,
             "Buy spc(ON ROAD) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5407,6 +5504,8 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party Special Types(ON ROAD) " +
+              userSessionData[sessionID].itemNumber,
             "Renew spc(ON ROAD) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5431,6 +5530,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party GW1(CLASS 1) " + userSessionData[sessionID].itemNumber,
             "Buy GW1(CLASS 1) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5453,6 +5553,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party GW1(CLASS 1) " + userSessionData[sessionID].itemNumber,
             "Renew GW1(CLASS 1) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5477,6 +5578,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party GW1(CLASS 2) " + userSessionData[sessionID].itemNumber,
             "Buy GW1(CLASS 2) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5501,6 +5603,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party GW1(CLASS 2) " + userSessionData[sessionID].itemNumber,
             "Renew GW1(CLASS 2) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5526,6 +5629,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party GW1(CLASS 3) " + userSessionData[sessionID].itemNumber,
             "Buy GW1(CLASS 3) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5550,6 +5654,7 @@ router.post("/ussd", async (req, res) => {
           await pay(
             tot_amt,
             userSessionData[sessionID].phoneNumber,
+            "3rd-party GW1(CLASS 3) " + userSessionData[sessionID].itemNumber,
             "Renew GW1(CLASS 3) 3rd-party"
           );
           message = `${finalMessage} ` + tot_amt + ` now `;
@@ -5577,6 +5682,8 @@ router.post("/ussd", async (req, res) => {
         await pay(
           tot_amt,
           userSessionData[sessionID].phoneNumber,
+          "Comprehensive Commercial Special Types(ON SITE) " +
+            userSessionData[sessionID].itemNumber,
           "Buy spc(ON SITE) comp. comm"
         );
         // message = `Pay ${totalPrice}`;
@@ -5607,6 +5714,8 @@ router.post("/ussd", async (req, res) => {
         await pay(
           tot_amt,
           userSessionData[sessionID].phoneNumber,
+          "Comprehensive Commercial Special Types(ON ROAD) " +
+            userSessionData[sessionID].itemNumber,
           "Buy spc(ON ROAD) comp. comm"
         );
         // message = `Pay ${totalPrice}`;
@@ -5636,6 +5745,8 @@ router.post("/ussd", async (req, res) => {
         await pay(
           tot_amt,
           userSessionData[sessionID].phoneNumber,
+          "Comprehensive Commercial GW1(CLASS 1) " +
+            userSessionData[sessionID].itemNumber,
           "Buy GW1(CLASS 1) comp. comm"
         );
         // message = `Pay ${totalPrice}`;
@@ -5666,6 +5777,8 @@ router.post("/ussd", async (req, res) => {
         await pay(
           tot_amt,
           userSessionData[sessionID].phoneNumber,
+          "Comprehensive Commercial GW1(CLASS 2) " +
+            userSessionData[sessionID].itemNumber,
           "Buy GW1(CLASS 2) comp. comm"
         );
         // message = `Pay ${totalPrice}`;
@@ -5696,6 +5809,8 @@ router.post("/ussd", async (req, res) => {
         await pay(
           tot_amt,
           userSessionData[sessionID].phoneNumber,
+          "Comprehensive Commercial GW1(CLASS 3) " +
+            userSessionData[sessionID].itemNumber,
           "Buy GW1(CLASS 3) comp. comm"
         );
         // message = `Pay ${totalPrice}`;
