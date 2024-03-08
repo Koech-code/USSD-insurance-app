@@ -5859,16 +5859,65 @@ router.get("/redirect", (req, res) => {
   res.status(200).json({ message: "redirect success" });
 });
 
+// // Route to fetch records from the database
+// router.get("/dashboardData", async (req, res) => {
+//   try {
+//     // Fetch all records from the PaymentResponse model
+//     const dashboardData = await PaymentResponse.findAll();
+
+//     res.status(200).json({ data: dashboardData });
+//   } catch (error) {
+//     console.error("Error occurred while fetching dashboard data:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
 // Route to fetch records from the database
 router.get("/dashboardData", async (req, res) => {
   try {
     // Fetch all records from the PaymentResponse model
     const dashboardData = await PaymentResponse.findAll();
 
-    res.status(200).json({ data: dashboardData });
+    // Fetch total count of records
+    const totalCount = await PaymentResponse.count();
+
+    res.status(200).json({
+      data: dashboardData,
+      recordsTotal: totalCount, // Include total count in the response
+    });
   } catch (error) {
     console.error("Error occurred while fetching dashboard data:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// Route to update the status field in the model
+router.put("/updateStatus/:id", async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    // Find the record in the PaymentResponse model based on the provided id
+    const paymentResponse = await PaymentResponse.findByPk(id);
+
+    // Check if the record exists
+    if (!paymentResponse) {
+      return res.status(404).json({ error: "Record not found" });
+    }
+
+    // Update the status field
+    paymentResponse.status = status;
+
+    // Save the updated record
+    await paymentResponse.save();
+
+    res
+      .status(200)
+      .json({ message: "Status updated successfully", data: paymentResponse });
+  } catch (error) {
+    console.error("Error occurred while updating status:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 module.exports = router;
