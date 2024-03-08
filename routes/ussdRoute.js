@@ -177,6 +177,8 @@ async function pay(amount, customerNumber, item_name, item_desc) {
       carnums: carNum,
       phoneNumber: customerNumber,
       whatsappnums: whatsappNum,
+      // Adding status field with a specific value
+      status: "pending", // Or you can omit this line to use the default value
     });
 
     console.log("Payment Params - ", response.data);
