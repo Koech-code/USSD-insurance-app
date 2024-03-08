@@ -26,6 +26,10 @@ PaymentResponse.init(
     // status: DataTypes.STRING,
     // message: DataTypes.STRING,
     // transactionID: DataTypes.STRING,
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: "pending", // Set default value to 'pending'
+    },
     itemName: DataTypes.STRING,
     amount: DataTypes.FLOAT,
     carnums: DataTypes.STRING,
