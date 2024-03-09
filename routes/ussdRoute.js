@@ -17,7 +17,7 @@ let itemNumber = "";
 
 let InvoiceNo = "";
 let OrderId = "";
-NumToSendSMS = ""
+NumToSendSMS = "";
 const processingFeePercentage = 3;
 async function generateUnique4DigitNumber() {
   let numbersGenerated = [];
@@ -131,7 +131,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
   console.log(amount, customerNumber, item_name, item_desc);
 
   let response;
-  let callback = "http://gblinsurancegh.com:5000/callback";
+  let callback = "https://gblinsurancegh.com:5000/callback";
   let merchant_id = process.env.MERCHANT_ID;
 
   // Call main to get key and secret
@@ -187,7 +187,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
     console.log("Payment Params - ", response.data);
     InvoiceNo = response.data.InvoiceNo;
     OrderId = response.data.order_id;
-    NumToSendSMS = customerNumber
+    NumToSendSMS = customerNumber;
     // // Extract callback URL and customer number
     // const callbackUrl = response.data.callback;
     // const phoneNumber = response.data.customerNumber;
