@@ -5912,18 +5912,6 @@ router.get("/redirect", (req, res) => {
   res.status(200).json({ message: "redirect success" });
 });
 
-// // Route to fetch records from the database
-// router.get("/dashboardData", async (req, res) => {
-//   try {
-//     // Fetch all records from the PaymentResponse model
-//     const dashboardData = await PaymentResponse.findAll();
-
-//     res.status(200).json({ data: dashboardData });
-//   } catch (error) {
-//     console.error("Error occurred while fetching dashboard data:", error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
 router.get("/dashboardData", async (req, res) => {
   try {
     // Fetch all records from the PaymentResponse model in descending order
