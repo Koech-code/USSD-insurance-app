@@ -5873,12 +5873,12 @@ router.get("/redirect", (req, res) => {
 //     res.status(500).json({ error: "Internal server error" });
 //   }
 // });
-
-// Route to fetch records from the database
 router.get("/dashboardData", async (req, res) => {
   try {
-    // Fetch all records from the PaymentResponse model
-    const dashboardData = await PaymentResponse.findAll();
+    // Fetch all records from the PaymentResponse model in descending order
+    const dashboardData = await PaymentResponse.findAll({
+      order: [["createdAt", "DESC"]], // Order by createdAt field in descending order
+    });
 
     // Fetch total count of records
     const totalCount = await PaymentResponse.count();
