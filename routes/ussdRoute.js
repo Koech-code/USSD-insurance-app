@@ -131,7 +131,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
   console.log(amount, customerNumber, item_name, item_desc);
 
   let response;
-  let callback = "https://gblinsurancegh.com:5000/callbackResponse";
+  let callback = "http://gblinsurancegh.com:5000/callback";
   let merchant_id = process.env.MERCHANT_ID;
 
   // Call main to get key and secret
@@ -5860,7 +5860,7 @@ router.post("/ussd", async (req, res) => {
 //   res.status(200).json({ message: "callback success" });
 // });
 
-router.post("/callbackResponse", async (req, res) => {
+router.post("/callback", async (req, res) => {
   console.log("callback success", req.body);
   res.status(200).json({ message: "callback success" });
   console.log("Invoive Number", InvoiceNo);
