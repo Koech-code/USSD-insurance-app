@@ -5861,6 +5861,7 @@ router.post("/ussd", async (req, res) => {
 // });
 router.post("/callback", async (req, res) => {
   console.log("callback success", req.body);
+  res.status(200).json({ message: "callback success" });
   if (
     req.body.InvoiceNo === InvoiceNo &&
     req.body.order_id === OrderId &&
@@ -5899,7 +5900,6 @@ router.post("/callback", async (req, res) => {
 
     console.log("SMS Sent:", smsResponse.data.message);
   }
-  res.status(200).json({ message: "callback success" });
 });
 
 // Nalo solutions redirect  URL
