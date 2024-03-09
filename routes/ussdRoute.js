@@ -131,7 +131,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
   console.log(amount, customerNumber, item_name, item_desc);
 
   let response;
-  let callback = "https://gblinsurancegh.com:5000/callback";
+  let callback = "http://localhost:5000/callback";
   let merchant_id = process.env.MERCHANT_ID;
 
   // Call main to get key and secret
