@@ -5855,54 +5855,54 @@ router.post("/ussd", async (req, res) => {
 });
 
 // Nalo solutions callback URL
-// router.post("/callback", async (req, res) => {
-//   console.log("callback success", req.body);
-//   res.status(200).json({ message: "callback success" });
-// });
 router.post("/callback", async (req, res) => {
   console.log("callback success", req.body);
   res.status(200).json({ message: "callback success" });
-  console.log("Invoive Number", InvoiceNo);
-  console.log("Order ID", OrderId);
-  // if (
-  //   req.body.InvoiceNo === InvoiceNo &&
-  //   req.body.order_id === OrderId &&
-  //   req.body.status === "PAID"
-  // ) {
-  //   await PaymentResponse.create({
-  //     itemName: item_name,
-  //     amount: amount,
-  //     carnums: carNum,
-  //     phoneNumber: customerNumber,
-  //     whatsappnums: whatsappNum,
-  //     // Adding status field with a specific value
-  //     status: "pending", // Or you can omit this line to use the default value
-  //   });
-
-  //   // send confirmation message
-  //   // Compose SMS message
-  //   const SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
-
-  //   // Compose URL for sending SMS
-  //   const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
-
-  //   // Send SMS
-  //   const smsResponse = await axios.get(SEND_SMS_URL);
-
-  //   console.log("SMS Sent:", smsResponse.data.message);
-  // } else if (req.body.status === "FAILED") {
-  //   // Compose SMS message
-  //   const SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
-
-  //   // Compose URL for sending SMS
-  //   const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
-
-  //   // Send SMS
-  //   const smsResponse = await axios.get(SEND_SMS_URL);
-
-  //   console.log("SMS Sent:", smsResponse.data.message);
-  // }
 });
+// router.post("/callback", async (req, res) => {
+//   console.log("callback success", req.body);
+//   res.status(200).json({ message: "callback success" });
+//   console.log("Invoive Number", InvoiceNo);
+//   console.log("Order ID", OrderId);
+//   // if (
+//   //   req.body.InvoiceNo === InvoiceNo &&
+//   //   req.body.order_id === OrderId &&
+//   //   req.body.status === "PAID"
+//   // ) {
+//   //   await PaymentResponse.create({
+//   //     itemName: item_name,
+//   //     amount: amount,
+//   //     carnums: carNum,
+//   //     phoneNumber: customerNumber,
+//   //     whatsappnums: whatsappNum,
+//   //     // Adding status field with a specific value
+//   //     status: "pending", // Or you can omit this line to use the default value
+//   //   });
+
+//   //   // send confirmation message
+//   //   // Compose SMS message
+//   //   const SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
+
+//   //   // Compose URL for sending SMS
+//   //   const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
+
+//   //   // Send SMS
+//   //   const smsResponse = await axios.get(SEND_SMS_URL);
+
+//   //   console.log("SMS Sent:", smsResponse.data.message);
+//   // } else if (req.body.status === "FAILED") {
+//   //   // Compose SMS message
+//   //   const SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
+
+//   //   // Compose URL for sending SMS
+//   //   const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
+
+//   //   // Send SMS
+//   //   const smsResponse = await axios.get(SEND_SMS_URL);
+
+//   //   console.log("SMS Sent:", smsResponse.data.message);
+//   // }
+// });
 
 // Nalo solutions redirect  URL
 router.get("/redirect", (req, res) => {
