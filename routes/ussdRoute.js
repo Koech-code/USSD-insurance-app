@@ -19,6 +19,12 @@ let InvoiceNo = "";
 let OrderId = "";
 NumToSendSMS = "";
 const processingFeePercentage = 3;
+function getJuniCredentials() {
+  return {
+    token: process.env.JUNIPAY_TOKEN,
+    clientId: process.env.CLIENT_ID,
+  };
+}
 async function generateUnique4DigitNumber() {
   let numbersGenerated = [];
 
@@ -5897,7 +5903,7 @@ router.post("/callback", async (req, res) => {
     const SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
 
     // Compose URL for sending SMS
-    const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
+    const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=OjRCamtoVTFnSFp6b2oxOGk&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
 
     // Send SMS
     const smsResponse = await axios.get(SEND_SMS_URL);
