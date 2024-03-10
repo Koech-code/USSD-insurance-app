@@ -5869,8 +5869,8 @@ router.post("/callback", async (req, res) => {
   console.log("Send SMS TO", NumToSendSMS);
   if (
     req.body.InvoiceNo === InvoiceNo &&
-    req.body.order_id === OrderId &&
-    req.body.status === "PAID"
+    req.body.Order_id === OrderId &&
+    req.body.Status === "PAID"
   ) {
     await PaymentResponse.create({
       itemName: item_name,
@@ -5884,24 +5884,24 @@ router.post("/callback", async (req, res) => {
 
     // send confirmation message
     // Compose SMS message
-    const SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
+    const SUCCESS_SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
 
-    // Compose URL for sending SMS
-    const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
+    // // Compose URL for sending SMS
+    // const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
 
     // Send SMS
-    const smsResponse = await axios.get(SEND_SMS_URL);
+    const smsResponse = await axios.get(`https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SUCCESS_SMS_MESSAGE}`);
 
     console.log("SMS Sent:", smsResponse.data.message);
   } else if (req.body.Status === "FAILED") {
     // Compose SMS message
-    const SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
+    const FAILED_SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
 
     // Compose URL for sending SMS
     // const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=OjRCamtoVTFnSFp6b2oxOGk&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
 
     // Send SMS
-    const smsResponse = await axios.get(`https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`);
+    const smsResponse = await axios.get(`https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${FAILED_SMS_MESSAGE}`);
 
     console.log("SMS Sent:", smsResponse.data.message);
   }
