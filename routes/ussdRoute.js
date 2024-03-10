@@ -5901,7 +5901,7 @@ router.post("/callback", async (req, res) => {
     // const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=OjRCamtoVTFnSFp6b2oxOGk&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
 
     // Send SMS
-    const smsResponse = await axios.get("https://sms.arkesel.com/sms/api?action=send-sms&api_key=OjRCamtoVTFnSFp6b2oxOGk=&to=233245168718&from=Flexible&sms=Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.");
+    const smsResponse = await axios.get(`https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`);
 
     console.log("SMS Sent:", smsResponse.data.message);
   }
