@@ -5892,7 +5892,7 @@ router.post("/callback", async (req, res) => {
     const smsResponse = await axios.get(SEND_SMS_URL);
 
     console.log("SMS Sent:", smsResponse.data.message);
-  } else if (req.body.status === "FAILED") {
+  } else if (req.body.Status === "FAILED") {
     // Compose SMS message
     const SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
 
