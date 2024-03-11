@@ -5868,8 +5868,8 @@ router.post("/callback", async (req, res) => {
   console.log("Order ID", OrderId);
   console.log("Send SMS TO", NumToSendSMS);
   if (
-    req.body.InvoiceNo === InvoiceNo &&
-    req.body.Order_id === OrderId &&
+    req.body.InvoiceNo == InvoiceNo &&
+    req.body.Order_id == OrderId &&
     req.body.Status === "PAID"
   ) {
     await PaymentResponse.create({
