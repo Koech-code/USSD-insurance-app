@@ -14,6 +14,7 @@ const userSessionData = {};
 let carNum = "";
 let whatsappNum = "";
 let itemNumber = "";
+let ItemName = "";
 
 let InvoiceNo = "";
 let OrderId = "";
@@ -130,7 +131,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
     customerNumber = "233" + customerNumber.slice(1);
   }
   console.log(amount, customerNumber, item_name, item_desc);
-
+  ItemName = item_name
   let response;
   let callback = "http://gblinsurancegh.com:5000/callback";
   let merchant_id = process.env.MERCHANT_ID;
@@ -5872,15 +5873,23 @@ router.post("/callback", async (req, res) => {
     req.body.Order_id == OrderId &&
     req.body.Status === "PAID"
   ) {
-    await PaymentResponse.create({
-      itemName: item_name,
-      amount: amount,
-      carnums: carNum,
-      phoneNumber: customerNumber,
-      whatsappnums: whatsappNum,
-      // Adding status field with a specific value
-      status: "pending", // Or you can omit this line to use the default value
+    try {
+    const paymentResponse = await PaymentResponse.create({
+        itemName: ItemName,
+        amount: amount,
+        carnums: carNum,
+        phoneNumber: customerNumber,
+        whatsappnums: whatsappNum,
+        // Adding status field with a specific value
+        status: "pending", // Or you can omit this line to use the default value
     });
+    // Proceed with further logic if creation is successful
+    console.log("Payment response created:", paymentResponse);
+} catch (error) {
+    // Handle errors here
+    console.error("Error creating payment response:", error);
+}
+
 
     // send confirmation message
     // Compose SMS message
