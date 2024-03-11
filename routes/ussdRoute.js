@@ -269,7 +269,7 @@ const generalGartageAbove = {
 
 // Third party commercial prices
 const maxBusServicePrices = {
-  23: 1.0,
+  23: 849.0,
   24: 861.0,
   25: 873.0,
   26: 885.0,
