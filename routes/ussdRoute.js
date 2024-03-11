@@ -16,6 +16,7 @@ let whatsappNum = "";
 let itemNumber = "";
 let ItemName = "";
 let AmountSaveToDB = "";
+let NumberToSave = "";
 
 let InvoiceNo = "";
 let OrderId = "";
@@ -135,6 +136,8 @@ async function pay(amount, customerNumber, item_name, item_desc) {
   console.log(amount, customerNumber, item_name, item_desc);
   ItemName = item_name;
   AmountSaveToDB = amount;
+  NumberToSave = customerNumber;
+
   let response;
   let callback = "http://gblinsurancegh.com:5000/callback";
   let merchant_id = process.env.MERCHANT_ID;
@@ -5881,7 +5884,7 @@ router.post("/callback", async (req, res) => {
         itemName: ItemName,
         amount: AmountSaveToDB,
         carnums: carNum,
-        phoneNumber: customerNumber,
+        phoneNumber: NumberToSave,
         whatsappnums: whatsappNum,
         // Adding status field with a specific value
         status: "pending", // Or you can omit this line to use the default value
