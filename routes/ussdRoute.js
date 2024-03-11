@@ -15,10 +15,12 @@ let carNum = "";
 let whatsappNum = "";
 let itemNumber = "";
 let ItemName = "";
+let AmountSaveToDB = "";
 
 let InvoiceNo = "";
 let OrderId = "";
-NumToSendSMS = "";
+let NumToSendSMS = "";
+
 const processingFeePercentage = 3;
 
 async function generateUnique4DigitNumber() {
@@ -131,7 +133,8 @@ async function pay(amount, customerNumber, item_name, item_desc) {
     customerNumber = "233" + customerNumber.slice(1);
   }
   console.log(amount, customerNumber, item_name, item_desc);
-  ItemName = item_name
+  ItemName = item_name;
+  AmountSaveToDB = amount;
   let response;
   let callback = "http://gblinsurancegh.com:5000/callback";
   let merchant_id = process.env.MERCHANT_ID;
@@ -5874,22 +5877,21 @@ router.post("/callback", async (req, res) => {
     req.body.Status === "PAID"
   ) {
     try {
-    const paymentResponse = await PaymentResponse.create({
+      const paymentResponse = await PaymentResponse.create({
         itemName: ItemName,
-        amount: amount,
+        amount: AmountSaveToDB,
         carnums: carNum,
         phoneNumber: customerNumber,
         whatsappnums: whatsappNum,
         // Adding status field with a specific value
         status: "pending", // Or you can omit this line to use the default value
-    });
-    // Proceed with further logic if creation is successful
-    console.log("Payment response created:", paymentResponse);
-} catch (error) {
-    // Handle errors here
-    console.error("Error creating payment response:", error);
-}
-
+      });
+      // Proceed with further logic if creation is successful
+      console.log("Payment response created:", paymentResponse);
+    } catch (error) {
+      // Handle errors here
+      console.error("Error creating payment response:", error);
+    }
 
     // send confirmation message
     // Compose SMS message
