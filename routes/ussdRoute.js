@@ -563,6 +563,7 @@ router.post("/ussd", async (req, res) => {
   let selectedOption = "";
   let type = "";
   let carPrice = "";
+  let carPriceCompComm = "";
   let thirdPartyPrice = "";
   let GW1Options = "";
   let InsuranceType = "";
@@ -3402,164 +3403,313 @@ router.post("/ussd", async (req, res) => {
         // message = "Please enter the phone number you wish to pay with.";
         // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
+        userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "specialOnRoad") {
         service = "1";
         // message = "Please enter the phone number you wish to pay with.";
         // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
+        userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS1") {
         service = "1";
         // message = "Please enter the phone number you wish to pay with.";
         // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
+        userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS2") {
         service = "1";
         // message = "Please enter the phone number you wish to pay with.";
         // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
+        userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS3") {
         service = "1";
         // message = "Please enter the phone number you wish to pay with.";
         // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
+        userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       }
     } else if (userSessionData[sessionID].service === "6") {
-      if (userSessionData[sessionID].type === "privateX1") {
-        // Check if the selected option exists in the mapping
-        if (
-          privateIndividualX1Prices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // privateIndividualX1Prices[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            privateIndividualX1Prices[
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "privateX1") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1Prices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].type === "privateX4") {
-        // Check if the selected option exists in the mapping
-        if (
-          privateIndividualX4Prices.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // privateIndividualX4Prices[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            privateIndividualX4Prices[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // privateIndividualX1Prices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              privateIndividualX1Prices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "privateX4") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4Prices.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-        // Check if the selected option exists in the mapping
-        if (
-          ownGoodsBelow.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // ownGoodsBelow[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(2);
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
-        }
-      } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-        // Check if the selected option exists in the mapping
-        if (
-          ownGoodsAbove.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // ownGoodsAbove[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(2);
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
-        }
-      } else if (
-        userSessionData[sessionID].type === "generalCartageBelow3000"
-      ) {
-        // Check if the selected option exists in the mapping
-        if (
-          generalGartageBelow.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // generalGartageBelow[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            generalGartageBelow[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // privateIndividualX4Prices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              privateIndividualX4Prices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelow.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
-        }
-      } else if (
-        userSessionData[sessionID].type === "generalCartageAbove3000"
-      ) {
-        // Check if the selected option exists in the mapping
-        if (
-          generalGartageAbove.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          // Get the price dynamically from the mapping
-          message =
-            // "Pay " +
-            // generalGartageAbove[
-            //   userSessionData[sessionID].selectedOption
-            // ].toFixed(2) +
-            "Please enter the value of your car";
-          userSessionData[sessionID].thirdPartyPrice =
-            generalGartageAbove[
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ownGoodsBelow[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              );
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAbove.hasOwnProperty(
               userSessionData[sessionID].selectedOption
-            ].toFixed(2);
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ownGoodsAbove[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
+                2
+              );
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (
+          userSessionData[sessionID].type === "generalCartageBelow3000"
+        ) {
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // generalGartageBelow[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              generalGartageBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (
+          userSessionData[sessionID].type === "generalCartageAbove3000"
+        ) {
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // generalGartageAbove[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              generalGartageAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (userSessionData[sessionID].type === "privateX1") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // privateIndividualX1Prices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              privateIndividualX1RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "privateX4") {
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // privateIndividualX4Prices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              privateIndividualX4RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelowRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ownGoodsBelowRenewalPrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ownGoodsBelowRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAboveRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // ownGoodsAboveRenewalPrices[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              ownGoodsAboveRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (
+          userSessionData[sessionID].type === "generalCartageBelow3000"
+        ) {
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // generalCartageRenewalBelow[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              generalCartageRenewalBelow[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
+        } else if (
+          userSessionData[sessionID].type === "generalCartageAbove3000"
+        ) {
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            message =
+              // "Pay " +
+              // generalCartageRenewalAbove[
+              //   userSessionData[sessionID].selectedOption
+              // ].toFixed(2) +
+              "Please enter the value of your car";
+            userSessionData[sessionID].thirdPartyPrice =
+              generalCartageRenewalAbove[
+                userSessionData[sessionID].selectedOption
+              ].toFixed(2);
+            whatsappNum = userSessionData[sessionID].whatsappNumber;
+            continueSession = true;
+          }
         }
       }
     }
@@ -5175,206 +5325,410 @@ router.post("/ussd", async (req, res) => {
       //   }
       // }
     } else if (userSessionData[sessionID].service === "6") {
-      if (userSessionData[sessionID].type === "privateX1") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          let amount = totalPrice;
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          DisplayAmount = tot_amt;
-          await pay(
-            tot_amt,
-            // userSessionData[sessionID].phoneNumberComp,
-            userSessionData[sessionID].phoneNumber,
-            "Comprehensive-Prvt Private Individual X1 " +
-              userSessionData[sessionID].itemNumber,
-            "Buy indv X1 comp. pvt"
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "privateX1") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              // userSessionData[sessionID].phoneNumberComp,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt Private Individual X1 " +
+                userSessionData[sessionID].itemNumber,
+              "Buy indv X1 comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
           );
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + tot_amt + ` now `;
-        }
+          console.log("And car value is", userSessionData[sessionID].carPrice);
 
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private individual X1 is",
-          DisplayAmount
-        );
-        continueSession = false;
-      } else if (userSessionData[sessionID].type === "privateX4") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          let amount = totalPrice;
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          DisplayAmount = tot_amt;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "Comprehensive-Prvt Private Individual X4 " +
-              userSessionData[sessionID].itemNumber,
-            "Buy indv X4 comp. pvt"
+          console.log(
+            "Total amount to be paid for comprehensive private individual X1 is",
+            DisplayAmount
           );
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + tot_amt + ` now `;
-        }
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "privateX4") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt Private Individual X4 " +
+                userSessionData[sessionID].itemNumber,
+              "Buy indv X4 comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
 
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private individual X4 is",
-          DisplayAmount
-        );
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          let amount = totalPrice;
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          DisplayAmount = tot_amt;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "Comprehensive-Prvt Own Goods(Below 3,000 cc) " +
-              userSessionData[sessionID].itemNumber,
-            "Buy Own Goods(<3,000) comp. pvt"
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
           );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-        }
+          console.log("And car value is", userSessionData[sessionID].carPrice);
 
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private own goods below 3000 cc is",
-          DisplayAmount
-        );
-        continueSession = false;
-      } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          let amount = totalPrice;
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          DisplayAmount = tot_amt;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "Comprehensive-Prvt Own Goods(Above 3,000 cc) " +
-              userSessionData[sessionID].itemNumber,
-            "Buy Own.G (>3,000) comp. pvt"
+          console.log(
+            "Total amount to be paid for comprehensive private individual X4 is",
+            DisplayAmount
           );
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + tot_amt + ` now `;
-        }
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt Own Goods(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Own Goods(<3,000) comp. pvt"
+            );
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
 
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
-          DisplayAmount
-        );
-        continueSession = false;
-      } else if (
-        userSessionData[sessionID].type === "generalCartageBelow3000"
-      ) {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          let amount = totalPrice;
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "Comprehensive-Prvt General Cartage(Below 3,000 cc) " +
-              userSessionData[sessionID].itemNumber,
-            "Buy Gen.Crt (<3,000) comp. pvt"
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
           );
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + tot_amt + ` now `;
-        }
+          console.log("And car value is", userSessionData[sessionID].carPrice);
 
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        console.log(
-          "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
-          totalPrice
-        );
-        continueSession = false;
-      } else if (
-        userSessionData[sessionID].type === "generalCartageAbove3000"
-      ) {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          let amount = totalPrice;
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "Comprehensive-Prvt General Cartage(Above 3,000 cc) " +
-              userSessionData[sessionID].itemNumber,
-            "Buy Gen.Crt (>3,000) comp. pvt"
+          console.log(
+            "Total amount to be paid for comprehensive private own goods below 3000 cc is",
+            DisplayAmount
           );
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt Own Goods(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Own.G (>3,000) comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (
+          userSessionData[sessionID].type === "generalCartageBelow3000"
+        ) {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt General Cartage(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Gen.Crt (<3,000) comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (
+          userSessionData[sessionID].type === "generalCartageAbove3000"
+        ) {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt General Cartage(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Gen.Crt (>3,000) comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
+            totalPrice
+          );
+          continueSession = false;
         }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (userSessionData[sessionID].type === "privateX1") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              // userSessionData[sessionID].phoneNumberComp,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt Private Individual X1 " +
+                userSessionData[sessionID].itemNumber,
+              "Renew indv X1 comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
 
-        console.log(
-          "3rd party price is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
 
-        console.log(
-          "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
-          totalPrice
-        );
-        continueSession = false;
+          console.log(
+            "Total amount to be paid for comprehensive private individual X1 is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "privateX4") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt Private Individual X4 " +
+                userSessionData[sessionID].itemNumber,
+              "Renew indv X4 comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive private individual X4 is",
+            DisplayAmount
+          );
+          continueSession = true;
+        } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt Own Goods(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Own Goods(<3,000) comp. pvt"
+            );
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive private own goods below 3000 cc is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt Own Goods(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Own.G (>3,000) comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (
+          userSessionData[sessionID].type === "generalCartageBelow3000"
+        ) {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt General Cartage(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Gen.Crt (<3,000) comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
+            totalPrice
+          );
+          continueSession = false;
+        } else if (
+          userSessionData[sessionID].type === "generalCartageAbove3000"
+        ) {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            await pay(
+              tot_amt,
+              userSessionData[sessionID].phoneNumber,
+              "Comprehensive-Prvt General Cartage(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Gen.Crt (>3,000) comp. pvt"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
+            totalPrice
+          );
+          continueSession = false;
+        }
       }
     }
 
@@ -5676,7 +6030,9 @@ router.post("/ussd", async (req, res) => {
         ) {
           service = userSessionData[sessionID].service;
           let amount = parseInt(
-            GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
+            GW1Class1RenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
           );
           // add 3% of the amount as processing fee
           let tot_amt = (processingFeePercentage / 100) * amount + amount;
@@ -6395,9 +6751,9 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].phoneNumber = userData;
     if (userSessionData[sessionID].type === "specialOnSite") {
       const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
+        parseInt(userSessionData[sessionID].carPriceCompComm * 1.5) / 100 +
         parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
+      if (userSessionData[sessionID].carPriceCompComm < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         let amount = totalPrice;
@@ -6419,7 +6775,10 @@ router.post("/ussd", async (req, res) => {
         "3rd party price is ",
         userSessionData[sessionID].thirdPartyPrice
       );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      console.log(
+        "And car value is",
+        userSessionData[sessionID].carPriceCompComm
+      );
 
       console.log(
         "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
@@ -6428,9 +6787,9 @@ router.post("/ussd", async (req, res) => {
       continueSession = false;
     } else if (userSessionData[sessionID].type === "specialOnRoad") {
       const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+        parseInt(userSessionData[sessionID].carPriceCompComm * 3) / 100 +
         parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
+      if (userSessionData[sessionID].carPriceCompComm < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         let amount = totalPrice;
@@ -6451,7 +6810,10 @@ router.post("/ussd", async (req, res) => {
         "3rd party price is ",
         userSessionData[sessionID].thirdPartyPrice
       );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      console.log(
+        "And car value is",
+        userSessionData[sessionID].carPriceCompComm
+      );
 
       console.log(
         "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
@@ -6460,9 +6822,9 @@ router.post("/ussd", async (req, res) => {
       continueSession = false;
     } else if (userSessionData[sessionID].type === "GW1CLASS1") {
       const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+        parseInt(userSessionData[sessionID].carPriceCompComm * 5) / 100 +
         parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
+      if (userSessionData[sessionID].carPriceCompComm < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         let amount = totalPrice;
@@ -6484,7 +6846,10 @@ router.post("/ussd", async (req, res) => {
         "3rd party price is ",
         userSessionData[sessionID].thirdPartyPrice
       );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      console.log(
+        "And car value is",
+        userSessionData[sessionID].carPriceCompComm
+      );
 
       console.log(
         "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
@@ -6493,9 +6858,9 @@ router.post("/ussd", async (req, res) => {
       continueSession = false;
     } else if (userSessionData[sessionID].type === "GW1CLASS2") {
       const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+        parseInt(userSessionData[sessionID].carPriceCompComm * 6) / 100 +
         parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
+      if (userSessionData[sessionID].carPriceCompComm < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         let amount = totalPrice;
@@ -6517,7 +6882,10 @@ router.post("/ussd", async (req, res) => {
         "3rd party price is ",
         userSessionData[sessionID].thirdPartyPrice
       );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      console.log(
+        "And car value is",
+        userSessionData[sessionID].carPriceCompComm
+      );
 
       console.log(
         "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
@@ -6526,9 +6894,9 @@ router.post("/ussd", async (req, res) => {
       continueSession = false;
     } else if (userSessionData[sessionID].type === "GW1CLASS3") {
       const totalPrice =
-        parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+        parseInt(userSessionData[sessionID].carPriceCompComm * 7) / 100 +
         parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPrice < 50000) {
+      if (userSessionData[sessionID].carPriceCompComm < 50000) {
         message = "The car value cannot be less than 50000 GHS";
       } else {
         let amount = totalPrice;
@@ -6550,7 +6918,10 @@ router.post("/ussd", async (req, res) => {
         "3rd party price is ",
         userSessionData[sessionID].thirdPartyPrice
       );
-      console.log("And car value is", userSessionData[sessionID].carPrice);
+      console.log(
+        "And car value is",
+        userSessionData[sessionID].carPriceCompComm
+      );
 
       console.log(
         "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
