@@ -2392,6 +2392,7 @@ router.post("/ussd", async (req, res) => {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "hiring") {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
@@ -2400,18 +2401,22 @@ router.post("/ussd", async (req, res) => {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "artOrTanker") {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "Taxi") {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "miniBus") {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       }
       // }
 
@@ -2650,30 +2655,36 @@ router.post("/ussd", async (req, res) => {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "privateX4") {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (
         userSessionData[sessionID].type === "generalCartageBelow3000"
       ) {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       } else if (
         userSessionData[sessionID].type === "generalCartageAbove3000"
       ) {
         service = userSessionData[sessionID].service;
         message = whatsappMessage;
         carNum = userSessionData[sessionID].carRegNumber;
+        continueSession = true;
       }
       // }
 
@@ -3127,7 +3138,7 @@ router.post("/ussd", async (req, res) => {
               // maxBusServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the values of your car";
+              "Please enter the value of your car";
             userSessionData[sessionID].thirdPartyPrice =
               maxBusServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -4400,8 +4411,7 @@ router.post("/ussd", async (req, res) => {
         }
       }
     } else if (userSessionData[sessionID].service === "5") {
-      
-    userSessionData[sessionID].carPrice = userData;
+      userSessionData[sessionID].carPrice = userData;
       // if (userSessionData[sessionID].InsuranceType === "purchase") {
       if (userSessionData[sessionID].type === "maxiBus") {
         message = ManufactureYear;
