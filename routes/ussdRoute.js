@@ -6750,185 +6750,368 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 10) {
     userSessionData[sessionID].phoneNumber = userData;
-    if (userSessionData[sessionID].type === "specialOnSite") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPriceCompComm * 1.5) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPriceCompComm < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        let amount = totalPrice;
-        // add 3% of the amount as processing fee
-        let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        DisplayAmount = tot_amt;
-        await pay(
-          tot_amt,
-          userSessionData[sessionID].phoneNumber,
-          "Comprehensive Commercial Special Types(ON SITE) " +
-            userSessionData[sessionID].itemNumber,
-          "Buy spc(ON SITE) comp. comm"
+    if (userSessionData[sessionID].InsuranceType === "purchase") {
+      if (userSessionData[sessionID].type === "specialOnSite") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 1.5) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial Special Types(ON SITE) " +
+              userSessionData[sessionID].itemNumber,
+            "Buy spc(ON SITE) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
         );
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + tot_amt + ` now `;
-      }
-
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log(
-        "And car value is",
-        userSessionData[sessionID].carPriceCompComm
-      );
-
-      console.log(
-        "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
-        DisplayAmount
-      );
-      continueSession = false;
-    } else if (userSessionData[sessionID].type === "specialOnRoad") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPriceCompComm * 3) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPriceCompComm < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        let amount = totalPrice;
-        // add 3% of the amount as processing fee
-        let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        DisplayAmount = tot_amt;
-        await pay(
-          tot_amt,
-          userSessionData[sessionID].phoneNumber,
-          "Comprehensive Commercial Special Types(ON ROAD) " +
-            userSessionData[sessionID].itemNumber,
-          "Buy spc(ON ROAD) comp. comm"
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
         );
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + tot_amt + ` now `;
-      }
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log(
-        "And car value is",
-        userSessionData[sessionID].carPriceCompComm
-      );
 
-      console.log(
-        "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
-        DisplayAmount
-      );
-      continueSession = false;
-    } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPriceCompComm * 5) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPriceCompComm < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        let amount = totalPrice;
-        // add 3% of the amount as processing fee
-        let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        DisplayAmount = tot_amt;
-        await pay(
-          tot_amt,
-          userSessionData[sessionID].phoneNumber,
-          "Comprehensive Commercial GW1(CLASS 1) " +
-            userSessionData[sessionID].itemNumber,
-          "Buy GW1(CLASS 1) comp. comm"
+        console.log(
+          "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
+          DisplayAmount
         );
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + tot_amt + ` now `;
-      }
-
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log(
-        "And car value is",
-        userSessionData[sessionID].carPriceCompComm
-      );
-
-      console.log(
-        "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
-        DisplayAmount
-      );
-      continueSession = false;
-    } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPriceCompComm * 6) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPriceCompComm < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        let amount = totalPrice;
-        // add 3% of the amount as processing fee
-        let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        DisplayAmount = tot_amt;
-        await pay(
-          tot_amt,
-          userSessionData[sessionID].phoneNumber,
-          "Comprehensive Commercial GW1(CLASS 2) " +
-            userSessionData[sessionID].itemNumber,
-          "Buy GW1(CLASS 2) comp. comm"
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "specialOnRoad") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 3) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial Special Types(ON ROAD) " +
+              userSessionData[sessionID].itemNumber,
+            "Buy spc(ON ROAD) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
         );
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + tot_amt + ` now `;
-      }
-
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log(
-        "And car value is",
-        userSessionData[sessionID].carPriceCompComm
-      );
-
-      console.log(
-        "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
-        DisplayAmount
-      );
-      continueSession = false;
-    } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-      const totalPrice =
-        parseInt(userSessionData[sessionID].carPriceCompComm * 7) / 100 +
-        parseInt(userSessionData[sessionID].thirdPartyPrice);
-      if (userSessionData[sessionID].carPriceCompComm < 50000) {
-        message = "The car value cannot be less than 50000 GHS";
-      } else {
-        let amount = totalPrice;
-        // add 3% of the amount as processing fee
-        let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        DisplayAmount = tot_amt;
-        await pay(
-          tot_amt,
-          userSessionData[sessionID].phoneNumber,
-          "Comprehensive Commercial GW1(CLASS 3) " +
-            userSessionData[sessionID].itemNumber,
-          "Buy GW1(CLASS 3) comp. comm"
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
         );
-        // message = `Pay ${totalPrice}`;
-        message = `${finalMessage} ` + tot_amt + ` now `;
+
+        console.log(
+          "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
+          DisplayAmount
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 5) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial GW1(CLASS 1) " +
+              userSessionData[sessionID].itemNumber,
+            "Buy GW1(CLASS 1) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
+        );
+
+        console.log(
+          "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
+          DisplayAmount
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 6) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial GW1(CLASS 2) " +
+              userSessionData[sessionID].itemNumber,
+            "Buy GW1(CLASS 2) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
+        );
+
+        console.log(
+          "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
+          DisplayAmount
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 7) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial GW1(CLASS 3) " +
+              userSessionData[sessionID].itemNumber,
+            "Buy GW1(CLASS 3) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
+        );
+
+        console.log(
+          "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
+          DisplayAmount
+        );
+        continueSession = false;
       }
+    } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      if (userSessionData[sessionID].type === "specialOnSite") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 1.5) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial Special Types(ON SITE) " +
+              userSessionData[sessionID].itemNumber,
+            "Renew spc(ON SITE) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
 
-      console.log(
-        "3rd party price is ",
-        userSessionData[sessionID].thirdPartyPrice
-      );
-      console.log(
-        "And car value is",
-        userSessionData[sessionID].carPriceCompComm
-      );
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
+        );
 
-      console.log(
-        "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
-        DisplayAmount
-      );
-      continueSession = false;
+        console.log(
+          "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
+          DisplayAmount
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "specialOnRoad") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 3) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial Special Types(ON ROAD) " +
+              userSessionData[sessionID].itemNumber,
+            "Renew spc(ON ROAD) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
+        );
+
+        console.log(
+          "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
+          DisplayAmount
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "GW1CLASS1") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 5) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial GW1(CLASS 1) " +
+              userSessionData[sessionID].itemNumber,
+            "Renew GW1(CLASS 1) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
+        );
+
+        console.log(
+          "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
+          DisplayAmount
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "GW1CLASS2") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 6) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial GW1(CLASS 2) " +
+              userSessionData[sessionID].itemNumber,
+            "Renew GW1(CLASS 2) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
+        );
+
+        console.log(
+          "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
+          DisplayAmount
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].type === "GW1CLASS3") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPriceCompComm * 7) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPriceCompComm < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            userSessionData[sessionID].phoneNumber,
+            "Comprehensive Commercial GW1(CLASS 3) " +
+              userSessionData[sessionID].itemNumber,
+            "Renew GW1(CLASS 3) comp. comm"
+          );
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+
+        console.log(
+          "3rd party price is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log(
+          "And car value is",
+          userSessionData[sessionID].carPriceCompComm
+        );
+
+        console.log(
+          "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
+          DisplayAmount
+        );
+        continueSession = false;
+      }
     }
   } else {
     message = "Please dial *928*311#";
