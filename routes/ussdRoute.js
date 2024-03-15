@@ -2381,10 +2381,12 @@ router.post("/ussd", async (req, res) => {
           service = userSessionData[sessionID].service;
           message = whatsappMessage;
           carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = userSessionData[sessionID].service;
           message = whatsappMessage;
           carNum = userSessionData[sessionID].carRegNumber;
+          continueSession = true;
         }
       }
     } else if (userSessionData[sessionID].service === "5") {
@@ -3099,7 +3101,6 @@ router.post("/ussd", async (req, res) => {
             );
             continueSession = true;
           }
-          continueSession = false;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           // Check if the selected option exists in the mapping
           if (
