@@ -27,7 +27,9 @@ let DisplayAmount = "";
 
 const processingFeePercentage = 3;
 
-const ManufactureYear = "Please enter year of manufacture";
+const ManufactureYear = "Please enter year of manufacture.";
+
+const CarValueMessage = "Please enter the value of your car in GHC.";
 async function generateUnique4DigitNumber() {
   let numbersGenerated = [];
 
@@ -2439,7 +2441,7 @@ router.post("/ussd", async (req, res) => {
                 // onSiteSpecialTypesServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 onSiteSpecialTypesServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2460,7 +2462,7 @@ router.post("/ussd", async (req, res) => {
                 // GW1Class1ServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class1ServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2483,7 +2485,7 @@ router.post("/ussd", async (req, res) => {
                 // onSiteSpecialTypesRenewalServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 onSiteSpecialTypesRenewalServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2504,7 +2506,7 @@ router.post("/ussd", async (req, res) => {
                 // GW1Class1RenewalServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class1RenewalServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2529,7 +2531,7 @@ router.post("/ussd", async (req, res) => {
                 // onBoardSpecialTypesServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 onBoardSpecialTypesServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2550,7 +2552,7 @@ router.post("/ussd", async (req, res) => {
                 // GW1Class2ServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class2ServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2573,7 +2575,7 @@ router.post("/ussd", async (req, res) => {
                 // onBoardSpecialTypesRenewalServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 onBoardSpecialTypesRenewalServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2594,7 +2596,7 @@ router.post("/ussd", async (req, res) => {
                 // GW1Class2RenewalServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class2RenewalServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2619,7 +2621,7 @@ router.post("/ussd", async (req, res) => {
                 // GW1Class3ServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class3ServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2642,7 +2644,7 @@ router.post("/ussd", async (req, res) => {
                 // GW1Class3RenewalServicePrice[
                 //   userSessionData[sessionID].selectedOption
                 // ].toFixed(2) +
-                "Please enter the value of your car";
+                CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class3RenewalServicePrice[
                   userSessionData[sessionID].selectedOption
@@ -2707,7 +2709,7 @@ router.post("/ussd", async (req, res) => {
       //         // privateIndividualX1RenewalPrices[
       //         //   userSessionData[sessionID].selectedOption
       //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
+      //         CarValueMessage;
       //       userSessionData[sessionID].thirdPartyPrice =
       //         privateIndividualX1RenewalPrices[
       //           userSessionData[sessionID].selectedOption
@@ -2728,7 +2730,7 @@ router.post("/ussd", async (req, res) => {
       //         // privateIndividualX4RenewalPrices[
       //         //   userSessionData[sessionID].selectedOption
       //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
+      //         CarValueMessage;
       //       userSessionData[sessionID].thirdPartyPrice =
       //         privateIndividualX4RenewalPrices[
       //           userSessionData[sessionID].selectedOption
@@ -2749,7 +2751,7 @@ router.post("/ussd", async (req, res) => {
       //         // ownGoodsBelowRenewalPrices[
       //         //   userSessionData[sessionID].selectedOption
       //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
+      //         CarValueMessage;
       //       userSessionData[sessionID].thirdPartyPrice =
       //         ownGoodsBelowRenewalPrices[
       //           userSessionData[sessionID].selectedOption
@@ -2770,7 +2772,7 @@ router.post("/ussd", async (req, res) => {
       //         // ownGoodsAboveRenewalPrices[
       //         //   userSessionData[sessionID].selectedOption
       //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
+      //         CarValueMessage;
       //       userSessionData[sessionID].thirdPartyPrice =
       //         ownGoodsAboveRenewalPrices[
       //           userSessionData[sessionID].selectedOption
@@ -2793,7 +2795,7 @@ router.post("/ussd", async (req, res) => {
       //         // generalCartageRenewalBelow[
       //         //   userSessionData[sessionID].selectedOption
       //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
+      //         CarValueMessage;
       //       userSessionData[sessionID].thirdPartyPrice =
       //         generalCartageRenewalBelow[
       //           userSessionData[sessionID].selectedOption
@@ -2816,7 +2818,7 @@ router.post("/ussd", async (req, res) => {
       //         // generalCartageRenewalAbove[
       //         //   userSessionData[sessionID].selectedOption
       //         // ].toFixed(2) +
-      //         "Please enter the value of your car";
+      //         CarValueMessage;
       //       userSessionData[sessionID].thirdPartyPrice =
       //         generalCartageRenewalAbove[
       //           userSessionData[sessionID].selectedOption
@@ -3140,7 +3142,7 @@ router.post("/ussd", async (req, res) => {
               // maxBusServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               maxBusServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3163,7 +3165,7 @@ router.post("/ussd", async (req, res) => {
               // hiringCarsServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               hiringCarsServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3186,7 +3188,7 @@ router.post("/ussd", async (req, res) => {
               // ambulanceOrHearseServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ambulanceOrHearseServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3208,7 +3210,7 @@ router.post("/ussd", async (req, res) => {
               // artOrTankersServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               artOrTankersServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3230,7 +3232,7 @@ router.post("/ussd", async (req, res) => {
               // taxiServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               taxiServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3253,7 +3255,7 @@ router.post("/ussd", async (req, res) => {
               // miniBusServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               miniBusServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3278,7 +3280,7 @@ router.post("/ussd", async (req, res) => {
               // maxBusRenewalServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               maxBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3300,7 +3302,7 @@ router.post("/ussd", async (req, res) => {
               // hiringCarsRenewalServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               hiringCarsRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3322,7 +3324,7 @@ router.post("/ussd", async (req, res) => {
               // ambulanceOrHearseRenewalServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ambulanceOrHearseRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3344,7 +3346,7 @@ router.post("/ussd", async (req, res) => {
               // artOrTankersRenewalServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               artOrTankersRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3366,7 +3368,7 @@ router.post("/ussd", async (req, res) => {
               // taxiRenewalServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               taxiRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3388,7 +3390,7 @@ router.post("/ussd", async (req, res) => {
               // miniBusRenewalServicePrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               miniBusRenewalServicePrices[
                 userSessionData[sessionID].selectedOption
@@ -3451,7 +3453,7 @@ router.post("/ussd", async (req, res) => {
               // privateIndividualX1Prices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               privateIndividualX1Prices[
                 userSessionData[sessionID].selectedOption
@@ -3473,7 +3475,7 @@ router.post("/ussd", async (req, res) => {
               // privateIndividualX4Prices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               privateIndividualX4Prices[
                 userSessionData[sessionID].selectedOption
@@ -3495,7 +3497,7 @@ router.post("/ussd", async (req, res) => {
               // ownGoodsBelow[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
                 2
@@ -3517,7 +3519,7 @@ router.post("/ussd", async (req, res) => {
               // ownGoodsAbove[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
                 2
@@ -3541,7 +3543,7 @@ router.post("/ussd", async (req, res) => {
               // generalGartageBelow[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               generalGartageBelow[
                 userSessionData[sessionID].selectedOption
@@ -3565,7 +3567,7 @@ router.post("/ussd", async (req, res) => {
               // generalGartageAbove[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               generalGartageAbove[
                 userSessionData[sessionID].selectedOption
@@ -3589,7 +3591,7 @@ router.post("/ussd", async (req, res) => {
               // privateIndividualX1Prices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               privateIndividualX1RenewalPrices[
                 userSessionData[sessionID].selectedOption
@@ -3611,7 +3613,7 @@ router.post("/ussd", async (req, res) => {
               // privateIndividualX4Prices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               privateIndividualX4RenewalPrices[
                 userSessionData[sessionID].selectedOption
@@ -3633,7 +3635,7 @@ router.post("/ussd", async (req, res) => {
               // ownGoodsBelowRenewalPrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ownGoodsBelowRenewalPrices[
                 userSessionData[sessionID].selectedOption
@@ -3655,7 +3657,7 @@ router.post("/ussd", async (req, res) => {
               // ownGoodsAboveRenewalPrices[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ownGoodsAboveRenewalPrices[
                 userSessionData[sessionID].selectedOption
@@ -3679,7 +3681,7 @@ router.post("/ussd", async (req, res) => {
               // generalCartageRenewalBelow[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               generalCartageRenewalBelow[
                 userSessionData[sessionID].selectedOption
@@ -3703,7 +3705,7 @@ router.post("/ussd", async (req, res) => {
               // generalCartageRenewalAbove[
               //   userSessionData[sessionID].selectedOption
               // ].toFixed(2) +
-              "Please enter the value of your car";
+              CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               generalCartageRenewalAbove[
                 userSessionData[sessionID].selectedOption
