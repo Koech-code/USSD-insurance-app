@@ -7138,10 +7138,67 @@ router.post("/ussd", async (req, res) => {
 //   res.status(200).json({ message: "callback success" });
 // });
 
+// router.post("/callback", async (req, res) => {
+//   console.log("callback success", req.body);
+//   res.status(200).json({ message: "callback success" });
+//   console.log("Invoive Number", InvoiceNo);
+//   console.log("Order ID", OrderId);
+//   console.log("Send SMS TO", NumToSendSMS);
+//   if (
+//     req.body.InvoiceNo == InvoiceNo &&
+//     req.body.Order_id == OrderId &&
+//     req.body.Status === "PAID"
+//   ) {
+//     try {
+//       const paymentResponse = await PaymentResponse.create({
+//         itemName: ItemName,
+//         amount: AmountSaveToDB,
+//         carnums: carNum,
+//         phoneNumber: NumberToSave,
+//         whatsappnums: whatsappNum,
+//         // Adding status field with a specific value
+//         status: "pending", // Or you can omit this line to use the default value
+//       });
+//       // Proceed with further logic if creation is successful
+//       console.log("Payment response created:", paymentResponse);
+//     } catch (error) {
+//       // Handle errors here
+//       console.error("Error creating payment response:", error);
+//     }
+
+//     // send confirmation message
+//     // Compose SMS message
+//     const SUCCESS_SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, to send the required documents to WhatsApp number +233591539372 or call us.`;
+
+//     // // Compose URL for sending SMS
+//     // const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
+
+//     // Send SMS
+//     const smsResponse = await axios.get(
+//       `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SUCCESS_SMS_MESSAGE}`
+//     );
+
+//     console.log("SMS Sent:", smsResponse.data.message);
+//   } else if (req.body.Status === "FAILED") {
+//     // Compose SMS message
+//     const FAILED_SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
+
+//     // Compose URL for sending SMS
+//     // const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=OjRCamtoVTFnSFp6b2oxOGk&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
+
+//     // Send SMS
+//     const smsResponse = await axios.get(
+//       `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${FAILED_SMS_MESSAGE}`
+//     );
+
+//     console.log("SMS Sent:", smsResponse.data.message);
+//   }
+// });
+
 router.post("/callback", async (req, res) => {
   console.log("callback success", req.body);
   res.status(200).json({ message: "callback success" });
-  console.log("Invoive Number", InvoiceNo);
+  console.log("Invoice Number", InvoiceNo);
   console.log("Order ID", OrderId);
   console.log("Send SMS TO", NumToSendSMS);
   if (
@@ -7168,14 +7225,15 @@ router.post("/callback", async (req, res) => {
 
     // send confirmation message
     // Compose SMS message
-    const SUCCESS_SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
-
-    // // Compose URL for sending SMS
-    // const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
+    const SUCCESS_SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, to send the required documents to WhatsApp number <a href="https://wa.me/+233591539372">+233591539372</a> or call us.`;
 
     // Send SMS
     const smsResponse = await axios.get(
-      `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SUCCESS_SMS_MESSAGE}`
+      `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${
+        process.env.ARKESEL_API_KEY
+      }=&to=${NumToSendSMS}&from=Flexible&sms=${encodeURIComponent(
+        SUCCESS_SMS_MESSAGE
+      )}`
     );
 
     console.log("SMS Sent:", smsResponse.data.message);
@@ -7183,12 +7241,13 @@ router.post("/callback", async (req, res) => {
     // Compose SMS message
     const FAILED_SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
 
-    // Compose URL for sending SMS
-    // const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=OjRCamtoVTFnSFp6b2oxOGk&to=${NumToSendSMS}&from=Flexible&sms=${SMS_MESSAGE}`;
-
     // Send SMS
     const smsResponse = await axios.get(
-      `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${FAILED_SMS_MESSAGE}`
+      `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${
+        process.env.ARKESEL_API_KEY
+      }=&to=${NumToSendSMS}&from=Flexible&sms=${encodeURIComponent(
+        FAILED_SMS_MESSAGE
+      )}`
     );
 
     console.log("SMS Sent:", smsResponse.data.message);
