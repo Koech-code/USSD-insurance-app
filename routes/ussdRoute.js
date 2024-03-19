@@ -7239,7 +7239,7 @@ router.post("/callback", async (req, res) => {
     console.log("SMS Sent:", smsResponse.data.message);
   } else if (req.body.Status === "FAILED") {
     // Compose SMS message
-    const FAILED_SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back or call us.`;
+    const FAILED_SMS_MESSAGE = `Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back. WhatsApp or call us on <a href="https://wa.me/+233591539372">+233591539372</a>.`;
 
     // Send SMS
     const smsResponse = await axios.get(
