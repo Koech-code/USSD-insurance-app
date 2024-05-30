@@ -30,55 +30,55 @@ const processingFeePercentage = 3;
 const ManufactureYear = "Please enter year of manufacture.";
 
 const CarValueMessage = "Please enter the value of your car in GHC.";
-async function generateUnique4DigitNumber() {
-  let numbersGenerated = [];
+// async function generateUnique4DigitNumber() {
+//   let numbersGenerated = [];
 
-  // Generate a random 4-digit number
-  function generateNumber() {
-    return (1000 + Math.floor(Math.random() * 9000)).toString();
-  }
+//   // Generate a random 4-digit number
+//   function generateNumber() {
+//     return (1000 + Math.floor(Math.random() * 9000)).toString();
+//   }
 
-  let newNumber = generateNumber();
+//   let newNumber = generateNumber();
 
-  // Check if the number is unique
-  while (numbersGenerated.includes(newNumber)) {
-    newNumber = generateNumber();
-  }
+//   // Check if the number is unique
+//   while (numbersGenerated.includes(newNumber)) {
+//     newNumber = generateNumber();
+//   }
 
-  // Add the number to the array of generated numbers
-  numbersGenerated.push(newNumber);
+//   // Add the number to the array of generated numbers
+//   numbersGenerated.push(newNumber);
 
-  // If the array exceeds 9000 in length, reset it
-  if (numbersGenerated.length > 9000) {
-    numbersGenerated = [];
-  }
+//   // If the array exceeds 9000 in length, reset it
+//   if (numbersGenerated.length > 9000) {
+//     numbersGenerated = [];
+//   }
 
-  return newNumber;
-}
+//   return newNumber;
+// }
 
-// Function to generate a secret
-async function generateSecret(username, password, key) {
-  const hashedPassword = crypto
-    .createHash("md5")
-    .update(password)
-    .digest("hex");
-  const secret = crypto
-    .createHash("md5")
-    .update(username + key + hashedPassword)
-    .digest("hex");
-  return secret;
-}
+// // Function to generate a secret
+// async function generateSecret(username, password, key) {
+//   const hashedPassword = crypto
+//     .createHash("md5")
+//     .update(password)
+//     .digest("hex");
+//   const secret = crypto
+//     .createHash("md5")
+//     .update(username + key + hashedPassword)
+//     .digest("hex");
+//   return secret;
+// }
 
 // Main function to generate key and secret
-async function main() {
-  const username = process.env.NALO_USERNAME;
-  const password = process.env.PASSWORD;
-  const key = await generateUnique4DigitNumber();
+// async function main() {
+//   const username = process.env.NALO_USERNAME;
+//   const password = process.env.PASSWORD;
+//   const key = await generateUnique4DigitNumber();
 
-  const generatedSecret = await generateSecret(username, password, key);
+//   const generatedSecret = await generateSecret(username, password, key);
 
-  return { key, secret: generatedSecret };
-}
+//   return { key, secret: generatedSecret };
+// }
 
 async function verifyPhoneNumber(customerNumber) {
   if (
@@ -88,18 +88,18 @@ async function verifyPhoneNumber(customerNumber) {
     customerNumber.startsWith("23355") ||
     customerNumber.startsWith("23359")
   ) {
-    return "MTN";
+    return "mtn-gh";
   } else if (
     customerNumber.startsWith("23320") ||
     customerNumber.startsWith("23350")
   ) {
-    return "VODAFONE";
+    return "vodafone-gh";
   } else if (
     customerNumber.startsWith("23326") ||
     customerNumber.startsWith("23327") ||
     customerNumber.startsWith("23357")
   ) {
-    return "AIRTELIGO";
+    return "tigo-gh";
   } else {
     return "Unknown";
   }
@@ -133,6 +133,9 @@ async function verifyPhoneNumber(customerNumber) {
 //   }
 // }
 
+// Generate a unique ClientReference
+const clientReference = uuidv4();
+
 async function pay(amount, customerNumber, item_name, item_desc) {
   // Check if customerNumber starts with '0'
   if (customerNumber.startsWith("0")) {
@@ -146,39 +149,49 @@ async function pay(amount, customerNumber, item_name, item_desc) {
 
   let response;
   let callback = "http://gblinsurancegh.com:5000/callback";
-  let merchant_id = process.env.MERCHANT_ID;
+  // let merchant_id = process.env.MERCHANT_ID;
 
-  // Call main to get key and secret
-  const { key, secret } = await main();
+  // // Call main to get key and secret
+  // const { key, secret } = await main();
 
-  let order_id = uuidv4().replace(/\D/g, "");
+  // let order_id = uuidv4().replace(/\D/g, "");
   let customerName = "name";
   // Dynamically determine payby
   let payby = await verifyPhoneNumber(customerNumber);
 
   var config = {
     method: "POST",
-    url: `https://api.nalosolutions.com/payplus/api/`,
+    url: `/merchantaccount/merchants/${process.env.HUBTEL_POS_SALES_ID}/receive/mobilemoney HTTP/1.1`,
     headers: {
       "Content-Type": "application/json",
+        "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
     },
     data: {
-      amount: amount,
-      payby: payby,
-      customerNumber: customerNumber,
-      item_desc: item_desc,
-      merchant_id: merchant_id,
-      customerName: customerName,
-      order_id: order_id,
-      callback: callback,
-      key: key,
-      secrete: secret,
-      isussd: true,
-      newVodaPayment: true,
-      carnums: carNum,
-      whatsappNums: whatsappNum,
-      item_name: item_name,
-      Manufactured: ManufacturedYear,
+      // amount: amount,
+      // payby: payby,
+      // customerNumber: customerNumber,
+      // item_desc: item_desc,
+      // merchant_id: merchant_id,
+      // customerName: customerName,
+      // order_id: order_id,
+      // callback: callback,
+      // key: key,
+      // secrete: secret,
+
+      CustomerName: customerName,
+      CustomerMsisdn: customerNumber,
+      CustomerEmail: "recipient@gmail.com",
+      Channel: payby,
+      Amount: amount,
+      PrimaryCallbackUrl: callback,
+      Description: item_desc,
+      ClientReference: clientReference
+      // isussd: true,
+      // newVodaPayment: true,
+      // carnums: carNum,
+      // whatsappNums: whatsappNum,
+      // item_name: item_name,
+      // Manufactured: ManufacturedYear,
       // username: process.env.NALO_USERNAME,
       // password: process.env.PASSWORD,
     },
@@ -200,9 +213,9 @@ async function pay(amount, customerNumber, item_name, item_desc) {
     // });
 
     console.log("Payment Params - ", response.data);
-    InvoiceNo = response.data.InvoiceNo;
-    OrderId = response.data.Order_id;
-    NumToSendSMS = customerNumber;
+    // InvoiceNo = response.data.InvoiceNo;
+    // OrderId = response.data.Order_id;
+    // NumToSendSMS = customerNumber;
     // // Extract callback URL and customer number
     // const callbackUrl = response.data.callback;
     // const phoneNumber = response.data.customerNumber;
@@ -7198,54 +7211,54 @@ router.post("/ussd", async (req, res) => {
 router.post("/callback", async (req, res) => {
   console.log("callback success", req.body);
   res.status(200).json({ message: "callback success" });
-  console.log("Invoice Number", InvoiceNo);
-  console.log("Order ID", OrderId);
-  console.log("Send SMS TO", NumToSendSMS);
-  if (
-    req.body.InvoiceNo == InvoiceNo &&
-    req.body.Order_id == OrderId &&
-    req.body.Status === "PAID"
-  ) {
-    try {
-      const paymentResponse = await PaymentResponse.create({
-        itemName: ItemName,
-        amount: AmountSaveToDB,
-        carnums: carNum,
-        phoneNumber: NumberToSave,
-        whatsappnums: whatsappNum,
-        // Adding status field with a specific value
-        status: "pending", // Or you can omit this line to use the default value
-      });
-      // Proceed with further logic if creation is successful
-      console.log("Payment response created:", paymentResponse);
-    } catch (error) {
-      // Handle errors here
-      console.error("Error creating payment response:", error);
-    }
+  // console.log("Invoice Number", InvoiceNo);
+  // console.log("Order ID", OrderId);
+  // console.log("Send SMS TO", NumToSendSMS);
+  // if (
+  //   req.body.InvoiceNo == InvoiceNo &&
+  //   req.body.Order_id == OrderId &&
+  //   req.body.Status === "PAID"
+  // ) {
+  //   try {
+  //     const paymentResponse = await PaymentResponse.create({
+  //       itemName: ItemName,
+  //       amount: AmountSaveToDB,
+  //       carnums: carNum,
+  //       phoneNumber: NumberToSave,
+  //       whatsappnums: whatsappNum,
+  //       // Adding status field with a specific value
+  //       status: "pending", // Or you can omit this line to use the default value
+  //     });
+  //     // Proceed with further logic if creation is successful
+  //     console.log("Payment response created:", paymentResponse);
+  //   } catch (error) {
+  //     // Handle errors here
+  //     console.error("Error creating payment response:", error);
+  //   }
 
-    // send confirmation message
-    // Compose SMS message
-    const SUCCESS_SMS_MESSAGE =
-      "Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, to send the required documents to WhatsApp number +233591539372.";
+  //   // send confirmation message
+  //   // Compose SMS message
+  //   const SUCCESS_SMS_MESSAGE =
+  //     "Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, to send the required documents to WhatsApp number +233591539372.";
 
-    // Send SMS
-    const smsResponse = await axios.get(
-      `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SUCCESS_SMS_MESSAGE}`
-    );
+  //   // Send SMS
+  //   const smsResponse = await axios.get(
+  //     `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SUCCESS_SMS_MESSAGE}`
+  //   );
 
-    console.log("SMS Sent:", smsResponse.data.message);
-  } else if (req.body.Status === "FAILED") {
-    // Compose SMS message
-    const FAILED_SMS_MESSAGE =
-      "Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back. WhatsApp or call us on +233591539372.";
+  //   console.log("SMS Sent:", smsResponse.data.message);
+  // } else if (req.body.Status === "FAILED") {
+  //   // Compose SMS message
+  //   const FAILED_SMS_MESSAGE =
+  //     "Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back. WhatsApp or call us on +233591539372.";
 
-    // Send SMS
-    const smsResponse = await axios.get(
-      `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${FAILED_SMS_MESSAGE}`
-    );
+  //   // Send SMS
+  //   const smsResponse = await axios.get(
+  //     `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${FAILED_SMS_MESSAGE}`
+  //   );
 
-    console.log("SMS Sent:", smsResponse.data.message);
-  }
+  //   console.log("SMS Sent:", smsResponse.data.message);
+  // }
 });
 
 // Nalo solutions redirect  URL
