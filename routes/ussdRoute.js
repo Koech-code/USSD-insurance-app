@@ -161,7 +161,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
 
   var config = {
     method: "POST",
-    url: `/merchantaccount/merchants/${process.env.HUBTEL_POS_SALES_ID}/receive/mobilemoney HTTP/1.1`,
+    url: `/merchantaccount/merchants/${process.env.HUBTEL_POS_SALES_ID}/receive/mobilemoney`,
     headers: {
       "Content-Type": "application/json",
         "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
@@ -2380,16 +2380,48 @@ router.post("/ussd", async (req, res) => {
       }
     } else if (userSessionData[sessionID].service === "3") {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
-        service = "1";
-        message = "Please enter a MOMO phone number you wish to pay with.";
+        service = userSessionData[sessionID].service;
         whatsappNum = userSessionData[sessionID].whatsappNumber;
-        continueSession = true;
+        let amount = 243;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+        await pay(
+          tot_amt,
+          req.body.msisdn,
+          "Motor Cylce 2-seater",
+          "Buy Motor Cycle 2 persons."
+        );
+
+        message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
+        continueSession = false;
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        service = "1";
-        message = "Please enter the phone number you wish to pay with.";
-        whatsappNum = userSessionData[sessionID].whatsappNumber;
-        continueSession = true;
+        service = userSessionData[sessionID].service;
+
+        let amount = 193;
+        // add 3% of the amount as processing fee
+        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+        await pay(
+          tot_amt,
+          userSessionData[sessionID].msisdn,
+          "Motor Cycle 2-seater",
+          "Renew Motor Cycle 2 persons."
+        );
+
+        message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
+        continueSession = false;
       }
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      //   service = "1";
+      //   message = "Please enter a MOMO phone number you wish to pay with.";
+      //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //   continueSession = true;
+      // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   service = "1";
+      //   message = "Please enter the phone number you wish to pay with.";
+      //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //   continueSession = true;
+      // }
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
@@ -3059,40 +3091,42 @@ router.post("/ussd", async (req, res) => {
         message = "Invalid option selected for Third Party Private.";
         continueSession = false;
       }
-    } else if (userSessionData[sessionID].service === "3") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        service = userSessionData[sessionID].service;
+    } 
+    // else if (userSessionData[sessionID].service === "3") {
+    //   if (userSessionData[sessionID].InsuranceType === "purchase") {
+    //     service = userSessionData[sessionID].service;
 
-        let amount = 243;
-        // add 3% of the amount as processing fee
-        let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        await pay(
-          tot_amt,
-          userSessionData[sessionID].phoneNumber,
-          "Motor Cylce 2-seater",
-          "Buy Motor Cycle 2 persons."
-        );
+    //     let amount = 243;
+    //     // add 3% of the amount as processing fee
+    //     let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //     await pay(
+    //       tot_amt,
+    //       userSessionData[sessionID].phoneNumber,
+    //       "Motor Cylce 2-seater",
+    //       "Buy Motor Cycle 2 persons."
+    //     );
 
-        message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
-        continueSession = false;
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        service = userSessionData[sessionID].service;
+    //     message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
+    //     continueSession = false;
+    //   } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+    //     service = userSessionData[sessionID].service;
 
-        let amount = 193;
-        // add 3% of the amount as processing fee
-        let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //     let amount = 193;
+    //     // add 3% of the amount as processing fee
+    //     let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-        await pay(
-          tot_amt,
-          userSessionData[sessionID].phoneNumber,
-          "Motor Cycle 2-seater",
-          "Renew Motor Cycle 2 persons."
-        );
+    //     await pay(
+    //       tot_amt,
+    //       userSessionData[sessionID].phoneNumber,
+    //       "Motor Cycle 2-seater",
+    //       "Renew Motor Cycle 2 persons."
+    //     );
 
-        message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
-        continueSession = false;
-      }
-    } else if (userSessionData[sessionID].service === "4") {
+    //     message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
+    //     continueSession = false;
+    //   }
+    // } 
+    else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           // Check if the selected option exists in the mapping
@@ -7211,54 +7245,54 @@ router.post("/ussd", async (req, res) => {
 router.post("/callback", async (req, res) => {
   console.log("callback success", req.body);
   res.status(200).json({ message: "callback success" });
-  // console.log("Invoice Number", InvoiceNo);
-  // console.log("Order ID", OrderId);
-  // console.log("Send SMS TO", NumToSendSMS);
-  // if (
-  //   req.body.InvoiceNo == InvoiceNo &&
-  //   req.body.Order_id == OrderId &&
-  //   req.body.Status === "PAID"
-  // ) {
-  //   try {
-  //     const paymentResponse = await PaymentResponse.create({
-  //       itemName: ItemName,
-  //       amount: AmountSaveToDB,
-  //       carnums: carNum,
-  //       phoneNumber: NumberToSave,
-  //       whatsappnums: whatsappNum,
-  //       // Adding status field with a specific value
-  //       status: "pending", // Or you can omit this line to use the default value
-  //     });
-  //     // Proceed with further logic if creation is successful
-  //     console.log("Payment response created:", paymentResponse);
-  //   } catch (error) {
-  //     // Handle errors here
-  //     console.error("Error creating payment response:", error);
-  //   }
+  console.log("Invoice Number", InvoiceNo);
+  console.log("Order ID", OrderId);
+  console.log("Send SMS TO", NumToSendSMS);
+  if (
+    req.body.InvoiceNo == InvoiceNo &&
+    req.body.Order_id == OrderId &&
+    req.body.Status === "PAID"
+  ) {
+    try {
+      const paymentResponse = await PaymentResponse.create({
+        itemName: ItemName,
+        amount: AmountSaveToDB,
+        carnums: carNum,
+        phoneNumber: NumberToSave,
+        whatsappnums: whatsappNum,
+        // Adding status field with a specific value
+        status: "pending", // Or you can omit this line to use the default value
+      });
+      // Proceed with further logic if creation is successful
+      console.log("Payment response created:", paymentResponse);
+    } catch (error) {
+      // Handle errors here
+      console.error("Error creating payment response:", error);
+    }
 
-  //   // send confirmation message
-  //   // Compose SMS message
-  //   const SUCCESS_SMS_MESSAGE =
-  //     "Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, to send the required documents to WhatsApp number +233591539372.";
+    // send confirmation message
+    // Compose SMS message
+    const SUCCESS_SMS_MESSAGE =
+      "Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, to send the required documents to WhatsApp number +233591539372.";
 
-  //   // Send SMS
-  //   const smsResponse = await axios.get(
-  //     `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SUCCESS_SMS_MESSAGE}`
-  //   );
+    // Send SMS
+    const smsResponse = await axios.get(
+      `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${SUCCESS_SMS_MESSAGE}`
+    );
 
-  //   console.log("SMS Sent:", smsResponse.data.message);
-  // } else if (req.body.Status === "FAILED") {
-  //   // Compose SMS message
-  //   const FAILED_SMS_MESSAGE =
-  //     "Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back. WhatsApp or call us on +233591539372.";
+    console.log("SMS Sent:", smsResponse.data.message);
+  } else if (req.body.Status === "FAILED") {
+    // Compose SMS message
+    const FAILED_SMS_MESSAGE =
+      "Hi, we noticed that your transaction failed. Please ensure that you have enough balance and get back. WhatsApp or call us on +233591539372.";
 
-  //   // Send SMS
-  //   const smsResponse = await axios.get(
-  //     `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${FAILED_SMS_MESSAGE}`
-  //   );
+    // Send SMS
+    const smsResponse = await axios.get(
+      `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}=&to=${NumToSendSMS}&from=Flexible&sms=${FAILED_SMS_MESSAGE}`
+    );
 
-  //   console.log("SMS Sent:", smsResponse.data.message);
-  // }
+    console.log("SMS Sent:", smsResponse.data.message);
+  }
 });
 
 // Nalo solutions redirect  URL
