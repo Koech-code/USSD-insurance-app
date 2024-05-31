@@ -161,7 +161,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
 
   var config = {
     method: "POST",
-    url: `/merchantaccount/merchants/${process.env.HUBTEL_POS_SALES_ID}/receive/mobilemoney`,
+    url: `https://rmp.hubtel.com/merchantaccount/merchants/${process.env.HUBTEL_POS_SALES_ID}/receive/mobilemoney`,
     headers: {
       "Content-Type": "application/json",
         "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
@@ -2963,57 +2963,394 @@ router.post("/ussd", async (req, res) => {
     const numberToPayWithMessage =
       "Please enter the phone number you wish to pay with.";
     if (userSessionData[sessionID].service === "1") {
+      whatsappNum = userSessionData[sessionID].whatsappNumber;
       if (userSessionData[sessionID].InsuranceType === "purchase") {
+        // if (userSessionData[sessionID].type === "maxBus") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "hiringCars") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "artOrTankers") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "taxi") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "miniBus") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // }
         if (userSessionData[sessionID].type === "maxBus") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
+
+          try {
+            if (
+              maxBusServicePrices.hasOwnProperty(
+                userSessionData[sessionID].selectedOption
+              )
+            ) {
+              service = userSessionData[sessionID].service;
+              // Get the price dynamically from the mapping
+              let amount = parseInt(
+                maxBusServicePrices[userSessionData[sessionID].selectedOption]
+              );
+
+              // add 3% of the amount as processing fee
+              let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+              const paymentPromise = await pay(
+                tot_amt,
+                req.body.msisdn,
+                "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
+                "Buy Max Bus 3rd-party."
+              );
+
+              // Set a timeout for the payment operation
+              await Promise.race([
+                paymentPromise,
+                new Promise((_, reject) =>
+                  setTimeout(
+                    () => reject(new Error("Payment operation timed out")),
+                    timeoutDuration
+                  )
+                ),
+              ]);
+
+              // Inform the user about the payment prompt
+              message = `${finalMessage} ${tot_amt.toFixed(2)} now!`;
+              continueSession = false;
+            } else {
+              message =
+                "Only numbers between 23 - 70 are allowed. Back to step 3 and re-enter.";
+              continueSession = false;
+            }
+          } catch (error) {
+            message = "Error processing payment: " + error.message;
+            continueSession = false;
+          }
         } else if (userSessionData[sessionID].type === "hiringCars") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            hiringCarsServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Hiring Car " + userSessionData[sessionID].itemNumber,
+              "Buy Hiring car 3rd-party."
+            );
+
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Only numbers between 5 - 15 are allowed.";
+            continueSession = false;
+          }
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            ambulanceOrHearseServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              ambulanceOrHearseServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Ambulance/Hearse " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Ambulance/hearse 3rd-party"
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input 5 to access this service.";
+            continueSession = false;
+          }
         } else if (userSessionData[sessionID].type === "artOrTankers") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            artOrTankersServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              artOrTankersServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Art/Tankers " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Art/Tankers 3rd-party"
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input 3.";
+          }
         } else if (userSessionData[sessionID].type === "taxi") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            taxiServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              taxiServicePrices[userSessionData[sessionID].selectedOption]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Taxi " + userSessionData[sessionID].itemNumber,
+              "Buy Taxi car 3rd-party."
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
         } else if (userSessionData[sessionID].type === "miniBus") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            miniBusServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              miniBusServicePrices[userSessionData[sessionID].selectedOption]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
+              "Buy Mini Bus 3rd-party."
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        // if (userSessionData[sessionID].type === "maxBus") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "hiringCars") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "artOrTankers") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "taxi") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].type === "miniBus") {
+        //   message = numberToPayWithMessage;
+        //   whatsappNum = userSessionData[sessionID].whatsappNumber;
+        //   continueSession = true;
+        // }
         if (userSessionData[sessionID].type === "maxBus") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            maxBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              maxBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
+              "Renew Max Bus 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Only numbers between 23 - 70 are allowed.";
+          }
         } else if (userSessionData[sessionID].type === "hiringCars") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            hiringCarsRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              hiringCarsRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Hiring car " + userSessionData[sessionID].itemNumber,
+              "Renew Hiring car 3rd-party."
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Only numbers between 5 - 15 are allowed.";
+          }
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              ambulanceOrHearseRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Ambulance/Hearse " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Ambu/Hearse 3rd-party."
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input 5 to access this service.";
+          }
         } else if (userSessionData[sessionID].type === "artOrTankers") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            artOrTankersRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              artOrTankersRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Art/Tanker " + userSessionData[sessionID].itemNumber,
+              "Renew Art/Tanker 3rd-party."
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input 3.";
+          }
         } else if (userSessionData[sessionID].type === "taxi") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            taxiRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              taxiRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Taxi " + userSessionData[sessionID].itemNumber,
+              "Renew Taxi car 3rd-party."
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
         } else if (userSessionData[sessionID].type === "miniBus") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          if (
+            miniBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
+              "Renew Mini Bus 3rd-party."
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input 5.";
+          }
         }
       }
     } else if (userSessionData[sessionID].service === "2") {
@@ -3840,347 +4177,348 @@ router.post("/ussd", async (req, res) => {
 
     userSessionData[sessionID].carRegNumber = userData;
 
-    if (userSessionData[sessionID].service === "1") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (userSessionData[sessionID].type === "maxBus") {
-          const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
+    // if (userSessionData[sessionID].service === "1") {
+    //   if (userSessionData[sessionID].InsuranceType === "purchase") {
+    //     if (userSessionData[sessionID].type === "maxBus") {
+    //       const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
 
-          try {
-            if (
-              maxBusServicePrices.hasOwnProperty(
-                userSessionData[sessionID].selectedOption
-              )
-            ) {
-              service = userSessionData[sessionID].service;
-              // Get the price dynamically from the mapping
-              let amount = parseInt(
-                maxBusServicePrices[userSessionData[sessionID].selectedOption]
-              );
+    //       try {
+    //         if (
+    //           maxBusServicePrices.hasOwnProperty(
+    //             userSessionData[sessionID].selectedOption
+    //           )
+    //         ) {
+    //           service = userSessionData[sessionID].service;
+    //           // Get the price dynamically from the mapping
+    //           let amount = parseInt(
+    //             maxBusServicePrices[userSessionData[sessionID].selectedOption]
+    //           );
 
-              // add 3% of the amount as processing fee
-              let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //           // add 3% of the amount as processing fee
+    //           let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-              const paymentPromise = await pay(
-                tot_amt,
-                userSessionData[sessionID].phoneNumber,
-                "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
-                "Buy Max Bus 3rd-party."
-              );
+    //           const paymentPromise = await pay(
+    //             tot_amt,
+    //             userSessionData[sessionID].phoneNumber,
+    //             "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
+    //             "Buy Max Bus 3rd-party."
+    //           );
 
-              // Set a timeout for the payment operation
-              await Promise.race([
-                paymentPromise,
-                new Promise((_, reject) =>
-                  setTimeout(
-                    () => reject(new Error("Payment operation timed out")),
-                    timeoutDuration
-                  )
-                ),
-              ]);
+    //           // Set a timeout for the payment operation
+    //           await Promise.race([
+    //             paymentPromise,
+    //             new Promise((_, reject) =>
+    //               setTimeout(
+    //                 () => reject(new Error("Payment operation timed out")),
+    //                 timeoutDuration
+    //               )
+    //             ),
+    //           ]);
 
-              // Inform the user about the payment prompt
-              message = `${finalMessage} ${tot_amt.toFixed(2)} now!`;
-              continueSession = false;
-            } else {
-              message =
-                "Only numbers between 23 - 70 are allowed. Back to step 3 and re-enter.";
-              continueSession = false;
-            }
-          } catch (error) {
-            message = "Error processing payment: " + error.message;
-            continueSession = false;
-          }
-        } else if (userSessionData[sessionID].type === "hiringCars") {
-          if (
-            hiringCarsServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //           // Inform the user about the payment prompt
+    //           message = `${finalMessage} ${tot_amt.toFixed(2)} now!`;
+    //           continueSession = false;
+    //         } else {
+    //           message =
+    //             "Only numbers between 23 - 70 are allowed. Back to step 3 and re-enter.";
+    //           continueSession = false;
+    //         }
+    //       } catch (error) {
+    //         message = "Error processing payment: " + error.message;
+    //         continueSession = false;
+    //       }
+    //     } else if (userSessionData[sessionID].type === "hiringCars") {
+    //       if (
+    //         hiringCarsServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Hiring Car " + userSessionData[sessionID].itemNumber,
-              "Buy Hiring car 3rd-party."
-            );
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Hiring Car " + userSessionData[sessionID].itemNumber,
+    //           "Buy Hiring car 3rd-party."
+    //         );
 
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Only numbers between 5 - 15 are allowed.";
-            continueSession = false;
-          }
-        } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-          if (
-            ambulanceOrHearseServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              ambulanceOrHearseServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Only numbers between 5 - 15 are allowed.";
+    //         continueSession = false;
+    //       }
+    //     } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+    //       if (
+    //         ambulanceOrHearseServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           ambulanceOrHearseServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Ambulance/Hearse " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Ambulance/hearse 3rd-party"
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input 5 to access this service.";
-            continueSession = false;
-          }
-        } else if (userSessionData[sessionID].type === "artOrTankers") {
-          if (
-            artOrTankersServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              artOrTankersServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Ambulance/Hearse " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Buy Ambulance/hearse 3rd-party"
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input 5 to access this service.";
+    //         continueSession = false;
+    //       }
+    //     } else if (userSessionData[sessionID].type === "artOrTankers") {
+    //       if (
+    //         artOrTankersServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           artOrTankersServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Art/Tankers " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Art/Tankers 3rd-party"
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input 3.";
-          }
-        } else if (userSessionData[sessionID].type === "taxi") {
-          if (
-            taxiServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              taxiServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Taxi " + userSessionData[sessionID].itemNumber,
-              "Buy Taxi car 3rd-party."
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input 5.";
-          }
-        } else if (userSessionData[sessionID].type === "miniBus") {
-          if (
-            miniBusServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              miniBusServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Art/Tankers " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Buy Art/Tankers 3rd-party"
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input 3.";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "taxi") {
+    //       if (
+    //         taxiServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           taxiServicePrices[userSessionData[sessionID].selectedOption]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Taxi " + userSessionData[sessionID].itemNumber,
+    //           "Buy Taxi car 3rd-party."
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input 5.";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "miniBus") {
+    //       if (
+    //         miniBusServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           miniBusServicePrices[userSessionData[sessionID].selectedOption]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
-              "Buy Mini Bus 3rd-party."
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input 5.";
-          }
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (userSessionData[sessionID].type === "maxBus") {
-          if (
-            maxBusRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              maxBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
+    //           "Buy Mini Bus 3rd-party."
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input 5.";
+    //       }
+    //     }
+    //   } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+    //     if (userSessionData[sessionID].type === "maxBus") {
+    //       if (
+    //         maxBusRenewalServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           maxBusRenewalServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
-              "Renew Max Bus 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Only numbers between 23 - 70 are allowed.";
-          }
-        } else if (userSessionData[sessionID].type === "hiringCars") {
-          if (
-            hiringCarsRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              hiringCarsRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
+    //           "Renew Max Bus 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Only numbers between 23 - 70 are allowed.";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "hiringCars") {
+    //       if (
+    //         hiringCarsRenewalServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           hiringCarsRenewalServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Hiring car " + userSessionData[sessionID].itemNumber,
-              "Renew Hiring car 3rd-party."
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Only numbers between 5 - 15 are allowed.";
-          }
-        } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-          if (
-            ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              ambulanceOrHearseRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Hiring car " + userSessionData[sessionID].itemNumber,
+    //           "Renew Hiring car 3rd-party."
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Only numbers between 5 - 15 are allowed.";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
+    //       if (
+    //         ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           ambulanceOrHearseRenewalServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Ambulance/Hearse " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Ambu/Hearse 3rd-party."
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input 5 to access this service.";
-          }
-        } else if (userSessionData[sessionID].type === "artOrTankers") {
-          if (
-            artOrTankersRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              artOrTankersRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Ambulance/Hearse " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Renew Ambu/Hearse 3rd-party."
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input 5 to access this service.";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "artOrTankers") {
+    //       if (
+    //         artOrTankersRenewalServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           artOrTankersRenewalServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Art/Tanker " + userSessionData[sessionID].itemNumber,
-              "Renew Art/Tanker 3rd-party."
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input 3.";
-          }
-        } else if (userSessionData[sessionID].type === "taxi") {
-          if (
-            taxiRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              taxiRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Art/Tanker " + userSessionData[sessionID].itemNumber,
+    //           "Renew Art/Tanker 3rd-party."
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input 3.";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "taxi") {
+    //       if (
+    //         taxiRenewalServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           taxiRenewalServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Taxi " + userSessionData[sessionID].itemNumber,
-              "Renew Taxi car 3rd-party."
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input 5.";
-          }
-        } else if (userSessionData[sessionID].type === "miniBus") {
-          if (
-            miniBusRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Taxi " + userSessionData[sessionID].itemNumber,
+    //           "Renew Taxi car 3rd-party."
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input 5.";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "miniBus") {
+    //       if (
+    //         miniBusRenewalServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           miniBusRenewalServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
-              "Renew Mini Bus 3rd-party."
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input 5.";
-          }
-        }
-      }
-    } else if (userSessionData[sessionID].service === "2") {
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
+    //           "Renew Mini Bus 3rd-party."
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input 5.";
+    //       }
+    //     }
+    //   }
+    // }
+      if (userSessionData[sessionID].service === "2") {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
