@@ -30,55 +30,6 @@ const processingFeePercentage = 3;
 const ManufactureYear = "Please enter year of manufacture.";
 
 const CarValueMessage = "Please enter the value of your car in GHC.";
-// async function generateUnique4DigitNumber() {
-//   let numbersGenerated = [];
-
-//   // Generate a random 4-digit number
-//   function generateNumber() {
-//     return (1000 + Math.floor(Math.random() * 9000)).toString();
-//   }
-
-//   let newNumber = generateNumber();
-
-//   // Check if the number is unique
-//   while (numbersGenerated.includes(newNumber)) {
-//     newNumber = generateNumber();
-//   }
-
-//   // Add the number to the array of generated numbers
-//   numbersGenerated.push(newNumber);
-
-//   // If the array exceeds 9000 in length, reset it
-//   if (numbersGenerated.length > 9000) {
-//     numbersGenerated = [];
-//   }
-
-//   return newNumber;
-// }
-
-// // Function to generate a secret
-// async function generateSecret(username, password, key) {
-//   const hashedPassword = crypto
-//     .createHash("md5")
-//     .update(password)
-//     .digest("hex");
-//   const secret = crypto
-//     .createHash("md5")
-//     .update(username + key + hashedPassword)
-//     .digest("hex");
-//   return secret;
-// }
-
-// Main function to generate key and secret
-// async function main() {
-//   const username = process.env.NALO_USERNAME;
-//   const password = process.env.PASSWORD;
-//   const key = await generateUnique4DigitNumber();
-
-//   const generatedSecret = await generateSecret(username, password, key);
-
-//   return { key, secret: generatedSecret };
-// }
 
 async function verifyPhoneNumber(customerNumber) {
   if (
@@ -105,34 +56,6 @@ async function verifyPhoneNumber(customerNumber) {
   }
 }
 
-// async function sendConfirmationMessage(callbackUrl, phoneNumber) {
-//   try {
-//     // Make GET request to the callback URL
-//     const response = await axios.get(callbackUrl);
-
-//     // Extract payment status from the response data
-//     const paymentStatus = response.data.Status;
-
-//     // Check if payment status is "PAID"
-//     if (paymentStatus === "FAILED") {
-//       // Compose SMS message
-//       const SMS_MESSAGE = `Thank you for choosing AEGIS RISK MANAGEMENT BROKERS. Your purchase is confirmed. Visit option 4, send required docs to WhatsApp +233591539372 or call us.`;
-
-//       // Compose URL for sending SMS
-//       const SEND_SMS_URL = `https://sms.arkesel.com/sms/api?action=send-sms&api_key=${process.env.ARKESEL_API_KEY}&to=${phoneNumber}&from=Flexible&sms=${SMS_MESSAGE}`;
-
-//       // Send SMS
-//       const smsResponse = await axios.get(SEND_SMS_URL);
-
-//       console.log("SMS Sent:", smsResponse.data.message);
-//     } else {
-//       console.log("Payment status is not 'PAID'. No SMS will be sent.");
-//     }
-//   } catch (error) {
-//     console.error("Error occurred while sending confirmation message:", error);
-//   }
-// }
-
 // Generate a unique ClientReference
 const clientReference = uuidv4();
 
@@ -149,13 +72,9 @@ async function pay(amount, customerNumber, item_name, item_desc) {
 
   let response;
   let callback = "http://gblinsurancegh.com:5000/callback";
-  // let merchant_id = process.env.MERCHANT_ID;
-
-  // // Call main to get key and secret
-  // const { key, secret } = await main();
-
-  // let order_id = uuidv4().replace(/\D/g, "");
+  
   let customerName = "name";
+
   // Dynamically determine payby
   let payby = await verifyPhoneNumber(customerNumber);
 
@@ -167,17 +86,6 @@ async function pay(amount, customerNumber, item_name, item_desc) {
       "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
     },
     data: {
-      // amount: amount,
-      // payby: payby,
-      // customerNumber: customerNumber,
-      // item_desc: item_desc,
-      // merchant_id: merchant_id,
-      // customerName: customerName,
-      // order_id: order_id,
-      // callback: callback,
-      // key: key,
-      // secrete: secret,
-
       CustomerName: customerName,
       CustomerMsisdn: customerNumber,
       CustomerEmail: "recipient@gmail.com",
@@ -185,22 +93,14 @@ async function pay(amount, customerNumber, item_name, item_desc) {
       Amount: amount,
       PrimaryCallbackUrl: callback,
       Description: item_desc,
-      ClientReference: clientReference
-      // isussd: true,
-      // newVodaPayment: true,
-      // carnums: carNum,
-      // whatsappNums: whatsappNum,
-      // item_name: item_name,
-      // Manufactured: ManufacturedYear,
-      // username: process.env.NALO_USERNAME,
-      // password: process.env.PASSWORD,
+      ClientReference: clientReference,
+      // username: process.env.HUBTEL_API_ID,
+      // password: process.env.HUBTEL_API_KEY,
     },
   };
 
   try {
     console.log({ config });
-    // console.log(username);
-    // console.log(password);
     response = await axios(config);
     // await PaymentResponse.create({
     //   itemName: item_name,
@@ -569,8 +469,6 @@ const GW1Class3RenewalServicePrice = {
 router.post("/ussd", async (req, res) => {
   const { sessionID, newSession, msisdn, userData, userID, network } = req.body;
   console.log("Arkesel Response", req.body);
-  // Replace "233" with "0" in the msisdn variable
-  // const formattedMsisdn = msisdn.replace(/^233/, '0');
 
   let message = "";
   let service = "";
@@ -1477,8 +1375,6 @@ router.post("/ussd", async (req, res) => {
           continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
@@ -1487,58 +1383,40 @@ router.post("/ussd", async (req, res) => {
           continueSession = true;
         } else if (userSessionData[sessionID].type === "artOrTankers") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "taxi") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         }
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         if (userSessionData[sessionID].type === "maxBus") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "hiringCars") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "artOrTankers") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "taxi") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         }
@@ -1689,44 +1567,30 @@ router.post("/ussd", async (req, res) => {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else {
@@ -1738,44 +1602,30 @@ router.post("/ussd", async (req, res) => {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].type === "miniBus") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else {
@@ -1807,14 +1657,10 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           // continueSession = true;
           message = caRegMessage;
           continueSession = true;
@@ -1936,34 +1782,18 @@ router.post("/ussd", async (req, res) => {
     } else if (userSessionData[sessionID].service === "6") {
       // if (userSessionData[sessionID].InsuranceType === "purchase") {
       if (userSessionData[sessionID].type === "privateX1") {
-        // service = "1";
-        // message = "Please enter the phone number you would like to pay with.";
-        // userSessionData[sessionID].phoneNumberComp = userData;
-        // continueSession = true;
         service = "1";
         message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "privateX4") {
-        // service = "1";
-        // message = "Please enter the phone number you would like to pay with.";
-        // userSessionData[sessionID].phoneNumberComp = userData;
-        // continueSession = true;
         service = "1";
         message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-        // service = "1";
-        // message = "Please enter the phone number you would like to pay with.";
-        // userSessionData[sessionID].phoneNumberComp = userData;
-        // continueSession = true;
         service = "1";
         message = caRegMessage;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-        // service = "1";
-        // message = "Please enter the phone number you would like to pay with.";
-        // userSessionData[sessionID].phoneNumberComp = userData;
-        // continueSession = true;
         service = "1";
         message = caRegMessage;
         continueSession = true;
@@ -1976,52 +1806,10 @@ router.post("/ussd", async (req, res) => {
       } else if (
         userSessionData[sessionID].type === "generalCartageAbove3000"
       ) {
-        // service = "1";
-        // message = "Please enter the phone number you would like to pay with.";
-        // userSessionData[sessionID].phoneNumberComp = userData;
-        // continueSession = true;
         service = "1";
         message = caRegMessage;
         continueSession = true;
       }
-      // }
-      // else if (userSessionData[sessionID].InsuranceType === "renewal") {
-      //   if (userSessionData[sessionID].type === "privateX1") {
-      //     service = "1";
-      //     message = "Please enter the phone number you would like to pay with.";
-      //     userSessionData[sessionID].phoneNumberComp = userData;
-      //     continueSession = true;
-      //   } else if (userSessionData[sessionID].type === "privateX4") {
-      //     service = "1";
-      //     message = "Please enter the phone number you would like to pay with.";
-      //     userSessionData[sessionID].phoneNumberComp = userData;
-      //     continueSession = true;
-      //   } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-      //     service = "1";
-      //     message = "Please enter the phone number you would like to pay with.";
-      //     userSessionData[sessionID].phoneNumberComp = userData;
-      //     continueSession = true;
-      //   } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-      //     service = "1";
-      //     message = "Please enter the phone number you would like to pay with.";
-      //     userSessionData[sessionID].phoneNumberComp = userData;
-      //     continueSession = true;
-      //   } else if (
-      //     userSessionData[sessionID].type === "generalCartageBelow3000"
-      //   ) {
-      //     service = "1";
-      //     message = "Please enter the phone number you would like to pay with.";
-      //     userSessionData[sessionID].phoneNumberComp = userData;
-      //     continueSession = true;
-      //   } else if (
-      //     userSessionData[sessionID].type === "generalCartageAbove3000"
-      //   ) {
-      //     service = "1";
-      //     message = "Please enter the phone number you would like to pay with.";
-      //     userSessionData[sessionID].phoneNumberComp = userData;
-      //     continueSession = true;
-      //   }
-      // }
     }
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
@@ -2042,47 +1830,6 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the selected option exists in the mapping
         if (userSessionData[sessionID].type === "maxBus") {
-          // const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
-
-          // try {
-          //   if (
-          //     maxBusServicePrices.hasOwnProperty(
-          //       userSessionData[sessionID].selectedOption
-          //     )
-          //   ) {
-          //     service = userSessionData[sessionID].service;
-          //     // Get the price dynamically from the mapping
-          //     let amount = parseInt(
-          //       maxBusServicePrices[userSessionData[sessionID].selectedOption]
-          //     );
-
-          //     const paymentPromise = await pay(
-          //       amount,
-          //       userSessionData[sessionID].phoneNumber,
-          //       "Buy Max Bus 3rd-party."
-          //     );
-          //     // Set a timeout for the payment operation
-          //     await Promise.race([
-          //       paymentPromise,
-          //       new Promise((_, reject) =>
-          //         setTimeout(
-          //           () => reject(new Error("Payment operation timed out")),
-          //           timeoutDuration
-          //         )
-          //       ),
-          //     ]);
-
-          //     // Inform the user about the payment prompt
-          //     message = `${finalMessage} ${amount.toFixed(2)} now!`;
-          //     continueSession = false;
-          //   } else {
-          //     message = "Only numbers between 23 - 70 are allowed.";
-          //     continueSession = false;
-          //   }
-          // } catch (error) {
-          //   message = "Error processing payment: " + error.message;
-          //   continueSession = false;
-          // }
           service = userSessionData[sessionID].service;
           message = whatsappMessage;
           carNum = userSessionData[sessionID].carRegNumber;
@@ -2411,17 +2158,6 @@ router.post("/ussd", async (req, res) => {
         message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
         continueSession = false;
       }
-      // if (userSessionData[sessionID].InsuranceType === "purchase") {
-      //   service = "1";
-      //   message = "Please enter a MOMO phone number you wish to pay with.";
-      //   whatsappNum = userSessionData[sessionID].whatsappNumber;
-      //   continueSession = true;
-      // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-      //   service = "1";
-      //   message = "Please enter the phone number you wish to pay with.";
-      //   whatsappNum = userSessionData[sessionID].whatsappNumber;
-      //   continueSession = true;
-      // }
     } else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
@@ -2482,10 +2218,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // onSiteSpecialTypesServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 onSiteSpecialTypesServicePrice[
@@ -2503,10 +2235,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // GW1Class1ServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class1ServicePrice[
@@ -2526,10 +2254,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // onSiteSpecialTypesRenewalServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 onSiteSpecialTypesRenewalServicePrice[
@@ -2547,10 +2271,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // GW1Class1RenewalServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class1RenewalServicePrice[
@@ -2572,10 +2292,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // onBoardSpecialTypesServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 onBoardSpecialTypesServicePrice[
@@ -2593,10 +2309,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // GW1Class2ServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class2ServicePrice[
@@ -2616,10 +2328,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // onBoardSpecialTypesRenewalServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 onBoardSpecialTypesRenewalServicePrice[
@@ -2637,10 +2345,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // GW1Class2RenewalServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class2RenewalServicePrice[
@@ -2662,10 +2366,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // GW1Class3ServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class3ServicePrice[
@@ -2685,10 +2385,6 @@ router.post("/ussd", async (req, res) => {
               service = userSessionData[sessionID].service;
               // Get the price dynamically from the mapping
               message =
-                // "Pay " +
-                // GW1Class3RenewalServicePrice[
-                //   userSessionData[sessionID].selectedOption
-                // ].toFixed(2) +
                 CarValueMessage;
               userSessionData[sessionID].thirdPartyPrice =
                 GW1Class3RenewalServicePrice[
@@ -2736,152 +2432,12 @@ router.post("/ussd", async (req, res) => {
         carNum = userSessionData[sessionID].carRegNumber;
         continueSession = true;
       }
-      // }
-
-      // Beba yote
-      //  else if (userSessionData[sessionID].InsuranceType === "renewal") {
-      //   if (userSessionData[sessionID].type === "privateX1") {
-      //     // Check if the selected option exists in the mapping
-      //     if (
-      //       privateIndividualX1RenewalPrices.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // privateIndividualX1RenewalPrices[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         CarValueMessage;
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         privateIndividualX1RenewalPrices[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "privateX4") {
-      //     // Check if the selected option exists in the mapping
-      //     if (
-      //       privateIndividualX4RenewalPrices.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // privateIndividualX4RenewalPrices[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         CarValueMessage;
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         privateIndividualX4RenewalPrices[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-      //     // Check if the selected option exists in the mapping
-      //     if (
-      //       ownGoodsBelowRenewalPrices.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // ownGoodsBelowRenewalPrices[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         CarValueMessage;
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         ownGoodsBelowRenewalPrices[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-      //     // Check if the selected option exists in the mapping
-      //     if (
-      //       ownGoodsAboveRenewalPrices.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // ownGoodsAboveRenewalPrices[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         CarValueMessage;
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         ownGoodsAboveRenewalPrices[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (
-      //     userSessionData[sessionID].type === "generalCartageBelow3000"
-      //   ) {
-      //     // Check if the selected option exists in the mapping
-      //     if (
-      //       generalCartageRenewalBelow.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // generalCartageRenewalBelow[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         CarValueMessage;
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         generalCartageRenewalBelow[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   } else if (
-      //     userSessionData[sessionID].type === "generalCartageAbove3000"
-      //   ) {
-      //     // Check if the selected option exists in the mapping
-      //     if (
-      //       generalCartageRenewalAbove.hasOwnProperty(
-      //         userSessionData[sessionID].selectedOption
-      //       )
-      //     ) {
-      //       service = userSessionData[sessionID].service;
-      //       // Get the price dynamically from the mapping
-      //       message =
-      //         // "Pay " +
-      //         // generalCartageRenewalAbove[
-      //         //   userSessionData[sessionID].selectedOption
-      //         // ].toFixed(2) +
-      //         CarValueMessage;
-      //       userSessionData[sessionID].thirdPartyPrice =
-      //         generalCartageRenewalAbove[
-      //           userSessionData[sessionID].selectedOption
-      //         ].toFixed(2);
-      //       continueSession = true;
-      //     }
-      //   }
-      // }
     }
-    // end of copy
-
     // for 3rd party commercial
     if (userSessionData[sessionID].service === "1") {
       if (userSessionData[sessionID].type === "specialOnSite") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
@@ -2892,14 +2448,10 @@ router.post("/ussd", async (req, res) => {
       } else if (userSessionData[sessionID].type === "specialOnRoad") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           userSessionData[sessionID].isThirdPartyComm = "thirdPartyComm";
           continueSession = true;
@@ -2907,42 +2459,30 @@ router.post("/ussd", async (req, res) => {
       } else if (userSessionData[sessionID].type === "GW1CLASS1") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS2") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         }
       } else if (userSessionData[sessionID].type === "GW1CLASS3") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         } else if (userSessionData[sessionID].InsuranceType === "renewal") {
           service = "1";
-          // message = "Please enter the phone number you wish to pay with.";
-          // userSessionData[sessionID].phoneNumber = userData;
           message = caRegMessage;
           continueSession = true;
         }
@@ -3846,41 +3386,7 @@ router.post("/ussd", async (req, res) => {
         message = "Invalid option selected for Third Party Private.";
         continueSession = false;
       }
-    } 
-    // else if (userSessionData[sessionID].service === "3") {
-    //   if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //     service = userSessionData[sessionID].service;
-
-    //     let amount = 243;
-    //     // add 3% of the amount as processing fee
-    //     let tot_amt = (processingFeePercentage / 100) * amount + amount;
-    //     await pay(
-    //       tot_amt,
-    //       userSessionData[sessionID].phoneNumber,
-    //       "Motor Cylce 2-seater",
-    //       "Buy Motor Cycle 2 persons."
-    //     );
-
-    //     message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
-    //     continueSession = false;
-    //   } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //     service = userSessionData[sessionID].service;
-
-    //     let amount = 193;
-    //     // add 3% of the amount as processing fee
-    //     let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //     await pay(
-    //       tot_amt,
-    //       userSessionData[sessionID].phoneNumber,
-    //       "Motor Cycle 2-seater",
-    //       "Renew Motor Cycle 2 persons."
-    //     );
-
-    //     message = `${finalMessage} ` + `${tot_amt}` + ` now.`;
-    //     continueSession = false;
-    //   }
-    // } 
+    }  
     else if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
@@ -3940,10 +3446,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // maxBusServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               maxBusServicePrices[
@@ -3963,10 +3465,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // hiringCarsServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               hiringCarsServicePrices[
@@ -3986,10 +3484,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // ambulanceOrHearseServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ambulanceOrHearseServicePrices[
@@ -4008,10 +3502,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // artOrTankersServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               artOrTankersServicePrices[
@@ -4030,10 +3520,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // taxiServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               taxiServicePrices[
@@ -4053,10 +3539,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // miniBusServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               miniBusServicePrices[
@@ -4078,10 +3560,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // maxBusRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               maxBusRenewalServicePrices[
@@ -4100,10 +3578,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // hiringCarsRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               hiringCarsRenewalServicePrices[
@@ -4122,10 +3596,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // ambulanceOrHearseRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ambulanceOrHearseRenewalServicePrices[
@@ -4144,10 +3614,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // artOrTankersRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               artOrTankersRenewalServicePrices[
@@ -4166,10 +3632,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // taxiRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               taxiRenewalServicePrices[
@@ -4188,10 +3650,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // miniBusRenewalServicePrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               miniBusRenewalServicePrices[
@@ -4205,36 +3663,26 @@ router.post("/ussd", async (req, res) => {
       // collect phone number from user
       if (userSessionData[sessionID].type === "specialOnSite") {
         service = "1";
-        // message = "Please enter the phone number you wish to pay with.";
-        // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
         userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "specialOnRoad") {
         service = "1";
-        // message = "Please enter the phone number you wish to pay with.";
-        // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
         userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS1") {
         service = "1";
-        // message = "Please enter the phone number you wish to pay with.";
-        // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
         userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS2") {
         service = "1";
-        // message = "Please enter the phone number you wish to pay with.";
-        // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
         userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
       } else if (userSessionData[sessionID].type === "GW1CLASS3") {
         service = "1";
-        // message = "Please enter the phone number you wish to pay with.";
-        // userSessionData[sessionID].phoneNumber = userData;
         message = caRegMessage;
         userSessionData[sessionID].carPriceCompComm = userData;
         continueSession = true;
@@ -4251,10 +3699,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // privateIndividualX1Prices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               privateIndividualX1Prices[
@@ -4273,10 +3717,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // privateIndividualX4Prices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               privateIndividualX4Prices[
@@ -4295,10 +3735,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // ownGoodsBelow[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ownGoodsBelow[userSessionData[sessionID].selectedOption].toFixed(
@@ -4317,10 +3753,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // ownGoodsAbove[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ownGoodsAbove[userSessionData[sessionID].selectedOption].toFixed(
@@ -4341,10 +3773,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // generalGartageBelow[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               generalGartageBelow[
@@ -4365,10 +3793,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // generalGartageAbove[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               generalGartageAbove[
@@ -4389,10 +3813,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // privateIndividualX1Prices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               privateIndividualX1RenewalPrices[
@@ -4411,10 +3831,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // privateIndividualX4Prices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               privateIndividualX4RenewalPrices[
@@ -4433,10 +3849,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // ownGoodsBelowRenewalPrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ownGoodsBelowRenewalPrices[
@@ -4455,10 +3867,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // ownGoodsAboveRenewalPrices[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               ownGoodsAboveRenewalPrices[
@@ -4479,10 +3887,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // generalCartageRenewalBelow[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               generalCartageRenewalBelow[
@@ -4503,10 +3907,6 @@ router.post("/ussd", async (req, res) => {
             service = userSessionData[sessionID].service;
             // Get the price dynamically from the mapping
             message =
-              // "Pay " +
-              // generalCartageRenewalAbove[
-              //   userSessionData[sessionID].selectedOption
-              // ].toFixed(2) +
               CarValueMessage;
             userSessionData[sessionID].thirdPartyPrice =
               generalCartageRenewalAbove[
@@ -4594,778 +3994,84 @@ router.post("/ussd", async (req, res) => {
     userSessionData[sessionID].thirdPartyPrice;
 
     userSessionData[sessionID].carRegNumber = userData;
+    userSessionData[sessionID].carPrice = userData;
 
-    // if (userSessionData[sessionID].service === "1") {
-    //   if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //     if (userSessionData[sessionID].type === "maxBus") {
-    //       const timeoutDuration = 300000; // Set your desired timeout duration in milliseconds (e.g., 5000 milliseconds = 5 seconds)
-
-    //       try {
-    //         if (
-    //           maxBusServicePrices.hasOwnProperty(
-    //             userSessionData[sessionID].selectedOption
-    //           )
-    //         ) {
-    //           service = userSessionData[sessionID].service;
-    //           // Get the price dynamically from the mapping
-    //           let amount = parseInt(
-    //             maxBusServicePrices[userSessionData[sessionID].selectedOption]
-    //           );
-
-    //           // add 3% of the amount as processing fee
-    //           let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //           const paymentPromise = await pay(
-    //             tot_amt,
-    //             userSessionData[sessionID].phoneNumber,
-    //             "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
-    //             "Buy Max Bus 3rd-party."
-    //           );
-
-    //           // Set a timeout for the payment operation
-    //           await Promise.race([
-    //             paymentPromise,
-    //             new Promise((_, reject) =>
-    //               setTimeout(
-    //                 () => reject(new Error("Payment operation timed out")),
-    //                 timeoutDuration
-    //               )
-    //             ),
-    //           ]);
-
-    //           // Inform the user about the payment prompt
-    //           message = `${finalMessage} ${tot_amt.toFixed(2)} now!`;
-    //           continueSession = false;
-    //         } else {
-    //           message =
-    //             "Only numbers between 23 - 70 are allowed. Back to step 3 and re-enter.";
-    //           continueSession = false;
-    //         }
-    //       } catch (error) {
-    //         message = "Error processing payment: " + error.message;
-    //         continueSession = false;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "hiringCars") {
-    //       if (
-    //         hiringCarsServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           hiringCarsServicePrices[userSessionData[sessionID].selectedOption]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Hiring Car " + userSessionData[sessionID].itemNumber,
-    //           "Buy Hiring car 3rd-party."
-    //         );
-
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 5 - 15 are allowed.";
-    //         continueSession = false;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-    //       if (
-    //         ambulanceOrHearseServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           ambulanceOrHearseServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Ambulance/Hearse " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Buy Ambulance/hearse 3rd-party"
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input 5 to access this service.";
-    //         continueSession = false;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "artOrTankers") {
-    //       if (
-    //         artOrTankersServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           artOrTankersServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Art/Tankers " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Buy Art/Tankers 3rd-party"
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input 3.";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "taxi") {
-    //       if (
-    //         taxiServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           taxiServicePrices[userSessionData[sessionID].selectedOption]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Taxi " + userSessionData[sessionID].itemNumber,
-    //           "Buy Taxi car 3rd-party."
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input 5.";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "miniBus") {
-    //       if (
-    //         miniBusServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           miniBusServicePrices[userSessionData[sessionID].selectedOption]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
-    //           "Buy Mini Bus 3rd-party."
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input 5.";
-    //       }
-    //     }
-    //   } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //     if (userSessionData[sessionID].type === "maxBus") {
-    //       if (
-    //         maxBusRenewalServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           maxBusRenewalServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Max Bus " + userSessionData[sessionID].itemNumber,
-    //           "Renew Max Bus 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 23 - 70 are allowed.";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "hiringCars") {
-    //       if (
-    //         hiringCarsRenewalServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           hiringCarsRenewalServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Hiring car " + userSessionData[sessionID].itemNumber,
-    //           "Renew Hiring car 3rd-party."
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only numbers between 5 - 15 are allowed.";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "ambulanceOrHearse") {
-    //       if (
-    //         ambulanceOrHearseRenewalServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           ambulanceOrHearseRenewalServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Ambulance/Hearse " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Renew Ambu/Hearse 3rd-party."
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input 5 to access this service.";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "artOrTankers") {
-    //       if (
-    //         artOrTankersRenewalServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           artOrTankersRenewalServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Art/Tanker " + userSessionData[sessionID].itemNumber,
-    //           "Renew Art/Tanker 3rd-party."
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input 3.";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "taxi") {
-    //       if (
-    //         taxiRenewalServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           taxiRenewalServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Taxi " + userSessionData[sessionID].itemNumber,
-    //           "Renew Taxi car 3rd-party."
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input 5.";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "miniBus") {
-    //       if (
-    //         miniBusRenewalServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           miniBusRenewalServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
-    //           "Renew Mini Bus 3rd-party."
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input 5.";
-    //       }
-    //     }
-    //   }
-    // }
-    //   if (userSessionData[sessionID].service === "2") {
-    //   if (userSessionData[sessionID].InsuranceType === "purchase") {
-    //     // Check if the service is Third Party Private
-    //     if (userSessionData[sessionID].type === "privateIndividualX1") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         privateIndividualX1Prices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         // Get the price dynamically from the mapping
-    //         let amount = parseInt(
-    //           privateIndividualX1Prices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Private Individual X1 " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Buy Pvt Indiv X1 3rd-party."
-    //         );
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only inputs from 5 - 12 are allowed.";
-    //         continueSession = false;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         privateIndividualX4Prices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           privateIndividualX4Prices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Private Individual X4 " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Buy Pvt Indiv X4 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only inputs from 5 - 12 are allowed.";
-    //         continueSession = false;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         ownGoodsBelow.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           ownGoodsBelow[userSessionData[sessionID].selectedOption]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Own Goods(Below 3,000 cc) " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Buy Own Goods(<3,000 cc) 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Input 3 to access this service";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         ownGoodsAbove.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           ownGoodsAbove[userSessionData[sessionID].selectedOption]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Own Goods(Above 3,000 cc) " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Buy Own Goods(>3,000 cc) 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Input 3 to access this service";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         generalGartageBelow.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           generalGartageBelow[userSessionData[sessionID].selectedOption]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party General Cartage(Below 3,000 cc) " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Buy Gen.Gar (<3,000 cc) 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Input 3 to access this service";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         generalGartageAbove.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           generalGartageAbove[userSessionData[sessionID].selectedOption]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party General Cartage(Above 3,000 cc) " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Buy Gen.Gar (>3,000 cc) 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Input 3 to access this service";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "miniBus") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         miniBusServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           miniBusServicePrices[userSessionData[sessionID].selectedOption]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
-    //           "Buy Mini Bus 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input a value between 5 - 22.";
-    //       }
-    //     } else {
-    //       message =
-    //         "Invalid option selected for purchase of Third Party Private.";
-    //       continueSession = false;
-    //     }
-    //   } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-    //     // Check if the service is Third Party Private
-    //     if (userSessionData[sessionID].type === "privateIndividualX1") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         privateIndividualX1RenewalPrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           privateIndividualX1RenewalPrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "3rd-party-private Private Individual X1 " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Renew Pvt Indiv X1 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only inputs from 5 - 12 are allowed.";
-    //         continueSession = false;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         privateIndividualX4RenewalPrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           privateIndividualX4RenewalPrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "3rd-party-private Private Individual X4 " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Renew Pvt Indiv X4 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Only inputs from 5 - 12 are allowed.";
-    //         continueSession = false;
-    //       }
-    //     } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         ownGoodsBelowRenewalPrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           ownGoodsBelowRenewalPrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "3rd-party-private Own Goods(Below 3,000 cc) " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Renew Own Goods(<3,000 cc) 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Input 3 to access this service";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         ownGoodsAboveRenewalPrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           ownGoodsAboveRenewalPrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "3rd-party-private Own Goods(Above 3,000 cc) " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Renew Own Goods(>3,000 cc) 3rd-party."
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Input 3 to access this service";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         generalCartageRenewalBelow.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           generalCartageRenewalBelow[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "3rd-party-private General Cartage(Below 3,000 cc) " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Renew Gen.Gar (<3,000 cc)"
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Input 3 to access this service";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         generalCartageRenewalAbove.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           generalCartageRenewalAbove[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "3rd-party-private General Cartage(Above 3,000 cc) " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Renew Gen.Gar (>3,000 cc)"
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Input 3 to access this service";
-    //       }
-    //     } else if (userSessionData[sessionID].type === "miniBus") {
-    //       // Check if the selected option exists in the mapping
-    //       if (
-    //         miniBusRenewalServicePrices.hasOwnProperty(
-    //           userSessionData[sessionID].selectedOption
-    //         )
-    //       ) {
-    //         service = userSessionData[sessionID].service;
-    //         let amount = parseInt(
-    //           miniBusRenewalServicePrices[
-    //             userSessionData[sessionID].selectedOption
-    //           ]
-    //         );
-    //         // add 3% of the amount as processing fee
-    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
-
-    //         await pay(
-    //           tot_amt,
-    //           userSessionData[sessionID].phoneNumber,
-    //           "3rd-party-private Mini Bus " +
-    //             userSessionData[sessionID].itemNumber,
-    //           "Renew Mini Bus 3rd-party"
-    //         );
-    //         // Get the price dynamically from the mapping
-    //         message = `${finalMessage} ` + tot_amt + ` now.`;
-    //         continueSession = false;
-    //       } else {
-    //         message = "Please input a value between 5 - 22.";
-    //       }
-    //     } else {
-    //       message =
-    //         "Invalid option selected for renewal of Third Party Private.";
-    //       continueSession = false;
-    //     }
-    //   } else {
-    //     message = "Invalid option selected for Third Party Private.";
-    //     continueSession = false;
-    //   }
-    // }
      if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
+        // if (userSessionData[sessionID].InsuranceType === "purchase") {
+        //   message = numberToPayWithMessage;
+        //   userSessionData[sessionID].carPrice = userData;
+        //   continueSession = true;
+        // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        //   message = numberToPayWithMessage;
+        //   userSessionData[sessionID].carPrice = userData;
+        //   continueSession = true;
+        // }
         if (userSessionData[sessionID].InsuranceType === "purchase") {
-          message = numberToPayWithMessage;
-          userSessionData[sessionID].carPrice = userData;
-          continueSession = true;
-        } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-          message = numberToPayWithMessage;
-          userSessionData[sessionID].carPrice = userData;
-          continueSession = true;
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "Comprehensive Co-orporate Motor Cycle " +
+              userSessionData[sessionID].itemNumber,
+            "Buy a Motor Cycle car insur."
+          );
+
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
         }
+        console.log(
+          "Motor cycle is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+        console.log(
+          "Total amount to be paid for comprehensive co-oporate motor cycle is",
+          DisplayAmount
+        );
+        continueSession = false;
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        const totalPrice =
+          parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+          parseInt(userSessionData[sessionID].thirdPartyPrice);
+        if (userSessionData[sessionID].carPrice < 50000) {
+          message = "The car value cannot be less than 50000 GHS";
+        } else {
+          let amount = totalPrice;
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          DisplayAmount = tot_amt;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "Comprehensive Co-orporate Motor Cycle " +
+              userSessionData[sessionID].itemNumber,
+            "Renewing a Motor Cycle car."
+          );
+
+          // message = `Pay ${totalPrice}`;
+          message = `${finalMessage} ` + tot_amt + ` now `;
+        }
+        console.log(
+          "Motor cycle is ",
+          userSessionData[sessionID].thirdPartyPrice
+        );
+        console.log("And car value is", userSessionData[sessionID].carPrice);
+        console.log(
+          "Total amount to be paid for comprehensive co-oporate motor cycle is",
+          DisplayAmount
+        );
+        continueSession = false;
+      }
       }
     } else if (userSessionData[sessionID].service === "5") {
       userSessionData[sessionID].carPrice = userData;
@@ -5548,590 +4254,7 @@ router.post("/ussd", async (req, res) => {
       // }
       // }
     } else if (userSessionData[sessionID].service === "6") {
-      if (userSessionData[sessionID].type === "privateX1") {
-        message = numberToPayWithMessage;
-        userSessionData[sessionID].carPrice = userData;
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "privateX4") {
-        message = numberToPayWithMessage;
-        userSessionData[sessionID].carPrice = userData;
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
-        message = numberToPayWithMessage;
-        userSessionData[sessionID].carPrice = userData;
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
-        message = numberToPayWithMessage;
-        userSessionData[sessionID].carPrice = userData;
-        continueSession = true;
-      } else if (
-        userSessionData[sessionID].type === "generalCartageBelow3000"
-      ) {
-        message = numberToPayWithMessage;
-        userSessionData[sessionID].carPrice = userData;
-        continueSession = true;
-      } else if (
-        userSessionData[sessionID].type === "generalCartageAbove3000"
-      ) {
-        message = numberToPayWithMessage;
-        userSessionData[sessionID].carPrice = userData;
-        continueSession = true;
-      }
-    }
-
-    if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnSite") {
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    } else if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnRoad") {
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class1") {
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class2") {
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class3") {
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    }
-
-    // Increment the step for the next interaction
-    userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
-  } else if (newSession === false && userSessionData[sessionID].step === 8) {
-    // userSessionData[sessionID].thirdPartyPrice;
-    // userSessionData[sessionID].carPrice = userData;
-
-    userSessionData[sessionID].phoneNumber = userData;
-    userSessionData[sessionID].phoneNumberComp;
-
-    userSessionData[sessionID].whatsappNumber = userData;
-
-    userSessionData[sessionID].YearOfManufacture = userData;
-    // userSessionData[sessionID].whatsappNumber = userData;
-    if (userSessionData[sessionID].type === "motorCycle") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          let amount = totalPrice;
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          DisplayAmount = tot_amt;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "Comprehensive Co-orporate Motor Cycle " +
-              userSessionData[sessionID].itemNumber,
-            "Buy a Motor Cycle car insur."
-          );
-
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + tot_amt + ` now `;
-        }
-        console.log(
-          "Motor cycle is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-        console.log(
-          "Total amount to be paid for comprehensive co-oporate motor cycle is",
-          DisplayAmount
-        );
-        continueSession = false;
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        const totalPrice =
-          parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-          parseInt(userSessionData[sessionID].thirdPartyPrice);
-        if (userSessionData[sessionID].carPrice < 50000) {
-          message = "The car value cannot be less than 50000 GHS";
-        } else {
-          let amount = totalPrice;
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          DisplayAmount = tot_amt;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "Comprehensive Co-orporate Motor Cycle " +
-              userSessionData[sessionID].itemNumber,
-            "Renewing a Motor Cycle car."
-          );
-
-          // message = `Pay ${totalPrice}`;
-          message = `${finalMessage} ` + tot_amt + ` now `;
-        }
-        console.log(
-          "Motor cycle is ",
-          userSessionData[sessionID].thirdPartyPrice
-        );
-        console.log("And car value is", userSessionData[sessionID].carPrice);
-        console.log(
-          "Total amount to be paid for comprehensive co-oporate motor cycle is",
-          DisplayAmount
-        );
-        continueSession = false;
-      }
-    } else if (userSessionData[sessionID].service === "5") {
-      // if (userSessionData[sessionID].InsuranceType === "purchase") {
-      if (userSessionData[sessionID].type === "maxiBus") {
-        // const totalPrice =
-        //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-        //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-        // if (userSessionData[sessionID].carPrice < 50000) {
-        //   message = "The car value cannot be less than 50000 GHS";
-        // } else {
-        //   let amount = totalPrice;
-
-        //   // add 3% of the amount as processing fee
-        //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        //   await pay(
-        //     tot_amt,
-        //     userSessionData[sessionID].phoneNumber,
-        //     "Comprehensive Commercial Max Bus " +
-        //       userSessionData[sessionID].itemNumber,
-        //     "Buy Max Bus comp. comm"
-        //   );
-
-        //   // message = `Pay ${totalPrice}`;
-        //   message = `${finalMessage} ` + tot_amt + ` now `;
-        // }
-
-        // console.log(
-        //   "3rd party price is ",
-        //   userSessionData[sessionID].thirdPartyPrice
-        // );
-        // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        // console.log(
-        //   "Total amount to be paid for comprehensive commercial maxi bus is",
-        //   totalPrice
-        // );
-        // continueSession = false;
-        message = numberToPayWithMessage;
-        // userSessionData[sessionID].carPrice = userData;
-        console.log(
-          "Year of Manufacture",
-          userSessionData[sessionID].YearOfManufacture
-        );
-        ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "hiring") {
-        // const totalPrice =
-        //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-        //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-        // if (userSessionData[sessionID].carPrice < 50000) {
-        //   message = "The car value cannot be less than 50000 GHS";
-        // } else {
-        //   let amount = totalPrice;
-        //   // add 3% of the amount as processing fee
-        //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        //   await pay(
-        //     tot_amt,
-        //     userSessionData[sessionID].phoneNumber,
-        //     "Comprehensive Commercial Hiring Car " +
-        //       userSessionData[sessionID].itemNumber,
-        //     "Buy Hiring car comp. comm"
-        //   );
-
-        //   // message = `Pay ${totalPrice}`;
-        //   message = `${finalMessage} ` + tot_amt + ` now `;
-        // }
-
-        // console.log(
-        //   "3rd party price is ",
-        //   userSessionData[sessionID].thirdPartyPrice
-        // );
-        // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        // console.log(
-        //   "Total amount to be paid for comprehensive commercial hiring cars is",
-        //   totalPrice
-        // );
-        // continueSession = false;
-
-        message = numberToPayWithMessage;
-        // userSessionData[sessionID].carPrice = userData;
-        console.log(
-          "Year of Manufacture",
-          userSessionData[sessionID].YearOfManufacture
-        );
-        ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "ambulance") {
-        // const totalPrice =
-        //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-        //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-        // if (userSessionData[sessionID].carPrice < 50000) {
-        //   message = "The car value cannot be less than 50000 GHS";
-        // } else {
-        //   let amount = totalPrice;
-        //   // add 3% of the amount as processing fee
-        //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        //   await pay(
-        //     tot_amt,
-        //     // userSessionData[sessionID].phoneNumberComp,
-        //     userSessionData[sessionID].phoneNumber,
-        //     "Comprehensive Commercial Ambulance/Hearse " +
-        //       userSessionData[sessionID].itemNumber,
-        //     "Buy Ambul/Hearse comp. comm"
-        //   );
-
-        //   // message = `Pay ${totalPrice}`;
-        //   message = `${finalMessage} ` + tot_amt + ` now `;
-        // }
-
-        // console.log(
-        //   "3rd party price is ",
-        //   userSessionData[sessionID].thirdPartyPrice
-        // );
-        // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        // console.log(
-        //   "Total amount to be paid for comprehensive commercial ambulance/hearse is",
-        //   totalPrice
-        // );
-        // continueSession = false;
-
-        message = numberToPayWithMessage;
-        // userSessionData[sessionID].carPrice = userData;
-        console.log(
-          "Year of Manufacture",
-          userSessionData[sessionID].YearOfManufacture
-        );
-        ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "artOrTanker") {
-        // const totalPrice =
-        //   parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
-        //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-        // if (userSessionData[sessionID].carPrice < 50000) {
-        //   message = "The car value cannot be less than 50000 GHS";
-        // } else {
-        //   let amount = totalPrice;
-        //   // add 3% of the amount as processing fee
-        //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        //   await pay(
-        //     tot_amt,
-        //     // userSessionData[sessionID].phoneNumberComp,
-        //     userSessionData[sessionID].phoneNumber,
-        //     "Comprehensive Commercial Art/Tanker " +
-        //       userSessionData[sessionID].itemNumber,
-        //     "Buy Art/Tanker comp. comm"
-        //   );
-        //   // message = `Pay ${totalPrice}`;
-        //   message = `${finalMessage} ` + tot_amt + ` now `;
-        // }
-
-        // console.log(
-        //   "3rd party price is ",
-        //   userSessionData[sessionID].thirdPartyPrice
-        // );
-        // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        // console.log(
-        //   "Total amount to be paid for comprehensive commercial art/tankers is",
-        //   totalPrice
-        // );
-        // continueSession = false;
-
-        message = numberToPayWithMessage;
-        // userSessionData[sessionID].carPrice = userData;
-        console.log(
-          "Year of Manufacture",
-          userSessionData[sessionID].YearOfManufacture
-        );
-        ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "Taxi") {
-        // const totalPrice =
-        //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-        //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-        // if (userSessionData[sessionID].carPrice < 50000) {
-        //   message = "The car value cannot be less than 50000 GHS";
-        // } else {
-        //   let amount = totalPrice;
-        //   // add 3% of the amount as processing fee
-        //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        //   await pay(
-        //     tot_amt,
-        //     // userSessionData[sessionID].phoneNumberComp,
-        //     userSessionData[sessionID].phoneNumber,
-        //     "Comprehensive Commercial Taxi " +
-        //       userSessionData[sessionID].itemNumber,
-        //     "Buy Taxi car comp. comm"
-        //   );
-
-        //   // message = `Pay ${totalPrice}`;
-        //   message = `${finalMessage} ` + tot_amt + ` now `;
-        // }
-
-        // console.log(
-        //   "3rd party price is ",
-        //   userSessionData[sessionID].thirdPartyPrice
-        // );
-        // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        // console.log(
-        //   "Total amount to be paid for comprehensive commercial taxi is",
-        //   totalPrice
-        // );
-        // continueSession = false;
-
-        message = numberToPayWithMessage;
-        // userSessionData[sessionID].carPrice = userData;
-        console.log(
-          "Year of Manufacture",
-          userSessionData[sessionID].YearOfManufacture
-        );
-        ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
-        continueSession = true;
-      } else if (userSessionData[sessionID].type === "miniBus") {
-        // const totalPrice =
-        //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-        //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-        // if (userSessionData[sessionID].carPrice < 50000) {
-        //   message = "The car value cannot be less than 50000 GHS";
-        // } else {
-        //   let amount = totalPrice;
-        //   // add 3% of the amount as processing fee
-        //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-        //   await pay(
-        //     tot_amt,
-        //     // userSessionData[sessionID].phoneNumberComp,
-        //     userSessionData[sessionID].phoneNumber,
-        //     "Comprehensive Commercial Mini Bus " +
-        //       userSessionData[sessionID].itemNumber,
-        //     "Buy Mini Bus comp. comm"
-        //   );
-
-        //   // message = `Pay ${totalPrice}`;
-        //   message = `${finalMessage} ` + tot_amt + ` now `;
-        // }
-
-        // console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
-        // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-        // console.log(
-        //   "Total amount to be paid for comprehensive commercial Mini Bus is",
-        //   totalPrice
-        // );
-        // continueSession = false;
-
-        message = numberToPayWithMessage;
-        // userSessionData[sessionID].carPrice = userData;
-        console.log(
-          "Year of Manufacture",
-          userSessionData[sessionID].YearOfManufacture
-        );
-        ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
-        continueSession = true;
-      }
-      // }
-      // else if (userSessionData[sessionID].InsuranceType === "renewal") {
-      //   if (userSessionData[sessionID].type === "maxiBus") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       let amount = totalPrice;
-      //       // add 3% of the amount as processing fee
-      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //       await pay(
-      //         tot_amt,
-      //         userSessionData[sessionID].phoneNumber,
-      //         "Comprehensive Commercial Max Bus " +
-      //           userSessionData[sessionID].itemNumber,
-      //         "Renew Max Bus comp. comm"
-      //       );
-
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + tot_amt + ` now `;
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial maxi bus is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "hiring") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       let amount = totalPrice;
-      //       // add 3% of the amount as processing fee
-      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //       await pay(
-      //         tot_amt,
-      //         userSessionData[sessionID].phoneNumber,
-      //         "Comprehensive Commercial Hiring Car " +
-      //           userSessionData[sessionID].itemNumber,
-      //         "Renew Hiring car comp. comm"
-      //       );
-
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + tot_amt + ` now `;
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial hiring cars is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "ambulance") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       let amount = totalPrice;
-      //       // add 3% of the amount as processing fee
-      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //       await pay(
-      //         tot_amt,
-      //         userSessionData[sessionID].phoneNumber,
-      //         "Comprehensive Commercial Ambulance/Hearse " +
-      //           userSessionData[sessionID].itemNumber,
-      //         "Renew Ambul/Hearse comp. comm"
-      //       );
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + tot_amt + ` now `;
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial ambulance/hearse is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "artOrTanker") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       let amount = totalPrice;
-      //       // add 3% of the amount as processing fee
-      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //       await pay(
-      //         tot_amt,
-      //         userSessionData[sessionID].phoneNumber,
-      //         "Comprehensive Commercial Art/Tanker " +
-      //           userSessionData[sessionID].itemNumber,
-      //         "Renew Art/Tanker comp. comm"
-      //       );
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + tot_amt + ` now `;
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial art/tankers is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "Taxi") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       let amount = totalPrice;
-      //       // add 3% of the amount as processing fee
-      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //       await pay(
-      //         tot_amt,
-      //         userSessionData[sessionID].phoneNumber,
-      //         "Comprehensive Commercial Taxi " +
-      //           userSessionData[sessionID].itemNumber,
-      //         "Renew Taxi car comp. comm"
-      //       );
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + tot_amt + ` now `;
-      //     }
-
-      //     console.log(
-      //       "3rd party price is ",
-      //       userSessionData[sessionID].thirdPartyPrice
-      //     );
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial taxi is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   } else if (userSessionData[sessionID].type === "miniBus") {
-      //     const totalPrice =
-      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
-      //     if (userSessionData[sessionID].carPrice < 50000) {
-      //       message = "The car value cannot be less than 50000 GHS";
-      //     } else {
-      //       let amount = totalPrice;
-      //       // add 3% of the amount as processing fee
-      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //       await pay(
-      //         tot_amt,
-      //         // userSessionData[sessionID].phoneNumberComp,
-      //         userSessionData[sessionID].phoneNumber,
-      //         "Comprehensive Commercial Mini Bus " +
-      //           userSessionData[sessionID].itemNumber,
-      //         "Renew Mini Bus comp. comm"
-      //       );
-      //       // message = `Pay ${totalPrice}`;
-      //       message = `${finalMessage} ` + tot_amt + ` now `;
-      //     }
-
-      //     console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
-      //     console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      //     console.log(
-      //       "Total amount to be paid for comprehensive commercial Mini Bus is",
-      //       totalPrice
-      //     );
-      //     continueSession = false;
-      //   }
-      // }
-    } else if (userSessionData[sessionID].service === "6") {
+      userSessionData[sessionID].carPrice = userData;
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         if (userSessionData[sessionID].type === "privateX1") {
           const totalPrice =
@@ -6147,7 +4270,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt Private Individual X1 " +
                 userSessionData[sessionID].itemNumber,
               "Buy indv X1 comp. pvt"
@@ -6180,7 +4303,7 @@ router.post("/ussd", async (req, res) => {
             DisplayAmount = tot_amt;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt Private Individual X4 " +
                 userSessionData[sessionID].itemNumber,
               "Buy indv X4 comp. pvt"
@@ -6213,7 +4336,7 @@ router.post("/ussd", async (req, res) => {
             DisplayAmount = tot_amt;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt Own Goods(Below 3,000 cc) " +
                 userSessionData[sessionID].itemNumber,
               "Buy Own Goods(<3,000) comp. pvt"
@@ -6245,7 +4368,7 @@ router.post("/ussd", async (req, res) => {
             DisplayAmount = tot_amt;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt Own Goods(Above 3,000 cc) " +
                 userSessionData[sessionID].itemNumber,
               "Buy Own.G (>3,000) comp. pvt"
@@ -6279,7 +4402,7 @@ router.post("/ussd", async (req, res) => {
             let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt General Cartage(Below 3,000 cc) " +
                 userSessionData[sessionID].itemNumber,
               "Buy Gen.Crt (<3,000) comp. pvt"
@@ -6313,7 +4436,7 @@ router.post("/ussd", async (req, res) => {
             let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt General Cartage(Above 3,000 cc) " +
                 userSessionData[sessionID].itemNumber,
               "Buy Gen.Crt (>3,000) comp. pvt"
@@ -6349,7 +4472,7 @@ router.post("/ussd", async (req, res) => {
             await pay(
               tot_amt,
               // userSessionData[sessionID].phoneNumberComp,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt Private Individual X1 " +
                 userSessionData[sessionID].itemNumber,
               "Renew indv X1 comp. pvt"
@@ -6382,7 +4505,7 @@ router.post("/ussd", async (req, res) => {
             DisplayAmount = tot_amt;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt Private Individual X4 " +
                 userSessionData[sessionID].itemNumber,
               "Renew indv X4 comp. pvt"
@@ -6415,7 +4538,7 @@ router.post("/ussd", async (req, res) => {
             DisplayAmount = tot_amt;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt Own Goods(Below 3,000 cc) " +
                 userSessionData[sessionID].itemNumber,
               "Renew Own Goods(<3,000) comp. pvt"
@@ -6447,7 +4570,7 @@ router.post("/ussd", async (req, res) => {
             DisplayAmount = tot_amt;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt Own Goods(Above 3,000 cc) " +
                 userSessionData[sessionID].itemNumber,
               "Renew Own.G (>3,000) comp. pvt"
@@ -6481,7 +4604,7 @@ router.post("/ussd", async (req, res) => {
             let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt General Cartage(Below 3,000 cc) " +
                 userSessionData[sessionID].itemNumber,
               "Renew Gen.Crt (<3,000) comp. pvt"
@@ -6515,7 +4638,7 @@ router.post("/ussd", async (req, res) => {
             let tot_amt = (processingFeePercentage / 100) * amount + amount;
             await pay(
               tot_amt,
-              userSessionData[sessionID].phoneNumber,
+              req.body.msisdn,
               "Comprehensive-Prvt General Cartage(Above 3,000 cc) " +
                 userSessionData[sessionID].itemNumber,
               "Renew Gen.Crt (>3,000) comp. pvt"
@@ -6537,6 +4660,1416 @@ router.post("/ussd", async (req, res) => {
           continueSession = false;
         }
       }
+    }
+    if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnSite") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          onSiteSpecialTypesServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            onSiteSpecialTypesServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party Special Types(ON SITE) " +
+              userSessionData[sessionID].itemNumber,
+            "Buy spc(ON SITE) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            onSiteSpecialTypesRenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party Special Types(ON SITE) " +
+              userSessionData[sessionID].itemNumber,
+            "Renew spc(ON SITE) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    } else if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnRoad") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          onBoardSpecialTypesServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            onBoardSpecialTypesServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party Special Types(ON ROAD) " +
+              userSessionData[sessionID].itemNumber,
+            "Buy spc(ON ROAD) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            onBoardSpecialTypesRenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party Special Types(ON ROAD) " +
+              userSessionData[sessionID].itemNumber,
+            "Renew spc(ON ROAD) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class1") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          GW1Class1ServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party GW1(CLASS 1) " + userSessionData[sessionID].itemNumber,
+            "Buy GW1(CLASS 1) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          GW1Class1RenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class1RenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party GW1(CLASS 1) " + userSessionData[sessionID].itemNumber,
+            "Renew GW1(CLASS 1) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class2") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          GW1Class2ServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class2ServicePrice[userSessionData[sessionID].selectedOption]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party GW1(CLASS 2) " + userSessionData[sessionID].itemNumber,
+            "Buy GW1(CLASS 2) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          GW1Class2RenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class2RenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party GW1(CLASS 2) " + userSessionData[sessionID].itemNumber,
+            "Renew GW1(CLASS 2) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class3") {
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (
+          GW1Class3ServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class3ServicePrice[userSessionData[sessionID].selectedOption]
+          );
+
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party GW1(CLASS 3) " + userSessionData[sessionID].itemNumber,
+            "Buy GW1(CLASS 3) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (
+          GW1Class3RenewalServicePrice.hasOwnProperty(
+            userSessionData[sessionID].selectedOption
+          )
+        ) {
+          service = userSessionData[sessionID].service;
+          let amount = parseInt(
+            GW1Class3RenewalServicePrice[
+              userSessionData[sessionID].selectedOption
+            ]
+          );
+          // add 3% of the amount as processing fee
+          let tot_amt = (processingFeePercentage / 100) * amount + amount;
+          await pay(
+            tot_amt,
+            req.body.msisdn,
+            "3rd-party GW1(CLASS 3) " + userSessionData[sessionID].itemNumber,
+            "Renew GW1(CLASS 3) 3rd-party"
+          );
+          message = `${finalMessage} ` + tot_amt + ` now `;
+          continueSession = false;
+        } else {
+          message = "Only numbers between 1 - 5 are allowed.";
+        }
+      }
+    }
+
+    // Increment the step for the next interaction
+    userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
+  } else if (newSession === false && userSessionData[sessionID].step === 8) {
+    // userSessionData[sessionID].thirdPartyPrice;
+    // userSessionData[sessionID].carPrice = userData;
+
+    userSessionData[sessionID].phoneNumber = userData;
+    userSessionData[sessionID].phoneNumberComp;
+
+    userSessionData[sessionID].whatsappNumber = userData;
+
+    userSessionData[sessionID].YearOfManufacture = userData;
+    // userSessionData[sessionID].whatsappNumber = userData;
+    if (userSessionData[sessionID].type === "motorCycle") {
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      //   const totalPrice =
+      //     parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+      //     parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //   if (userSessionData[sessionID].carPrice < 50000) {
+      //     message = "The car value cannot be less than 50000 GHS";
+      //   } else {
+      //     let amount = totalPrice;
+      //     // add 3% of the amount as processing fee
+      //     let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //     DisplayAmount = tot_amt;
+      //     await pay(
+      //       tot_amt,
+      //       userSessionData[sessionID].phoneNumber,
+      //       "Comprehensive Co-orporate Motor Cycle " +
+      //         userSessionData[sessionID].itemNumber,
+      //       "Buy a Motor Cycle car insur."
+      //     );
+
+      //     // message = `Pay ${totalPrice}`;
+      //     message = `${finalMessage} ` + tot_amt + ` now `;
+      //   }
+      //   console.log(
+      //     "Motor cycle is ",
+      //     userSessionData[sessionID].thirdPartyPrice
+      //   );
+      //   console.log("And car value is", userSessionData[sessionID].carPrice);
+      //   console.log(
+      //     "Total amount to be paid for comprehensive co-oporate motor cycle is",
+      //     DisplayAmount
+      //   );
+      //   continueSession = false;
+      // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   const totalPrice =
+      //     parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
+      //     parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //   if (userSessionData[sessionID].carPrice < 50000) {
+      //     message = "The car value cannot be less than 50000 GHS";
+      //   } else {
+      //     let amount = totalPrice;
+      //     // add 3% of the amount as processing fee
+      //     let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //     DisplayAmount = tot_amt;
+      //     await pay(
+      //       tot_amt,
+      //       userSessionData[sessionID].phoneNumber,
+      //       "Comprehensive Co-orporate Motor Cycle " +
+      //         userSessionData[sessionID].itemNumber,
+      //       "Renewing a Motor Cycle car."
+      //     );
+
+      //     // message = `Pay ${totalPrice}`;
+      //     message = `${finalMessage} ` + tot_amt + ` now `;
+      //   }
+      //   console.log(
+      //     "Motor cycle is ",
+      //     userSessionData[sessionID].thirdPartyPrice
+      //   );
+      //   console.log("And car value is", userSessionData[sessionID].carPrice);
+      //   console.log(
+      //     "Total amount to be paid for comprehensive co-oporate motor cycle is",
+      //     DisplayAmount
+      //   );
+      //   continueSession = false;
+      // }
+    } else if (userSessionData[sessionID].service === "5") {
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      // if (userSessionData[sessionID].type === "maxiBus") {
+      //   // const totalPrice =
+      //   //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //   //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //   // if (userSessionData[sessionID].carPrice < 50000) {
+      //   //   message = "The car value cannot be less than 50000 GHS";
+      //   // } else {
+      //   //   let amount = totalPrice;
+
+      //   //   // add 3% of the amount as processing fee
+      //   //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //   //   await pay(
+      //   //     tot_amt,
+      //   //     userSessionData[sessionID].phoneNumber,
+      //   //     "Comprehensive Commercial Max Bus " +
+      //   //       userSessionData[sessionID].itemNumber,
+      //   //     "Buy Max Bus comp. comm"
+      //   //   );
+
+      //   //   // message = `Pay ${totalPrice}`;
+      //   //   message = `${finalMessage} ` + tot_amt + ` now `;
+      //   // }
+
+      //   // console.log(
+      //   //   "3rd party price is ",
+      //   //   userSessionData[sessionID].thirdPartyPrice
+      //   // );
+      //   // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //   // console.log(
+      //   //   "Total amount to be paid for comprehensive commercial maxi bus is",
+      //   //   totalPrice
+      //   // );
+      //   // continueSession = false;
+      //   message = numberToPayWithMessage;
+      //   // userSessionData[sessionID].carPrice = userData;
+      //   console.log(
+      //     "Year of Manufacture",
+      //     userSessionData[sessionID].YearOfManufacture
+      //   );
+      //   ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
+      //   continueSession = true;
+      // } else if (userSessionData[sessionID].type === "hiring") {
+      //   // const totalPrice =
+      //   //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //   //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //   // if (userSessionData[sessionID].carPrice < 50000) {
+      //   //   message = "The car value cannot be less than 50000 GHS";
+      //   // } else {
+      //   //   let amount = totalPrice;
+      //   //   // add 3% of the amount as processing fee
+      //   //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //   //   await pay(
+      //   //     tot_amt,
+      //   //     userSessionData[sessionID].phoneNumber,
+      //   //     "Comprehensive Commercial Hiring Car " +
+      //   //       userSessionData[sessionID].itemNumber,
+      //   //     "Buy Hiring car comp. comm"
+      //   //   );
+
+      //   //   // message = `Pay ${totalPrice}`;
+      //   //   message = `${finalMessage} ` + tot_amt + ` now `;
+      //   // }
+
+      //   // console.log(
+      //   //   "3rd party price is ",
+      //   //   userSessionData[sessionID].thirdPartyPrice
+      //   // );
+      //   // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //   // console.log(
+      //   //   "Total amount to be paid for comprehensive commercial hiring cars is",
+      //   //   totalPrice
+      //   // );
+      //   // continueSession = false;
+
+      //   message = numberToPayWithMessage;
+      //   // userSessionData[sessionID].carPrice = userData;
+      //   console.log(
+      //     "Year of Manufacture",
+      //     userSessionData[sessionID].YearOfManufacture
+      //   );
+      //   ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
+      //   continueSession = true;
+      // } else if (userSessionData[sessionID].type === "ambulance") {
+      //   // const totalPrice =
+      //   //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //   //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //   // if (userSessionData[sessionID].carPrice < 50000) {
+      //   //   message = "The car value cannot be less than 50000 GHS";
+      //   // } else {
+      //   //   let amount = totalPrice;
+      //   //   // add 3% of the amount as processing fee
+      //   //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //   //   await pay(
+      //   //     tot_amt,
+      //   //     // userSessionData[sessionID].phoneNumberComp,
+      //   //     userSessionData[sessionID].phoneNumber,
+      //   //     "Comprehensive Commercial Ambulance/Hearse " +
+      //   //       userSessionData[sessionID].itemNumber,
+      //   //     "Buy Ambul/Hearse comp. comm"
+      //   //   );
+
+      //   //   // message = `Pay ${totalPrice}`;
+      //   //   message = `${finalMessage} ` + tot_amt + ` now `;
+      //   // }
+
+      //   // console.log(
+      //   //   "3rd party price is ",
+      //   //   userSessionData[sessionID].thirdPartyPrice
+      //   // );
+      //   // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //   // console.log(
+      //   //   "Total amount to be paid for comprehensive commercial ambulance/hearse is",
+      //   //   totalPrice
+      //   // );
+      //   // continueSession = false;
+
+      //   message = numberToPayWithMessage;
+      //   // userSessionData[sessionID].carPrice = userData;
+      //   console.log(
+      //     "Year of Manufacture",
+      //     userSessionData[sessionID].YearOfManufacture
+      //   );
+      //   ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
+      //   continueSession = true;
+      // } else if (userSessionData[sessionID].type === "artOrTanker") {
+      //   // const totalPrice =
+      //   //   parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
+      //   //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //   // if (userSessionData[sessionID].carPrice < 50000) {
+      //   //   message = "The car value cannot be less than 50000 GHS";
+      //   // } else {
+      //   //   let amount = totalPrice;
+      //   //   // add 3% of the amount as processing fee
+      //   //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //   //   await pay(
+      //   //     tot_amt,
+      //   //     // userSessionData[sessionID].phoneNumberComp,
+      //   //     userSessionData[sessionID].phoneNumber,
+      //   //     "Comprehensive Commercial Art/Tanker " +
+      //   //       userSessionData[sessionID].itemNumber,
+      //   //     "Buy Art/Tanker comp. comm"
+      //   //   );
+      //   //   // message = `Pay ${totalPrice}`;
+      //   //   message = `${finalMessage} ` + tot_amt + ` now `;
+      //   // }
+
+      //   // console.log(
+      //   //   "3rd party price is ",
+      //   //   userSessionData[sessionID].thirdPartyPrice
+      //   // );
+      //   // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //   // console.log(
+      //   //   "Total amount to be paid for comprehensive commercial art/tankers is",
+      //   //   totalPrice
+      //   // );
+      //   // continueSession = false;
+
+      //   message = numberToPayWithMessage;
+      //   // userSessionData[sessionID].carPrice = userData;
+      //   console.log(
+      //     "Year of Manufacture",
+      //     userSessionData[sessionID].YearOfManufacture
+      //   );
+      //   ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
+      //   continueSession = true;
+      // } else if (userSessionData[sessionID].type === "Taxi") {
+      //   // const totalPrice =
+      //   //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //   //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //   // if (userSessionData[sessionID].carPrice < 50000) {
+      //   //   message = "The car value cannot be less than 50000 GHS";
+      //   // } else {
+      //   //   let amount = totalPrice;
+      //   //   // add 3% of the amount as processing fee
+      //   //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //   //   await pay(
+      //   //     tot_amt,
+      //   //     // userSessionData[sessionID].phoneNumberComp,
+      //   //     userSessionData[sessionID].phoneNumber,
+      //   //     "Comprehensive Commercial Taxi " +
+      //   //       userSessionData[sessionID].itemNumber,
+      //   //     "Buy Taxi car comp. comm"
+      //   //   );
+
+      //   //   // message = `Pay ${totalPrice}`;
+      //   //   message = `${finalMessage} ` + tot_amt + ` now `;
+      //   // }
+
+      //   // console.log(
+      //   //   "3rd party price is ",
+      //   //   userSessionData[sessionID].thirdPartyPrice
+      //   // );
+      //   // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //   // console.log(
+      //   //   "Total amount to be paid for comprehensive commercial taxi is",
+      //   //   totalPrice
+      //   // );
+      //   // continueSession = false;
+
+      //   message = numberToPayWithMessage;
+      //   // userSessionData[sessionID].carPrice = userData;
+      //   console.log(
+      //     "Year of Manufacture",
+      //     userSessionData[sessionID].YearOfManufacture
+      //   );
+      //   ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
+      //   continueSession = true;
+      // } else if (userSessionData[sessionID].type === "miniBus") {
+      //   // const totalPrice =
+      //   //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //   //   parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //   // if (userSessionData[sessionID].carPrice < 50000) {
+      //   //   message = "The car value cannot be less than 50000 GHS";
+      //   // } else {
+      //   //   let amount = totalPrice;
+      //   //   // add 3% of the amount as processing fee
+      //   //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //   //   await pay(
+      //   //     tot_amt,
+      //   //     // userSessionData[sessionID].phoneNumberComp,
+      //   //     userSessionData[sessionID].phoneNumber,
+      //   //     "Comprehensive Commercial Mini Bus " +
+      //   //       userSessionData[sessionID].itemNumber,
+      //   //     "Buy Mini Bus comp. comm"
+      //   //   );
+
+      //   //   // message = `Pay ${totalPrice}`;
+      //   //   message = `${finalMessage} ` + tot_amt + ` now `;
+      //   // }
+
+      //   // console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
+      //   // console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //   // console.log(
+      //   //   "Total amount to be paid for comprehensive commercial Mini Bus is",
+      //   //   totalPrice
+      //   // );
+      //   // continueSession = false;
+
+      //   message = numberToPayWithMessage;
+      //   // userSessionData[sessionID].carPrice = userData;
+      //   console.log(
+      //     "Year of Manufacture",
+      //     userSessionData[sessionID].YearOfManufacture
+      //   );
+      //   ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
+      //   continueSession = true;
+      // }
+      if (userSessionData[sessionID].InsuranceType === "purchase") {
+        if (userSessionData[sessionID].type === "maxiBus") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Comprehensive Commercial Max Bus " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Max Bus comp. comm"
+            );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial maxi bus is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "hiring") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Comprehensive Commercial Hiring Car " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Hiring car comp. comm"
+            );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial hiring cars is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "ambulance") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              // userSessionData[sessionID].phoneNumberComp,
+              req.body.msisdn,
+              "Comprehensive Commercial Ambulance/Hearse " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Ambul/Hearse comp. comm"
+            );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial ambulance/hearse is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "artOrTanker") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              // userSessionData[sessionID].phoneNumberComp,
+              req.body.msisdn,
+              "Comprehensive Commercial Art/Tanker " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Art/Tanker comp. comm"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial art/tankers is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "Taxi") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              // userSessionData[sessionID].phoneNumberComp,
+              req.body.msisdn,
+              "Comprehensive Commercial Taxi " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Taxi car comp. comm"
+            );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial taxi is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              // userSessionData[sessionID].phoneNumberComp,
+              req.body.msisdn,
+              "Comprehensive Commercial Mini Bus " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Mini Bus comp. comm"
+            );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial Mini Bus is",
+            DisplayAmount
+          );
+          continueSession = false;
+        }
+      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+        if (userSessionData[sessionID].type === "maxiBus") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Comprehensive Commercial Max Bus " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Max Bus comp. comm"
+            );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial maxi bus is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "hiring") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Comprehensive Commercial Hiring Car " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Hiring car comp. comm"
+            );
+
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial hiring cars is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "ambulance") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Comprehensive Commercial Ambulance/Hearse " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Ambul/Hearse comp. comm"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial ambulance/hearse is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "artOrTanker") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Comprehensive Commercial Art/Tanker " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Art/Tanker comp. comm"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial art/tankers is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "Taxi") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Comprehensive Commercial Taxi " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Taxi car comp. comm"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log(
+            "3rd party price is ",
+            userSessionData[sessionID].thirdPartyPrice
+          );
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial taxi is",
+            DisplayAmount
+          );
+          continueSession = false;
+        } else if (userSessionData[sessionID].type === "miniBus") {
+          const totalPrice =
+            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+            parseInt(userSessionData[sessionID].thirdPartyPrice);
+          if (userSessionData[sessionID].carPrice < 50000) {
+            message = "The car value cannot be less than 50000 GHS";
+          } else {
+            let amount = totalPrice;
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+            DisplayAmount = tot_amt;
+            await pay(
+              tot_amt,
+              // userSessionData[sessionID].phoneNumberComp,
+              req.body.msisdn,
+              "Comprehensive Commercial Mini Bus " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Mini Bus comp. comm"
+            );
+            // message = `Pay ${totalPrice}`;
+            message = `${finalMessage} ` + tot_amt + ` now `;
+          }
+
+          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
+          console.log("And car value is", userSessionData[sessionID].carPrice);
+
+          console.log(
+            "Total amount to be paid for comprehensive commercial Mini Bus is",
+            DisplayAmount
+          );
+          continueSession = false;
+        }
+      }
+    } else if (userSessionData[sessionID].service === "6") {
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      //   if (userSessionData[sessionID].type === "privateX1") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         // userSessionData[sessionID].phoneNumberComp,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt Private Individual X1 " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy indv X1 comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private individual X1 is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "privateX4") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt Private Individual X4 " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy indv X4 comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private individual X4 is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt Own Goods(Below 3,000 cc) " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Own Goods(<3,000) comp. pvt"
+      //       );
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private own goods below 3000 cc is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt Own Goods(Above 3,000 cc) " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Own.G (>3,000) comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (
+      //     userSessionData[sessionID].type === "generalCartageBelow3000"
+      //   ) {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt General Cartage(Below 3,000 cc) " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Gen.Crt (<3,000) comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   } else if (
+      //     userSessionData[sessionID].type === "generalCartageAbove3000"
+      //   ) {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt General Cartage(Above 3,000 cc) " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Gen.Crt (>3,000) comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   }
+      // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   if (userSessionData[sessionID].type === "privateX1") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         // userSessionData[sessionID].phoneNumberComp,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt Private Individual X1 " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew indv X1 comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private individual X1 is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "privateX4") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt Private Individual X4 " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew indv X4 comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private individual X4 is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsBelow3000") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt Own Goods(Below 3,000 cc) " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Own Goods(<3,000) comp. pvt"
+      //       );
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private own goods below 3000 cc is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsAbove3000") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 4) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt Own Goods(Above 3,000 cc) " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Own.G (>3,000) comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private Own Goods (ABOVE 3000 cc) is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (
+      //     userSessionData[sessionID].type === "generalCartageBelow3000"
+      //   ) {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt General Cartage(Below 3,000 cc) " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Gen.Crt (<3,000) comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private General Cartage (BELOW 3000 cc) is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   } else if (
+      //     userSessionData[sessionID].type === "generalCartageAbove3000"
+      //   ) {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive-Prvt General Cartage(Above 3,000 cc) " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Gen.Crt (>3,000) comp. pvt"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive private General Cartage (ABOVE 3,000 cc) is",
+      //       totalPrice
+      //     );
+      //     continueSession = false;
+      //   }
+      // }
     }
 
     if (userSessionData[sessionID].type === "specialOnSite") {
@@ -6696,866 +6229,11 @@ router.post("/ussd", async (req, res) => {
       ManufacturedYear = userSessionData[sessionID].YearOfManufacture;
       continueSession = true;
     }
-
-    if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnSite") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (
-          onSiteSpecialTypesServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            onSiteSpecialTypesServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party Special Types(ON SITE) " +
-              userSessionData[sessionID].itemNumber,
-            "Buy spc(ON SITE) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (
-          onSiteSpecialTypesRenewalServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            onSiteSpecialTypesRenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party Special Types(ON SITE) " +
-              userSessionData[sessionID].itemNumber,
-            "Renew spc(ON SITE) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      }
-    } else if (userSessionData[sessionID].specialAndGW1 === "yeSpecialOnRoad") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (
-          onBoardSpecialTypesServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            onBoardSpecialTypesServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party Special Types(ON ROAD) " +
-              userSessionData[sessionID].itemNumber,
-            "Buy spc(ON ROAD) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (
-          onBoardSpecialTypesRenewalServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            onBoardSpecialTypesRenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party Special Types(ON ROAD) " +
-              userSessionData[sessionID].itemNumber,
-            "Renew spc(ON ROAD) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      }
-    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class1") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (
-          GW1Class1ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            GW1Class1ServicePrice[userSessionData[sessionID].selectedOption]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party GW1(CLASS 1) " + userSessionData[sessionID].itemNumber,
-            "Buy GW1(CLASS 1) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (
-          GW1Class1RenewalServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            GW1Class1RenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party GW1(CLASS 1) " + userSessionData[sessionID].itemNumber,
-            "Renew GW1(CLASS 1) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      }
-    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class2") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (
-          GW1Class2ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            GW1Class2ServicePrice[userSessionData[sessionID].selectedOption]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party GW1(CLASS 2) " + userSessionData[sessionID].itemNumber,
-            "Buy GW1(CLASS 2) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (
-          GW1Class2RenewalServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            GW1Class2RenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party GW1(CLASS 2) " + userSessionData[sessionID].itemNumber,
-            "Renew GW1(CLASS 2) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      }
-    } else if (userSessionData[sessionID].specialAndGW1 === "yesGW1Class3") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (
-          GW1Class3ServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            GW1Class3ServicePrice[userSessionData[sessionID].selectedOption]
-          );
-
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party GW1(CLASS 3) " + userSessionData[sessionID].itemNumber,
-            "Buy GW1(CLASS 3) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (
-          GW1Class3RenewalServicePrice.hasOwnProperty(
-            userSessionData[sessionID].selectedOption
-          )
-        ) {
-          service = userSessionData[sessionID].service;
-          let amount = parseInt(
-            GW1Class3RenewalServicePrice[
-              userSessionData[sessionID].selectedOption
-            ]
-          );
-          // add 3% of the amount as processing fee
-          let tot_amt = (processingFeePercentage / 100) * amount + amount;
-          await pay(
-            tot_amt,
-            userSessionData[sessionID].phoneNumber,
-            "3rd-party GW1(CLASS 3) " + userSessionData[sessionID].itemNumber,
-            "Renew GW1(CLASS 3) 3rd-party"
-          );
-          message = `${finalMessage} ` + tot_amt + ` now `;
-          continueSession = false;
-        } else {
-          message = "Only numbers between 1 - 5 are allowed.";
-        }
-      }
-    }
-
     // Increment the step for the next interaction
     userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else if (newSession === false && userSessionData[sessionID].step === 9) {
     userSessionData[sessionID].phoneNumber = userData;
     userSessionData[sessionID].whatsappNumber = userData;
-    if (userSessionData[sessionID].type === "specialOnSite") {
-      // const totalPrice =
-      //   parseInt(userSessionData[sessionID].carPrice * 1.5) / 100 +
-      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-      // if (userSessionData[sessionID].carPrice < 50000) {
-      //   message = "The car value cannot be less than 50000 GHS";
-      // } else {
-      //   let amount = totalPrice;
-      //   // add 3% of the amount as processing fee
-      //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //   await pay(
-      //     tot_amt,
-      //     userSessionData[sessionID].phoneNumber,
-      //     "Comprehensive Commercial Special Types(ON SITE) " +
-      //       userSessionData[sessionID].itemNumber,
-      //     "Buy spc(ON SITE) comp. comm"
-      //   );
-      //   // message = `Pay ${totalPrice}`;
-      //   message = `${finalMessage} ` + tot_amt + ` now `;
-      // }
-
-      // console.log(
-      //   "3rd party price is ",
-      //   userSessionData[sessionID].thirdPartyPrice
-      // );
-      // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      // console.log(
-      //   "Total amount to be paid for comprehensive commercial special type (ON SITE) is",
-      //   totalPrice
-      // );
-      // continueSession = false;
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    } else if (userSessionData[sessionID].type === "specialOnRoad") {
-      // const totalPrice =
-      //   parseInt(userSessionData[sessionID].carPrice * 3) / 100 +
-      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-      // if (userSessionData[sessionID].carPrice < 50000) {
-      //   message = "The car value cannot be less than 50000 GHS";
-      // } else {
-      //   let amount = totalPrice;
-      //   // add 3% of the amount as processing fee
-      //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //   await pay(
-      //     tot_amt,
-      //     userSessionData[sessionID].phoneNumber,
-      //     "Comprehensive Commercial Special Types(ON ROAD) " +
-      //       userSessionData[sessionID].itemNumber,
-      //     "Buy spc(ON ROAD) comp. comm"
-      //   );
-      //   // message = `Pay ${totalPrice}`;
-      //   message = `${finalMessage} ` + tot_amt + ` now `;
-      // }
-      // console.log(
-      //   "3rd party price is ",
-      //   userSessionData[sessionID].thirdPartyPrice
-      // );
-      // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      // console.log(
-      //   "Total amount to be paid for comprehensive commercial special type (ON ROAD) is",
-      //   totalPrice
-      // );
-      // continueSession = false;
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    } else if (userSessionData[sessionID].type === "GW1CLASS1") {
-      // const totalPrice =
-      //   parseInt(userSessionData[sessionID].carPrice * 5) / 100 +
-      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-      // if (userSessionData[sessionID].carPrice < 50000) {
-      //   message = "The car value cannot be less than 50000 GHS";
-      // } else {
-      //   let amount = totalPrice;
-      //   // add 3% of the amount as processing fee
-      //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //   await pay(
-      //     tot_amt,
-      //     userSessionData[sessionID].phoneNumber,
-      //     "Comprehensive Commercial GW1(CLASS 1) " +
-      //       userSessionData[sessionID].itemNumber,
-      //     "Buy GW1(CLASS 1) comp. comm"
-      //   );
-      //   // message = `Pay ${totalPrice}`;
-      //   message = `${finalMessage} ` + tot_amt + ` now `;
-      // }
-
-      // console.log(
-      //   "3rd party price is ",
-      //   userSessionData[sessionID].thirdPartyPrice
-      // );
-      // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      // console.log(
-      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 1) is",
-      //   totalPrice
-      // );
-      // continueSession = false;
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    } else if (userSessionData[sessionID].type === "GW1CLASS2") {
-      // const totalPrice =
-      //   parseInt(userSessionData[sessionID].carPrice * 6) / 100 +
-      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-      // if (userSessionData[sessionID].carPrice < 50000) {
-      //   message = "The car value cannot be less than 50000 GHS";
-      // } else {
-      //   let amount = totalPrice;
-      //   // add 3% of the amount as processing fee
-      //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //   await pay(
-      //     tot_amt,
-      //     userSessionData[sessionID].phoneNumber,
-      //     "Comprehensive Commercial GW1(CLASS 2) " +
-      //       userSessionData[sessionID].itemNumber,
-      //     "Buy GW1(CLASS 2) comp. comm"
-      //   );
-      //   // message = `Pay ${totalPrice}`;
-      //   message = `${finalMessage} ` + tot_amt + ` now `;
-      // }
-
-      // console.log(
-      //   "3rd party price is ",
-      //   userSessionData[sessionID].thirdPartyPrice
-      // );
-      // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      // console.log(
-      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 2) is",
-      //   totalPrice
-      // );
-      // continueSession = false;
-
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    } else if (userSessionData[sessionID].type === "GW1CLASS3") {
-      // const totalPrice =
-      //   parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-      //   parseInt(userSessionData[sessionID].thirdPartyPrice);
-      // if (userSessionData[sessionID].carPrice < 50000) {
-      //   message = "The car value cannot be less than 50000 GHS";
-      // } else {
-      //   let amount = totalPrice;
-      //   // add 3% of the amount as processing fee
-      //   let tot_amt = (processingFeePercentage / 100) * amount + amount;
-      //   await pay(
-      //     tot_amt,
-      //     userSessionData[sessionID].phoneNumber,
-      //     "Comprehensive Commercial GW1(CLASS 3) " +
-      //       userSessionData[sessionID].itemNumber,
-      //     "Buy GW1(CLASS 3) comp. comm"
-      //   );
-      //   // message = `Pay ${totalPrice}`;
-      //   message = `${finalMessage} ` + tot_amt + ` now `;
-      // }
-
-      // console.log(
-      //   "3rd party price is ",
-      //   userSessionData[sessionID].thirdPartyPrice
-      // );
-      // console.log("And car value is", userSessionData[sessionID].carPrice);
-
-      // console.log(
-      //   "Total amount to be paid for comprehensive commercial GW1 (CLASS 3) is",
-      //   totalPrice
-      // );
-      // continueSession = false;
-
-      message = numberToPayWithMessage;
-      whatsappNum = userSessionData[sessionID].whatsappNumber;
-      continueSession = true;
-    }
-
-    if (userSessionData[sessionID].service === "5") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        if (userSessionData[sessionID].type === "maxiBus") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Max Bus " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Max Bus comp. comm"
-            );
-
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial maxi bus is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "hiring") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Hiring Car " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Hiring car comp. comm"
-            );
-
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial hiring cars is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "ambulance") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              // userSessionData[sessionID].phoneNumberComp,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Ambulance/Hearse " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Ambul/Hearse comp. comm"
-            );
-
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial ambulance/hearse is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "artOrTanker") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              // userSessionData[sessionID].phoneNumberComp,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Art/Tanker " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Art/Tanker comp. comm"
-            );
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial art/tankers is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "Taxi") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              // userSessionData[sessionID].phoneNumberComp,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Taxi " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Taxi car comp. comm"
-            );
-
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial taxi is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "miniBus") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              // userSessionData[sessionID].phoneNumberComp,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Mini Bus " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Mini Bus comp. comm"
-            );
-
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial Mini Bus is",
-            DisplayAmount
-          );
-          continueSession = false;
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        if (userSessionData[sessionID].type === "maxiBus") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Max Bus " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Max Bus comp. comm"
-            );
-
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial maxi bus is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "hiring") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Hiring Car " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Hiring car comp. comm"
-            );
-
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial hiring cars is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "ambulance") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Ambulance/Hearse " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Ambul/Hearse comp. comm"
-            );
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial ambulance/hearse is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "artOrTanker") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Art/Tanker " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Art/Tanker comp. comm"
-            );
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial art/tankers is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "Taxi") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Taxi " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Taxi car comp. comm"
-            );
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log(
-            "3rd party price is ",
-            userSessionData[sessionID].thirdPartyPrice
-          );
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial taxi is",
-            DisplayAmount
-          );
-          continueSession = false;
-        } else if (userSessionData[sessionID].type === "miniBus") {
-          const totalPrice =
-            parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
-            parseInt(userSessionData[sessionID].thirdPartyPrice);
-          if (userSessionData[sessionID].carPrice < 50000) {
-            message = "The car value cannot be less than 50000 GHS";
-          } else {
-            let amount = totalPrice;
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
-            DisplayAmount = tot_amt;
-            await pay(
-              tot_amt,
-              // userSessionData[sessionID].phoneNumberComp,
-              userSessionData[sessionID].phoneNumber,
-              "Comprehensive Commercial Mini Bus " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Mini Bus comp. comm"
-            );
-            // message = `Pay ${totalPrice}`;
-            message = `${finalMessage} ` + tot_amt + ` now `;
-          }
-
-          console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
-          console.log("And car value is", userSessionData[sessionID].carPrice);
-
-          console.log(
-            "Total amount to be paid for comprehensive commercial Mini Bus is",
-            DisplayAmount
-          );
-          continueSession = false;
-        }
-      }
-    }
-
-    // Increment the step for the next interaction
-    userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
-  } else if (newSession === false && userSessionData[sessionID].step === 10) {
-    userSessionData[sessionID].phoneNumber = userData;
     if (userSessionData[sessionID].InsuranceType === "purchase") {
       if (userSessionData[sessionID].type === "specialOnSite") {
         const totalPrice =
@@ -7570,7 +6248,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial Special Types(ON SITE) " +
               userSessionData[sessionID].itemNumber,
             "Buy spc(ON SITE) comp. comm"
@@ -7606,7 +6284,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial Special Types(ON ROAD) " +
               userSessionData[sessionID].itemNumber,
             "Buy spc(ON ROAD) comp. comm"
@@ -7641,7 +6319,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial GW1(CLASS 1) " +
               userSessionData[sessionID].itemNumber,
             "Buy GW1(CLASS 1) comp. comm"
@@ -7677,7 +6355,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial GW1(CLASS 2) " +
               userSessionData[sessionID].itemNumber,
             "Buy GW1(CLASS 2) comp. comm"
@@ -7713,7 +6391,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial GW1(CLASS 3) " +
               userSessionData[sessionID].itemNumber,
             "Buy GW1(CLASS 3) comp. comm"
@@ -7751,7 +6429,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial Special Types(ON SITE) " +
               userSessionData[sessionID].itemNumber,
             "Renew spc(ON SITE) comp. comm"
@@ -7787,7 +6465,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial Special Types(ON ROAD) " +
               userSessionData[sessionID].itemNumber,
             "Renew spc(ON ROAD) comp. comm"
@@ -7822,7 +6500,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial GW1(CLASS 1) " +
               userSessionData[sessionID].itemNumber,
             "Renew GW1(CLASS 1) comp. comm"
@@ -7858,7 +6536,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial GW1(CLASS 2) " +
               userSessionData[sessionID].itemNumber,
             "Renew GW1(CLASS 2) comp. comm"
@@ -7894,7 +6572,7 @@ router.post("/ussd", async (req, res) => {
           DisplayAmount = tot_amt;
           await pay(
             tot_amt,
-            userSessionData[sessionID].phoneNumber,
+            req.body.msisdn,
             "Comprehensive Commercial GW1(CLASS 3) " +
               userSessionData[sessionID].itemNumber,
             "Renew GW1(CLASS 3) comp. comm"
@@ -7919,6 +6597,420 @@ router.post("/ussd", async (req, res) => {
         continueSession = false;
       }
     }
+
+    if (userSessionData[sessionID].service === "5") {
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      //   if (userSessionData[sessionID].type === "maxiBus") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Max Bus " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Max Bus comp. comm"
+      //       );
+
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial maxi bus is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "hiring") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Hiring Car " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Hiring car comp. comm"
+      //       );
+
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial hiring cars is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "ambulance") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         // userSessionData[sessionID].phoneNumberComp,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Ambulance/Hearse " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Ambul/Hearse comp. comm"
+      //       );
+
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial ambulance/hearse is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "artOrTanker") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         // userSessionData[sessionID].phoneNumberComp,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Art/Tanker " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Art/Tanker comp. comm"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial art/tankers is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "Taxi") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         // userSessionData[sessionID].phoneNumberComp,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Taxi " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Taxi car comp. comm"
+      //       );
+
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial taxi is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "miniBus") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         // userSessionData[sessionID].phoneNumberComp,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Mini Bus " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Buy Mini Bus comp. comm"
+      //       );
+
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial Mini Bus is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   }
+      // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   if (userSessionData[sessionID].type === "maxiBus") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Max Bus " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Max Bus comp. comm"
+      //       );
+
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial maxi bus is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "hiring") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Hiring Car " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Hiring car comp. comm"
+      //       );
+
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial hiring cars is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "ambulance") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Ambulance/Hearse " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Ambul/Hearse comp. comm"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial ambulance/hearse is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "artOrTanker") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 8) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Art/Tanker " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Art/Tanker comp. comm"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial art/tankers is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "Taxi") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Taxi " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Taxi car comp. comm"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log(
+      //       "3rd party price is ",
+      //       userSessionData[sessionID].thirdPartyPrice
+      //     );
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial taxi is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   } else if (userSessionData[sessionID].type === "miniBus") {
+      //     const totalPrice =
+      //       parseInt(userSessionData[sessionID].carPrice * 7) / 100 +
+      //       parseInt(userSessionData[sessionID].thirdPartyPrice);
+      //     if (userSessionData[sessionID].carPrice < 50000) {
+      //       message = "The car value cannot be less than 50000 GHS";
+      //     } else {
+      //       let amount = totalPrice;
+      //       // add 3% of the amount as processing fee
+      //       let tot_amt = (processingFeePercentage / 100) * amount + amount;
+      //       DisplayAmount = tot_amt;
+      //       await pay(
+      //         tot_amt,
+      //         // userSessionData[sessionID].phoneNumberComp,
+      //         userSessionData[sessionID].phoneNumber,
+      //         "Comprehensive Commercial Mini Bus " +
+      //           userSessionData[sessionID].itemNumber,
+      //         "Renew Mini Bus comp. comm"
+      //       );
+      //       // message = `Pay ${totalPrice}`;
+      //       message = `${finalMessage} ` + tot_amt + ` now `;
+      //     }
+
+      //     console.log("Price is ", userSessionData[sessionID].thirdPartyPrice);
+      //     console.log("And car value is", userSessionData[sessionID].carPrice);
+
+      //     console.log(
+      //       "Total amount to be paid for comprehensive commercial Mini Bus is",
+      //       DisplayAmount
+      //     );
+      //     continueSession = false;
+      //   }
+      // }
+    }
+
+    // // Increment the step for the next interaction
+    // userSessionData[sessionID].step = userSessionData[sessionID].step + 1;
   } else {
     message = "Please dial *928*311#";
     continueSession = false;
