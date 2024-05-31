@@ -164,7 +164,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
     url: `https://rmp.hubtel.com/merchantaccount/merchants/${process.env.HUBTEL_POS_SALES_ID}/receive/mobilemoney`,
     headers: {
       "Content-Type": "application/json",
-        "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
+      "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
     },
     data: {
       // amount: amount,
@@ -2382,7 +2382,7 @@ router.post("/ussd", async (req, res) => {
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         service = userSessionData[sessionID].service;
         whatsappNum = userSessionData[sessionID].whatsappNumber;
-        let amount = 243;
+        let amount = 1;
         // add 3% of the amount as processing fee
         let tot_amt = (processingFeePercentage / 100) * amount + amount;
         await pay(
