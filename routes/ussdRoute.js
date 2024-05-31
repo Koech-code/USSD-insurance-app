@@ -164,7 +164,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
     url: `https://rmp.hubtel.com/merchantaccount/merchants/${process.env.HUBTEL_POS_SALES_ID}/receive/mobilemoney`,
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
+      "Authorization": "Basic WVFEWUFrWTo0ODc4Y2IxZTk0NGM0MTE3ODQwZmYzMTczNzM2OTM5Mg=="
     },
     data: {
       // amount: amount,
