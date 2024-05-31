@@ -164,7 +164,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
     url: `https://rmp.hubtel.com/merchantaccount/merchants/${process.env.HUBTEL_POS_SALES_ID}/receive/mobilemoney`,
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Basic WVFEWUFrWTo0ODc4Y2IxZTk0NGM0MTE3ODQwZmYzMTczNzM2OTM5Mg=="
+      "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
     },
     data: {
       // amount: amount,
@@ -2962,8 +2962,9 @@ router.post("/ussd", async (req, res) => {
 
     const numberToPayWithMessage =
       "Please enter the phone number you wish to pay with.";
-    if (userSessionData[sessionID].service === "1") {
       whatsappNum = userSessionData[sessionID].whatsappNumber;
+    if (userSessionData[sessionID].service === "1") {
+      
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // if (userSessionData[sessionID].type === "maxBus") {
         //   message = numberToPayWithMessage;
@@ -3354,36 +3355,276 @@ router.post("/ussd", async (req, res) => {
         }
       }
     } else if (userSessionData[sessionID].service === "2") {
+      // if (userSessionData[sessionID].InsuranceType === "purchase") {
+      //   // Check if the service is Third Party Private
+      //   if (userSessionData[sessionID].type === "privateIndividualX1") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "miniBus") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else {
+      //     message =
+      //       "Invalid option selected for purchase of Third Party Private.";
+      //     continueSession = false;
+      //   }
+      // } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+      //   // Check if the service is Third Party Private
+      //   if (userSessionData[sessionID].type === "privateIndividualX1") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else if (userSessionData[sessionID].type === "miniBus") {
+      //     message = numberToPayWithMessage;
+      //     whatsappNum = userSessionData[sessionID].whatsappNumber;
+      //     continueSession = true;
+      //   } else {
+      //     message =
+      //       "Invalid option selected for renewal of Third Party Private.";
+      //     continueSession = false;
+      //   }
+      // } else {
+      //   message = "Invalid option selected for Third Party Private.";
+      //   continueSession = false;
+      // }
       if (userSessionData[sessionID].InsuranceType === "purchase") {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1Prices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            // Get the price dynamically from the mapping
+            let amount = parseInt(
+              privateIndividualX1Prices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Private Individual X1 " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Pvt Indiv X1 3rd-party."
+            );
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false;
+          }
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4Prices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              privateIndividualX4Prices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Private Individual X4 " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Pvt Indiv X4 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false;
+          }
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              ownGoodsBelow[userSessionData[sessionID].selectedOption]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Own Goods(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Own Goods(<3,000 cc) 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              ownGoodsAbove[userSessionData[sessionID].selectedOption]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Own Goods(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Own Goods(>3,000 cc) 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              generalGartageBelow[userSessionData[sessionID].selectedOption]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party General Cartage(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Gen.Gar (<3,000 cc) 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            generalGartageAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              generalGartageAbove[userSessionData[sessionID].selectedOption]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party General Cartage(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Buy Gen.Gar (>3,000 cc) 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
         } else if (userSessionData[sessionID].type === "miniBus") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            miniBusServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              miniBusServicePrices[userSessionData[sessionID].selectedOption]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
+              "Buy Mini Bus 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input a value between 5 - 22.";
+          }
         } else {
           message =
             "Invalid option selected for purchase of Third Party Private.";
@@ -3392,33 +3633,210 @@ router.post("/ussd", async (req, res) => {
       } else if (userSessionData[sessionID].InsuranceType === "renewal") {
         // Check if the service is Third Party Private
         if (userSessionData[sessionID].type === "privateIndividualX1") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX1RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              privateIndividualX1RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "3rd-party-private Private Individual X1 " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Pvt Indiv X1 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false;
+          }
         } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            privateIndividualX4RenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              privateIndividualX4RenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "3rd-party-private Private Individual X4 " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Pvt Indiv X4 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Only inputs from 5 - 12 are allowed.";
+            continueSession = false;
+          }
         } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsBelowRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              ownGoodsBelowRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "3rd-party-private Own Goods(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Own Goods(<3,000 cc) 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
         } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            ownGoodsAboveRenewalPrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              ownGoodsAboveRenewalPrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "3rd-party-private Own Goods(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Own Goods(>3,000 cc) 3rd-party."
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
         } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalBelow.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              generalCartageRenewalBelow[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "3rd-party-private General Cartage(Below 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Gen.Gar (<3,000 cc)"
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
         } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            generalCartageRenewalAbove.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              generalCartageRenewalAbove[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "3rd-party-private General Cartage(Above 3,000 cc) " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Gen.Gar (>3,000 cc)"
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Input 3 to access this service";
+          }
         } else if (userSessionData[sessionID].type === "miniBus") {
-          message = numberToPayWithMessage;
-          whatsappNum = userSessionData[sessionID].whatsappNumber;
-          continueSession = true;
+          // Check if the selected option exists in the mapping
+          if (
+            miniBusRenewalServicePrices.hasOwnProperty(
+              userSessionData[sessionID].selectedOption
+            )
+          ) {
+            service = userSessionData[sessionID].service;
+            let amount = parseInt(
+              miniBusRenewalServicePrices[
+                userSessionData[sessionID].selectedOption
+              ]
+            );
+            // add 3% of the amount as processing fee
+            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+
+            await pay(
+              tot_amt,
+              req.body.msisdn,
+              "3rd-party-private Mini Bus " +
+                userSessionData[sessionID].itemNumber,
+              "Renew Mini Bus 3rd-party"
+            );
+            // Get the price dynamically from the mapping
+            message = `${finalMessage} ` + tot_amt + ` now.`;
+            continueSession = false;
+          } else {
+            message = "Please input a value between 5 - 22.";
+          }
         } else {
           message =
             "Invalid option selected for renewal of Third Party Private.";
@@ -4518,425 +4936,426 @@ router.post("/ussd", async (req, res) => {
     //     }
     //   }
     // }
-      if (userSessionData[sessionID].service === "2") {
-      if (userSessionData[sessionID].InsuranceType === "purchase") {
-        // Check if the service is Third Party Private
-        if (userSessionData[sessionID].type === "privateIndividualX1") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX1Prices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            // Get the price dynamically from the mapping
-            let amount = parseInt(
-              privateIndividualX1Prices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //   if (userSessionData[sessionID].service === "2") {
+    //   if (userSessionData[sessionID].InsuranceType === "purchase") {
+    //     // Check if the service is Third Party Private
+    //     if (userSessionData[sessionID].type === "privateIndividualX1") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         privateIndividualX1Prices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         // Get the price dynamically from the mapping
+    //         let amount = parseInt(
+    //           privateIndividualX1Prices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Private Individual X1 " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Pvt Indiv X1 3rd-party."
-            );
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false;
-          }
-        } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX4Prices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              privateIndividualX4Prices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Private Individual X1 " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Buy Pvt Indiv X1 3rd-party."
+    //         );
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Only inputs from 5 - 12 are allowed.";
+    //         continueSession = false;
+    //       }
+    //     } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         privateIndividualX4Prices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           privateIndividualX4Prices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Private Individual X4 " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Pvt Indiv X4 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false;
-          }
-        } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              ownGoodsBelow[userSessionData[sessionID].selectedOption]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Private Individual X4 " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Buy Pvt Indiv X4 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Only inputs from 5 - 12 are allowed.";
+    //         continueSession = false;
+    //       }
+    //     } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         ownGoodsBelow.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           ownGoodsBelow[userSessionData[sessionID].selectedOption]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Own Goods(Below 3,000 cc) " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Own Goods(<3,000 cc) 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
-        } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              ownGoodsAbove[userSessionData[sessionID].selectedOption]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Own Goods(Below 3,000 cc) " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Buy Own Goods(<3,000 cc) 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Input 3 to access this service";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         ownGoodsAbove.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           ownGoodsAbove[userSessionData[sessionID].selectedOption]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Own Goods(Above 3,000 cc) " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Own Goods(>3,000 cc) 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
-        } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-          // Check if the selected option exists in the mapping
-          if (
-            generalGartageBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              generalGartageBelow[userSessionData[sessionID].selectedOption]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Own Goods(Above 3,000 cc) " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Buy Own Goods(>3,000 cc) 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Input 3 to access this service";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         generalGartageBelow.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           generalGartageBelow[userSessionData[sessionID].selectedOption]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party General Cartage(Below 3,000 cc) " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Gen.Gar (<3,000 cc) 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
-        } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-          // Check if the selected option exists in the mapping
-          if (
-            generalGartageAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              generalGartageAbove[userSessionData[sessionID].selectedOption]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party General Cartage(Below 3,000 cc) " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Buy Gen.Gar (<3,000 cc) 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Input 3 to access this service";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         generalGartageAbove.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           generalGartageAbove[userSessionData[sessionID].selectedOption]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party General Cartage(Above 3,000 cc) " +
-                userSessionData[sessionID].itemNumber,
-              "Buy Gen.Gar (>3,000 cc) 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
-        } else if (userSessionData[sessionID].type === "miniBus") {
-          // Check if the selected option exists in the mapping
-          if (
-            miniBusServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              miniBusServicePrices[userSessionData[sessionID].selectedOption]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party General Cartage(Above 3,000 cc) " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Buy Gen.Gar (>3,000 cc) 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Input 3 to access this service";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "miniBus") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         miniBusServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           miniBusServicePrices[userSessionData[sessionID].selectedOption]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
-              "Buy Mini Bus 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input a value between 5 - 22.";
-          }
-        } else {
-          message =
-            "Invalid option selected for purchase of Third Party Private.";
-          continueSession = false;
-        }
-      } else if (userSessionData[sessionID].InsuranceType === "renewal") {
-        // Check if the service is Third Party Private
-        if (userSessionData[sessionID].type === "privateIndividualX1") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX1RenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              privateIndividualX1RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "Third-party Mini Bus " + userSessionData[sessionID].itemNumber,
+    //           "Buy Mini Bus 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input a value between 5 - 22.";
+    //       }
+    //     } else {
+    //       message =
+    //         "Invalid option selected for purchase of Third Party Private.";
+    //       continueSession = false;
+    //     }
+    //   } else if (userSessionData[sessionID].InsuranceType === "renewal") {
+    //     // Check if the service is Third Party Private
+    //     if (userSessionData[sessionID].type === "privateIndividualX1") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         privateIndividualX1RenewalPrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           privateIndividualX1RenewalPrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "3rd-party-private Private Individual X1 " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Pvt Indiv X1 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false;
-          }
-        } else if (userSessionData[sessionID].type === "privateIndividualX4") {
-          // Check if the selected option exists in the mapping
-          if (
-            privateIndividualX4RenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              privateIndividualX4RenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "3rd-party-private Private Individual X1 " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Renew Pvt Indiv X1 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Only inputs from 5 - 12 are allowed.";
+    //         continueSession = false;
+    //       }
+    //     } else if (userSessionData[sessionID].type === "privateIndividualX4") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         privateIndividualX4RenewalPrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           privateIndividualX4RenewalPrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "3rd-party-private Private Individual X4 " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Pvt Indiv X4 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Only inputs from 5 - 12 are allowed.";
-            continueSession = false;
-          }
-        } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsBelowRenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              ownGoodsBelowRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "3rd-party-private Private Individual X4 " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Renew Pvt Indiv X4 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Only inputs from 5 - 12 are allowed.";
+    //         continueSession = false;
+    //       }
+    //     } else if (userSessionData[sessionID].type === "ownGoodsBelow") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         ownGoodsBelowRenewalPrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           ownGoodsBelowRenewalPrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "3rd-party-private Own Goods(Below 3,000 cc) " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Own Goods(<3,000 cc) 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
-        } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
-          // Check if the selected option exists in the mapping
-          if (
-            ownGoodsAboveRenewalPrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              ownGoodsAboveRenewalPrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "3rd-party-private Own Goods(Below 3,000 cc) " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Renew Own Goods(<3,000 cc) 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Input 3 to access this service";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "ownGoodsAbove") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         ownGoodsAboveRenewalPrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           ownGoodsAboveRenewalPrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "3rd-party-private Own Goods(Above 3,000 cc) " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Own Goods(>3,000 cc) 3rd-party."
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
-        } else if (userSessionData[sessionID].type === "generalCartageBelow") {
-          // Check if the selected option exists in the mapping
-          if (
-            generalCartageRenewalBelow.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              generalCartageRenewalBelow[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "3rd-party-private Own Goods(Above 3,000 cc) " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Renew Own Goods(>3,000 cc) 3rd-party."
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Input 3 to access this service";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "generalCartageBelow") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         generalCartageRenewalBelow.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           generalCartageRenewalBelow[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "3rd-party-private General Cartage(Below 3,000 cc) " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Gen.Gar (<3,000 cc)"
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
-        } else if (userSessionData[sessionID].type === "generalCartageAbove") {
-          // Check if the selected option exists in the mapping
-          if (
-            generalCartageRenewalAbove.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              generalCartageRenewalAbove[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "3rd-party-private General Cartage(Below 3,000 cc) " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Renew Gen.Gar (<3,000 cc)"
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Input 3 to access this service";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "generalCartageAbove") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         generalCartageRenewalAbove.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           generalCartageRenewalAbove[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "3rd-party-private General Cartage(Above 3,000 cc) " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Gen.Gar (>3,000 cc)"
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Input 3 to access this service";
-          }
-        } else if (userSessionData[sessionID].type === "miniBus") {
-          // Check if the selected option exists in the mapping
-          if (
-            miniBusRenewalServicePrices.hasOwnProperty(
-              userSessionData[sessionID].selectedOption
-            )
-          ) {
-            service = userSessionData[sessionID].service;
-            let amount = parseInt(
-              miniBusRenewalServicePrices[
-                userSessionData[sessionID].selectedOption
-              ]
-            );
-            // add 3% of the amount as processing fee
-            let tot_amt = (processingFeePercentage / 100) * amount + amount;
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "3rd-party-private General Cartage(Above 3,000 cc) " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Renew Gen.Gar (>3,000 cc)"
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Input 3 to access this service";
+    //       }
+    //     } else if (userSessionData[sessionID].type === "miniBus") {
+    //       // Check if the selected option exists in the mapping
+    //       if (
+    //         miniBusRenewalServicePrices.hasOwnProperty(
+    //           userSessionData[sessionID].selectedOption
+    //         )
+    //       ) {
+    //         service = userSessionData[sessionID].service;
+    //         let amount = parseInt(
+    //           miniBusRenewalServicePrices[
+    //             userSessionData[sessionID].selectedOption
+    //           ]
+    //         );
+    //         // add 3% of the amount as processing fee
+    //         let tot_amt = (processingFeePercentage / 100) * amount + amount;
 
-            await pay(
-              tot_amt,
-              userSessionData[sessionID].phoneNumber,
-              "3rd-party-private Mini Bus " +
-                userSessionData[sessionID].itemNumber,
-              "Renew Mini Bus 3rd-party"
-            );
-            // Get the price dynamically from the mapping
-            message = `${finalMessage} ` + tot_amt + ` now.`;
-            continueSession = false;
-          } else {
-            message = "Please input a value between 5 - 22.";
-          }
-        } else {
-          message =
-            "Invalid option selected for renewal of Third Party Private.";
-          continueSession = false;
-        }
-      } else {
-        message = "Invalid option selected for Third Party Private.";
-        continueSession = false;
-      }
-    } else if (userSessionData[sessionID].service === "4") {
+    //         await pay(
+    //           tot_amt,
+    //           userSessionData[sessionID].phoneNumber,
+    //           "3rd-party-private Mini Bus " +
+    //             userSessionData[sessionID].itemNumber,
+    //           "Renew Mini Bus 3rd-party"
+    //         );
+    //         // Get the price dynamically from the mapping
+    //         message = `${finalMessage} ` + tot_amt + ` now.`;
+    //         continueSession = false;
+    //       } else {
+    //         message = "Please input a value between 5 - 22.";
+    //       }
+    //     } else {
+    //       message =
+    //         "Invalid option selected for renewal of Third Party Private.";
+    //       continueSession = false;
+    //     }
+    //   } else {
+    //     message = "Invalid option selected for Third Party Private.";
+    //     continueSession = false;
+    //   }
+    // }
+     if (userSessionData[sessionID].service === "4") {
       if (userSessionData[sessionID].type === "motorCycle") {
         if (userSessionData[sessionID].InsuranceType === "purchase") {
           message = numberToPayWithMessage;
