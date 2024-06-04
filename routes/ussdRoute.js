@@ -7219,9 +7219,27 @@ router.get('/check-transaction-status', async (req, res) => {
         }
     } catch (error) {
         console.error('Error checking transaction status:', error);
-        res.status(500).json({ error: 'An error occurred while checking the transaction status' });
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            res.status(error.response.status).json({ 
+                error: 'Error from API', 
+                details: error.response.data 
+            });
+        } else if (error.request) {
+            // The request was made but no response was received
+            res.status(500).json({ 
+                error: 'No response received from API', 
+                details: error.message 
+            });
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            res.status(500).json({ 
+                error: 'Error in setting up request', 
+                details: error.message 
+            });
+        }
     }
 });
-
 
 module.exports = router;
