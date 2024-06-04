@@ -7212,10 +7212,11 @@ router.get('/check-transaction-status', async (req, res) => {
 
         const response = await axios.get(checkStatusUrl, {
           headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
-            },
-        }, { params });
+            "Content-Type": "application/json",
+            "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
+          },
+          params: params // Ensure the params are included in the configuration object
+        });
 
         if (response.status === 200) {
             res.json(response.data);
