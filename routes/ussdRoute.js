@@ -7262,15 +7262,15 @@ router.get('/status', async (req, res) => {
         const params = { clientReference: ClientReferenceNumber };
 
         const response = await axios.get(checkStatusUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
-          },
-          params: params
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
+            },
+            params: params
         });
 
         if (response.status === 200) {
-            res.render('transaction-status', { data: response.data.data });
+            res.json(response.data.data);
         } else {
             res.status(response.status).json({ error: response.statusText });
         }
@@ -7294,6 +7294,5 @@ router.get('/status', async (req, res) => {
         }
     }
 });
-
 
 module.exports = router;
