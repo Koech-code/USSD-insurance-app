@@ -7208,12 +7208,14 @@ router.get('/check-transaction-status', async (req, res) => {
 
     try {
         const checkStatusUrl = `https://api-txnstatus.hubtel.com/transactions/${process.env.HUBTEL_POS_SALES_ID}/status`;
-        const params = { headers: {
+        const params = { clientReference: ClientReferenceNum };
+
+        const response = await axios.get(checkStatusUrl, {
+          headers: {
           "Content-Type": "application/json",
           "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
-            },clientReference: ClientReferenceNum };
-
-        const response = await axios.get(checkStatusUrl, { params });
+            },
+        }, { params });
 
         if (response.status === 200) {
             res.json(response.data);
