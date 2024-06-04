@@ -20,7 +20,7 @@ let NumberToSave = "";
 let ManufacturedYear = "" || null;
 
 let InvoiceNo = "";
-let OrderId = "";
+let ClientReferenceNumber = "";
 let NumToSendSMS = "";
 
 let DisplayAmount = "";
@@ -114,7 +114,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
 
     console.log("Payment Params - ", response.data);
     // InvoiceNo = response.data.InvoiceNo;
-    // OrderId = response.data.Order_id;
+    ClientReferenceNumber = response.Data.ClientReference;
     // NumToSendSMS = customerNumber;
     // // Extract callback URL and customer number
     // const callbackUrl = response.data.callback;
@@ -7197,5 +7197,31 @@ router.put("/updateStatus/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+router.get('/check-transaction-status', async (req, res) => {
+    let ClientReferenceNum = '67c78750-9fec-4e06-8b98-18efd5579d45';
+
+    if (!ClientReferenceNum) {
+        return res.status(400).json({ error: 'ClientReferenceNumber must be provided' });
+    }
+
+    try {
+        const checkStatusUrl = `https://api-txnstatus.hubtel.com/transactions/${process.env.HUBTEL_POS_SALES_ID}/status`;
+        const params = { clientReference: ClientReferenceNum };
+
+        const response = await axios.get(checkStatusUrl, { params });
+
+        if (response.status === 200) {
+            res.json(response.data);
+        } else {
+            res.status(response.status).json({ error: response.statusText });
+        }
+    } catch (error) {
+        console.error('Error checking transaction status:', error);
+        res.status(500).json({ error: 'An error occurred while checking the transaction status' });
+    }
+});
+
 
 module.exports = router;
