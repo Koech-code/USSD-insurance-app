@@ -114,7 +114,7 @@ async function pay(amount, customerNumber, item_name, item_desc) {
 
     console.log("Payment Params - ", response.data);
     // InvoiceNo = response.data.InvoiceNo;
-    ClientReferenceNumber = response.Data.ClientReference;
+    ClientReferenceNumber = response.data.Data.ClientReference;
     // NumToSendSMS = customerNumber;
     // // Extract callback URL and customer number
     // const callbackUrl = response.data.callback;
