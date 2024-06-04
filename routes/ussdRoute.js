@@ -7199,47 +7199,94 @@ router.put("/updateStatus/:id", async (req, res) => {
 });
 
 
-router.get('/check-transaction-status', async (req, res) => {
-    let ClientReferenceNum = '67c78750-9fec-4e06-8b98-18efd5579d45';
+// router.get('/check-transaction-status', async (req, res) => {
+//     // let ClientReferenceNum = '67c78750-9fec-4e06-8b98-18efd5579d45';
 
-    if (!ClientReferenceNum) {
+//     if (!ClientReferenceNumber) {
+//         return res.status(400).json({ error: 'ClientReferenceNumber must be provided' });
+//     }
+
+//     try {
+//         const checkStatusUrl = `https://api-txnstatus.hubtel.com/transactions/${process.env.HUBTEL_POS_SALES_ID}/status`;
+//         const params = { clientReference: ClientReferenceNumber };
+
+//         const response = await axios.get(checkStatusUrl, {
+//           headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
+//           },
+//           params: params // Ensure the params are included in the configuration object
+//         });
+
+//         if (response.status === 200) {
+//             res.json(response.data);
+//         } else {
+//             res.status(response.status).json({ error: response.statusText });
+//         }
+//     } catch (error) {
+//         console.error('Error checking transaction status:', error);
+//         if (error.response) {
+//             // The request was made and the server responded with a status code
+//             // that falls out of the range of 2xx
+//             res.status(error.response.status).json({ 
+//                 error: 'Error from API', 
+//                 details: error.response.data 
+//             });
+//         } else if (error.request) {
+//             // The request was made but no response was received
+//             res.status(500).json({ 
+//                 error: 'No response received from API', 
+//                 details: error.message 
+//             });
+//         } else {
+//             // Something happened in setting up the request that triggered an Error
+//             res.status(500).json({ 
+//                 error: 'Error in setting up request', 
+//                 details: error.message 
+//             });
+//         }
+//     }
+// });
+
+
+// Route to check transaction status
+router.get('/status', async (req, res) => {
+    const ClientReferenceNumber = req.query.clientReference;
+
+    if (!ClientReferenceNumber) {
         return res.status(400).json({ error: 'ClientReferenceNumber must be provided' });
     }
 
     try {
         const checkStatusUrl = `https://api-txnstatus.hubtel.com/transactions/${process.env.HUBTEL_POS_SALES_ID}/status`;
-        const params = { clientReference: ClientReferenceNum };
+        const params = { clientReference: ClientReferenceNumber };
 
         const response = await axios.get(checkStatusUrl, {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Basic ${process.env.AUTHORIZATION_KEY}`
           },
-          params: params // Ensure the params are included in the configuration object
+          params: params
         });
 
         if (response.status === 200) {
-            res.json(response.data);
+            res.render('transaction-status', { data: response.data.data });
         } else {
             res.status(response.status).json({ error: response.statusText });
         }
     } catch (error) {
         console.error('Error checking transaction status:', error);
         if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
             res.status(error.response.status).json({ 
                 error: 'Error from API', 
                 details: error.response.data 
             });
         } else if (error.request) {
-            // The request was made but no response was received
             res.status(500).json({ 
                 error: 'No response received from API', 
                 details: error.message 
             });
         } else {
-            // Something happened in setting up the request that triggered an Error
             res.status(500).json({ 
                 error: 'Error in setting up request', 
                 details: error.message 
@@ -7247,5 +7294,6 @@ router.get('/check-transaction-status', async (req, res) => {
         }
     }
 });
+
 
 module.exports = router;
